@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b66ff" />
+<title>AroundNow</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <h1>AroundNow</h1>
+  </header>
+
+  <section class="controls">
+    <div class="row">
+      <input id="keyword" type="text" placeholder="keyword (e.g. kids, family, workshop)" />
+      <button id="fetchBtn" class="primary">Fetch</button>
+    </div>
+
+    <div class="row">
+      <button id="locBtn">📍 Use my location</button>
+      <label class="demo-toggle">
+        <input id="demoToggle" type="checkbox" checked />
+        Demo pins
+      </label>
+    </div>
+
+    <div class="row chips" id="categoryChips">
+      <button class="chip active" data-cat="fun">Fun</button>
+      <button class="chip active" data-cat="culture">Culture</button>
+    </div>
+
+    <div class="row radius-row">
+      <span class="label">Radius:</span>
+      <button class="radius-btn" data-radius="1">1 km</button>
+      <button class="radius-btn active" data-radius="3">3 km</button>
+      <button class="radius-btn" data-radius="5">5 km</button>
+      <div class="spacer"></div>
+      <button id="applyBtn" class="primary small">Apply</button>
+    </div>
+  </section>
+
+  <nav class="view-toggle">
+    <button id="listViewBtn" class="active">List</button>
+    <button id="mapViewBtn">Map</button>
+  </nav>
+
+  <main>
+    <div id="listView" class="list-view">
+      <p id="listEmpty" class="empty">No results yet — tap Fetch.</p>
+      <div id="listItems"></div>
+    </div>
+
+    <div id="mapView" class="map-view" hidden>
+      <div id="map"></div>
+    </div>
+  </main>
+
+</div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch((e) => console.warn("SW registration failed", e));
+    });
+  }
+</script>
+</body>
+</html>
