@@ -55,11 +55,13 @@ Cloudflare login.
 
 ## Status / open items
 
-- `API_URL` in `app.js` is a placeholder until `aroundnow_worker` is
-  (re-)deployed and we have its real `*.workers.dev` URL.
-- `aroundnow_worker`'s `wrangler.toml` currently has `EVENTBRITE_TOKEN` as
-  a plaintext var — should move to a Cloudflare secret
-  (`wrangler secret put EVENTBRITE_TOKEN`) next time it's deployed.
-- `aroundnow_worker`'s `wrangler` version (3.61.0) is out of date (4.x
-  available).
+Worker is live at `https://aroundnow-worker-tatjana.aroundnow-tatjana.workers.dev`
+(`demo=true` works; wrangler 4.x; token no longer in `wrangler.toml`).
+
+- Replace Eventbrite as the event source — its public event search API was
+  shut down in 2020, so live results are always empty. Candidates:
+  Ticketmaster Discovery API (events), Google Places (venues).
+- Remove the Eventbrite code from `aroundnow_worker` and wire in the new source.
+- Deploy this site to Cloudflare Pages (`npm run deploy`) for HTTPS /
+  on-device geolocation testing.
 - Custom domain for the Pages site vs. the default `*.pages.dev` URL — TBD.

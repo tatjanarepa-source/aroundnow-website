@@ -1,6 +1,6 @@
 // Point this at your deployed Cloudflare Worker, e.g.
 // "https://aroundnow-worker-tatjana.<your-subdomain>.workers.dev"
-const API_URL = "https://aroundnow-worker-tatjana.workers.dev";
+const API_URL = "https://aroundnow-worker-tatjana.aroundnow-tatjana.workers.dev";
 
 const state = {
   lat: 51.5074,
@@ -134,7 +134,7 @@ function renderList() {
 function ensureMap() {
   if (map) return;
   map = L.map("map", { zoomControl: true });
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors",
   }).addTo(map);
