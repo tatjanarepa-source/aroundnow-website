@@ -2,103 +2,47 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0b66ff" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
 <title>AroundNow</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="icons/icon-192.png" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
-<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" />
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div class="app">
 
   <header class="topbar">
-    <h1>AroundNow</h1>
-    <p class="tagline">Kids' classes and activities near you</p>
+    <span class="logo">Around<span>Now</span></span>
+    <span class="seg" id="uiSwitch">
+      <button type="button" data-act="ui" data-v="en" aria-label="English">EN</button>
+      <button type="button" data-act="ui" data-v="ru" aria-label="Русский">RU</button>
+    </span>
   </header>
 
-  <section class="controls">
-    <form id="searchForm" class="row">
-      <input id="keyword" type="search" placeholder="search (e.g. chess, ballet, Russian)" />
-      <button id="searchBtn" class="primary" type="submit">Search</button>
-    </form>
+  <section id="filters" class="filters" aria-label="Filters"></section>
 
-    <form id="cityForm" class="row">
-      <input id="cityInput" type="text" placeholder="city or area (e.g. Ealing)" autocomplete="off" />
-      <button id="cityBtn" type="submit">Go</button>
-      <button id="locBtn" type="button" title="Use my location">📍</button>
-    </form>
+  <div class="results-head">
+    <span id="countLabel" aria-live="polite"></span>
+    <button type="button" id="clearBtn" class="link-btn" data-act="clear" hidden></button>
+  </div>
 
-    <p id="placeStatus" class="place-status">Showing: Ealing</p>
-
-    <div class="row">
-      <label class="label" for="ageSelect">Child's age</label>
-      <select id="ageSelect">
-        <option value="">Any age</option>
-        <option value="6">Under 1</option>
-      </select>
-      <span class="label">Within</span>
-      <select id="radiusSelect">
-        <option value="1">1 km</option>
-        <option value="3">3 km</option>
-        <option value="5">5 km</option>
-        <option value="10" selected>10 km</option>
-        <option value="25">25 km</option>
-      </select>
-    </div>
-
-    <div class="row chips" data-group="categories"></div>
-
-    <details class="more-filters">
-      <summary>More filters <span id="filterCount" class="filter-count" hidden></span></summary>
-      <div class="filter-group">
-        <span class="label">Day</span>
-        <div class="row chips wrap" data-group="days"></div>
-      </div>
-      <div class="filter-group">
-        <span class="label">Time of day</span>
-        <div class="row chips wrap" data-group="times"></div>
-      </div>
-      <div class="filter-group">
-        <span class="label">Type</span>
-        <div class="row chips wrap" data-group="formats"></div>
-      </div>
-      <div class="filter-group">
-        <span class="label">Language</span>
-        <div class="row chips wrap" data-group="languages"></div>
-      </div>
-      <div class="filter-group">
-        <span class="label">When</span>
-        <div class="row chips wrap" data-group="runsWhen"></div>
-      </div>
-      <label class="check">
-        <input id="onlineToggle" type="checkbox" checked />
-        Include online classes
-      </label>
-      <button id="clearBtn" type="button" class="small">Clear filters</button>
-    </details>
-  </section>
-
-  <nav class="view-toggle">
-    <button id="listViewBtn" class="active">List</button>
-    <button id="mapViewBtn">Map</button>
-    <span id="resultCount" class="result-count"></span>
-  </nav>
-
-  <main>
-    <div id="listView" class="list-view">
-      <p id="listEmpty" class="empty">Loading…</p>
-      <div id="listItems"></div>
-    </div>
-
-    <div id="mapView" class="map-view" hidden>
+  <main class="content">
+    <div id="list" class="list"></div>
+    <div id="mapWrap" class="map-wrap" hidden>
       <div id="map"></div>
-      <p id="mapNote" class="map-note" hidden></p>
+      <p id="mapNote" class="map-note"></p>
     </div>
   </main>
 
+  <button type="button" id="viewToggle" class="fab" data-act="view"></button>
+
+  <div id="sheet" class="overlay" hidden></div>
+  <div id="detail" class="overlay" hidden></div>
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
