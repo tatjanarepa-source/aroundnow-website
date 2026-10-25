@@ -94,6 +94,16 @@ button.primary.small {
   white-space: nowrap;
 }
 
+.place-status {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.place-status.warn {
+  color: #a15c00;
+}
+
 .chips {
   overflow-x: auto;
   flex-wrap: nowrap;

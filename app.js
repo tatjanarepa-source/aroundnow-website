@@ -21,6 +21,10 @@ function init() {
   $("fetchBtn").addEventListener("click", fetchFeed);
   $("applyBtn").addEventListener("click", fetchFeed);
   $("locBtn").addEventListener("click", useMyLocation);
+  $("cityForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    searchCity($("cityInput").value);
+  });
   $("keyword").addEventListener("input", (e) => { state.q = e.target.value; });
   $("demoToggle").addEventListener("change", (e) => { state.demo = e.target.checked; });
 
@@ -64,24 +68,64 @@ function setView(view) {
   }
 }
 
+function setPlaceStatus(text, warn = false) {
+  const el = $("placeStatus");
+  el.textContent = text;
+  el.classList.toggle("warn", warn);
+}
+
 function useMyLocation() {
   if (!navigator.geolocation) {
-    alert("Geolocation isn't available in this browser.");
+    setPlaceStatus("Showing: London — location isn't available here, search a city instead.", true);
+    fetchFeed();
     return;
   }
+  setPlaceStatus("Finding your location…");
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       state.lat = pos.coords.latitude;
       state.lng = pos.coords.longitude;
+      setPlaceStatus("Showing: near you");
       fetchFeed();
     },
     (err) => {
       console.warn("Location error", err);
-      alert("Could not get your location — using the default.");
+      const why = err.code === err.PERMISSION_DENIED ? "location is blocked" : "couldn't get your location";
+      setPlaceStatus(`Showing: London — ${why}, search a city instead.`, true);
       fetchFeed();
     },
-    { enableHighAccuracy: false, timeout: 8000 }
+    { enableHighAccuracy: false, timeout: 15000, maximumAge: 10 * 60 * 1000 }
   );
+}
+
+// Geocode with OpenStreetMap's Nominatim. Their usage policy allows light use
+// (max 1 request/second, no autocomplete), so we only search on submit.
+async function searchCity(query) {
+  query = query.trim();
+  if (!query) return;
+  $("cityBtn").disabled = true;
+  setPlaceStatus(`Looking up "${query}"…`);
+  try {
+    const qs = new URLSearchParams({ q: query, format: "jsonv2", limit: "1" });
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?${qs.toString()}`, {
+      headers: { "Accept-Language": navigator.language || "en" },
+    });
+    const results = await res.json();
+    if (!Array.isArray(results) || !results.length) {
+      setPlaceStatus(`Couldn't find "${query}" — try another spelling.`, true);
+      return;
+    }
+    const place = results[0];
+    state.lat = Number(place.lat);
+    state.lng = Number(place.lon);
+    setPlaceStatus(`Showing: ${place.display_name.split(",").slice(0, 2).join(",")}`);
+    fetchFeed();
+  } catch (e) {
+    console.warn("Geocode error", e);
+    setPlaceStatus("City search failed — check your connection.", true);
+  } finally {
+    $("cityBtn").disabled = false;
+  }
 }
 
 async function fetchFeed() {

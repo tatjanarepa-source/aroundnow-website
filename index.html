@@ -24,6 +24,11 @@
       <button id="fetchBtn" class="primary">Fetch</button>
     </div>
 
+    <form id="cityForm" class="row">
+      <input id="cityInput" type="text" placeholder="city or area (e.g. Manchester)" autocomplete="off" />
+      <button id="cityBtn" type="submit">Go</button>
+    </form>
+
     <div class="row">
       <button id="locBtn">📍 Use my location</button>
       <label class="demo-toggle">
@@ -31,6 +36,8 @@
         Demo pins
       </label>
     </div>
+
+    <p id="placeStatus" class="place-status">Showing: London</p>
 
     <div class="row chips" id="categoryChips">
       <button class="chip active" data-cat="fun">Fun</button>
