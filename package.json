@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "python -m http.server 8532",
-    "deploy": "npx wrangler pages deploy . --project-name=aroundnow-website"
+    "deploy": "node scripts/build.mjs && npx wrangler pages deploy dist --project-name=aroundnow-website --branch=main",
+    "import:listings": "node --env-file=.env scripts/import-listings.mjs",
+    "build": "node scripts/build.mjs"
   }
 }

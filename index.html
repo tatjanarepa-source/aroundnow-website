@@ -16,57 +16,86 @@
 
   <header class="topbar">
     <h1>AroundNow</h1>
+    <p class="tagline">Kids' classes and activities near you</p>
   </header>
 
   <section class="controls">
-    <div class="row">
-      <input id="keyword" type="text" placeholder="keyword (e.g. kids, family, workshop)" />
-      <button id="fetchBtn" class="primary">Fetch</button>
-    </div>
-
-    <form id="cityForm" class="row">
-      <input id="cityInput" type="text" placeholder="city or area (e.g. Manchester)" autocomplete="off" />
-      <button id="cityBtn" type="submit">Go</button>
+    <form id="searchForm" class="row">
+      <input id="keyword" type="search" placeholder="search (e.g. chess, ballet, Russian)" />
+      <button id="searchBtn" class="primary" type="submit">Search</button>
     </form>
 
+    <form id="cityForm" class="row">
+      <input id="cityInput" type="text" placeholder="city or area (e.g. Ealing)" autocomplete="off" />
+      <button id="cityBtn" type="submit">Go</button>
+      <button id="locBtn" type="button" title="Use my location">📍</button>
+    </form>
+
+    <p id="placeStatus" class="place-status">Showing: Ealing</p>
+
     <div class="row">
-      <button id="locBtn">📍 Use my location</button>
-      <label class="demo-toggle">
-        <input id="demoToggle" type="checkbox" checked />
-        Demo pins
+      <label class="label" for="ageSelect">Child's age</label>
+      <select id="ageSelect">
+        <option value="">Any age</option>
+        <option value="6">Under 1</option>
+      </select>
+      <span class="label">Within</span>
+      <select id="radiusSelect">
+        <option value="1">1 km</option>
+        <option value="3">3 km</option>
+        <option value="5">5 km</option>
+        <option value="10" selected>10 km</option>
+        <option value="25">25 km</option>
+      </select>
+    </div>
+
+    <div class="row chips" data-group="categories"></div>
+
+    <details class="more-filters">
+      <summary>More filters <span id="filterCount" class="filter-count" hidden></span></summary>
+      <div class="filter-group">
+        <span class="label">Day</span>
+        <div class="row chips wrap" data-group="days"></div>
+      </div>
+      <div class="filter-group">
+        <span class="label">Time of day</span>
+        <div class="row chips wrap" data-group="times"></div>
+      </div>
+      <div class="filter-group">
+        <span class="label">Type</span>
+        <div class="row chips wrap" data-group="formats"></div>
+      </div>
+      <div class="filter-group">
+        <span class="label">Language</span>
+        <div class="row chips wrap" data-group="languages"></div>
+      </div>
+      <div class="filter-group">
+        <span class="label">When</span>
+        <div class="row chips wrap" data-group="runsWhen"></div>
+      </div>
+      <label class="check">
+        <input id="onlineToggle" type="checkbox" checked />
+        Include online classes
       </label>
-    </div>
-
-    <p id="placeStatus" class="place-status">Showing: London</p>
-
-    <div class="row chips" id="categoryChips">
-      <button class="chip active" data-cat="fun">Fun</button>
-      <button class="chip active" data-cat="culture">Culture</button>
-    </div>
-
-    <div class="row radius-row">
-      <span class="label">Radius:</span>
-      <button class="radius-btn" data-radius="1">1 km</button>
-      <button class="radius-btn active" data-radius="3">3 km</button>
-      <button class="radius-btn" data-radius="5">5 km</button>
-      <div class="spacer"></div>
-      <button id="applyBtn" class="primary small">Apply</button>
-    </div>
+      <button id="clearBtn" type="button" class="small">Clear filters</button>
+    </details>
   </section>
 
   <nav class="view-toggle">
     <button id="listViewBtn" class="active">List</button>
     <button id="mapViewBtn">Map</button>
+    <span id="resultCount" class="result-count"></span>
   </nav>
 
   <main>
     <div id="listView" class="list-view">
-      <p id="listEmpty" class="empty">No results yet — tap Fetch.</p>
+      <p id="listEmpty" class="empty">Loading…</p>
       <div id="listItems"></div>
     </div>
 
     <div id="mapView" class="map-view" hidden>
       <div id="map"></div>
+      <p id="mapNote" class="map-note" hidden></p>
     </div>
   </main>
 

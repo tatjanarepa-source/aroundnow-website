@@ -1,0 +1,103 @@
+// Load data/listings-seed.csv into Supabase.
+// Usage: npm run import:listings   (reads SUPABASE_URL and SUPABASE_SECRET_KEY from .env)
+// Re-running is safe: rows are matched on RecordID and updated in place.
+
+import { readFileSync } from "node:fs";
+
+const { SUPABASE_URL, SUPABASE_SECRET_KEY } = process.env;
+if (!SUPABASE_URL || !SUPABASE_SECRET_KEY || SUPABASE_SECRET_KEY.includes("paste")) {
+  console.error("Fill in SUPABASE_URL and SUPABASE_SECRET_KEY in .env first.");
+  process.exit(1);
+}
+
+const csvPath = process.argv[2] || "data/listings-seed.csv";
+const rows = parseCsv(readFileSync(csvPath, "utf8").replace(/^﻿/, ""));
+
+const list = (s) => (s || "").split(",").map((v) => v.trim()).filter(Boolean);
+const text = (s) => (s && s.trim()) || null;
+const int = (s) => (s && s.trim() ? Number.parseInt(s, 10) : null);
+
+const listings = rows.map((r) => ({
+  id: r.RecordID,
+  title: r.Title,
+  provider_name: text(r.ProviderName),
+  website: text(r.Website),
+  contact_method: text(r.ContactMethod),
+  delivery_mode: text(r.DeliveryMode),
+  location_area: text(r.LocationArea),
+  address: text(r.Address),
+  postcode: text(r.Postcode),
+  location: r.Lat && r.Lng ? `SRID=4326;POINT(${r.Lng} ${r.Lat})` : null,
+  address_source: text(r.AddressSource),
+  format: text(r.Format),
+  category: text(r.Category),
+  subjects: list(r.Subjects),
+  age_min_months: int(r.AgeMinMonths),
+  age_max_months: int(r.AgeMaxMonths),
+  languages: list(r.LanguageSupport),
+  runs_when: text(r.RunsWhen),
+  holiday_club: r.HolidayClub === "Yes" ? true : r.HolidayClub === "No" ? false : null,
+  days_of_week: list(r.DaysOfWeek),
+  time_of_day: list(r.TimeOfDay),
+  start_time: text(r.StartTime),
+  end_time: text(r.EndTime),
+  schedule_text: text(r.ScheduleText),
+  price_text: text(r.PriceText),
+  description: text(r.Description),
+  pros: text(r.Pros),
+  cons: text(r.Cons),
+  status: r.Status || "Check",
+  needs_info: text(r.NeedsInfo),
+  source: text(r.Source),
+}));
+
+const contacts = rows
+  .filter((r) => text(r.ContactDetails_PRIVATE))
+  .map((r) => ({ listing_id: r.RecordID, contact_details: r.ContactDetails_PRIVATE.trim() }));
+
+await upsert("listings", listings);
+await upsert("listing_contacts", contacts);
+console.log(`Imported ${listings.length} listings (${listings.filter((l) => l.location).length} with a map pin) and ${contacts.length} private contacts.`);
+
+async function upsert(table, body) {
+  const headers = {
+    apikey: SUPABASE_SECRET_KEY,
+    "Content-Type": "application/json",
+    Prefer: "resolution=merge-duplicates,return=minimal",
+  };
+  // Legacy service_role keys are JWTs and also need the Authorization header.
+  if (SUPABASE_SECRET_KEY.startsWith("eyJ")) headers.Authorization = `Bearer ${SUPABASE_SECRET_KEY}`;
+  const res = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${table}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    console.error(`Failed to import ${table}: ${res.status} ${await res.text()}`);
+    process.exit(1);
+  }
+}
+
+// Minimal RFC 4180 CSV parser (quoted fields, embedded commas/newlines, "" escapes).
+function parseCsv(src) {
+  const records = [];
+  let field = "", record = [], inQuotes = false;
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    if (inQuotes) {
+      if (c === '"' && src[i + 1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQuotes = false;
+      else field += c;
+    } else if (c === '"') inQuotes = true;
+    else if (c === ",") { record.push(field); field = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && src[i + 1] === "\n") i++;
+      record.push(field); field = "";
+      if (record.some((v) => v !== "")) records.push(record);
+      record = [];
+    } else field += c;
+  }
+  if (field || record.length) { record.push(field); records.push(record); }
+  const [header, ...data] = records;
+  return data.map((vals) => Object.fromEntries(header.map((h, i) => [h, vals[i] ?? ""])));
+}

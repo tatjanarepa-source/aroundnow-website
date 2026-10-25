@@ -1,4 +1,4 @@
-const CACHE_NAME = "aroundnow-v3";
+const CACHE_NAME = "aroundnow-v5";
 
 const APP_SHELL = [
   "./",
@@ -39,14 +39,14 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.method !== "GET" || url.origin !== self.location.origin) return;
 
+  // Network first so updates show up straight away; the cache is only the offline fallback.
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((res) => {
+    fetch(event.request)
+      .then((res) => {
         const copy = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return res;
-      });
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
