@@ -1,0 +1,8 @@
+// Cloudflare hosting for the static site. `npm run deploy` builds dist/ (public files only) and uploads it.
+{
+  "name": "aroundnow-website",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./dist"
+  }
+}
