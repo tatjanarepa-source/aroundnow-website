@@ -37,6 +37,42 @@ public: the database only allows reading visible listings.
   spreadsheet) into Supabase. Needs the secret key in `.env`; both `data/`
   and `.env` are git-ignored because they hold private contact details
 
+### Adding and checking classes
+
+Signed-in parents add classes with the "+" button (a 4-step form); everyone
+else can confirm or report them. Sign-in is Supabase Auth: a code sent by
+email, or Google once it's switched on. `vendor/supabase/` holds the
+supabase-js browser build (2.117.3), kept locally like Leaflet.
+
+- A new class shows straight away as "Not yet confirmed". One "Yes, it's
+  real" from a different signed-in parent confirms it.
+- "Something else" as the activity waits for an admin (status `Pending`).
+- Two reports from different parents hide it (status `Flagged`).
+- No confirmation for 90 days: back to "Not yet confirmed". 120 days: hidden.
+  One-off events disappear after their date. The website works this out from
+  `last_confirmed_at`, `created_at` and the event dates.
+- After someone taps Directions or the website for an unconfirmed class, the
+  next visit (half a day later) asks "Did you go?". Kept on their phone only.
+
+The rules the browser can't be trusted with (who added it, its status, one
+confirmation per person, no confirming your own, 10 new classes a day) are
+enforced in the database: `supabase/migrations/20261026_2_add_a_class.sql`.
+
+**Reviewing (admin):** Supabase → Table Editor → `listings`, filter status
+`Pending` or `Flagged`, and set it to `Check`, `Active` or `Removed`. Reasons
+are in `listing_reports`; tick `resolved` once dealt with. "Something else"
+classes are stored with category `Mixed` (shown as "Clubs"); change it to the
+right one when approving.
+
+**One-time Supabase settings:**
+- Authentication → URL Configuration: Site URL = the live site; add the live
+  site and `http://127.0.0.1:8532` (each with `/**`) to Redirect URLs.
+- Authentication → Emails: in the "Magic Link" and "Confirm signup"
+  templates, include the code `{{ .Token }}` so people can type it in.
+- Supabase's built-in email only reaches members of your Supabase team, a few
+  an hour. Before other parents sign in by email, connect an email service
+  (Authentication → SMTP), or switch on Google (Authentication → Providers).
+
 ### Dates and school holidays
 
 Listings store a weekly pattern (days, time, term time or holidays), not
@@ -66,7 +102,7 @@ Copies only the public files into `dist/` (`scripts/build.mjs`), then
 
 ## Next
 
-- "Add a class": signed-in users add listings that appear on the map
-- Local users confirm new listings; old ones get re-checked
+- Email service for sign-in codes (or Google sign-in) before opening to other parents
+- Terms of Service and a privacy note (brief 7.2)
 - Pre-fill listing details from the organiser's website
 - Custom domain instead of the workers.dev address

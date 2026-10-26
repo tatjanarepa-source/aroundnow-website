@@ -64,6 +64,17 @@ const CAT_COLORS = {
 };
 const catColor = (c) => CAT_COLORS[c] || "#a3adc2";
 
+// "Add a class" form choices, mapped onto the stored fields.
+// "Something else" is stored as Mixed, which the database holds back for an admin to check.
+const ADD_CATS = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "STEM / Thinking", "Chess",
+  "Outdoor / Nature", "Childcare / Preschool", "Mixed"];
+const ADD_KINDS = { weekly: "Group class", oneoff: "Workshop / event", camp: "Holiday camp", nursery: "Preschool / nursery" };
+const ADD_RUNS = { term: "Term time", year: "Year-round", hols: "Holidays" };
+const AGE_FROM = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16];
+const AGE_TO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 99]; // 99 = no upper age
+const REASONS = ["gone", "wrong", "private", "notkids", "spam"];
+const DAY_MS = 864e5;
+
 // App text. Only English is offered for now; the Russian set is kept for when
 // the app gets a language choice again (state.ui picks the set).
 const STRINGS = {
@@ -80,11 +91,11 @@ const STRINGS = {
     within: (r) => `within ${r}`,
     show: (n) => (n ? `Show ${classes(n)}` : "No matches yet"),
     loading: "Loading classes…", loadError: "Could not load classes. Check your connection.",
-    checkDetails: "Check details", online: "Online", holidayClub: "Holiday club", suitsBoth: "Suits both", suitsAll: "Suits all",
+    notConfirmed: "Not yet confirmed", online: "Online", holidayClub: "Holiday club", suitsBoth: "Suits both", suitsAll: "Suits all",
     dWhen: "When", dPrice: "Price", dWhere: "Where", priceUnknown: "Not listed yet", areaOnly: "exact venue not listed yet",
     parents: "What parents say", good: "Good", watch: "Watch out",
     checkNote: "Some details may be out of date. Check the official page before you go.",
-    noSource: "Community-submitted, no official source", website: "Official website", directions: "Directions",
+    noSource: "No official source", website: "Official website", directions: "Directions",
     lighter: "Faded pins: area only, no exact address", nothing: "Nothing matches these filters.", agesNA: "Ages not listed",
     tryWeekend: "Try this weekend", onlineToo: (n) => `${classes(n)} online too`, showWord: "Show", hideWord: "Hide",
     widenText: (n, r) => (n ? `Only ${classes(n)} within ${r} km.` : `Nothing within ${r} km yet.`),
@@ -101,6 +112,69 @@ const STRINGS = {
       "Life skills": "Life skills", "Mixed": "Clubs", "Events / Parties": "Events & parties" },
     lang: { Russian: "Russian", English: "English" },
     day: { Mon: "Mon", Tue: "Tue", Wed: "Wed", Thu: "Thu", Fri: "Fri", Sat: "Sat", Sun: "Sun" },
+
+    addClass: "Add a class", signIn: "Sign in", signedInAs: (e) => `Signed in as ${e}`, signOut: "Sign out",
+    signInWhy: "Sign in to add or confirm classes. Looking at the map never needs an account.",
+    google: "Continue with Google", email: "Your email", sendCode: "Email me a sign-in code", sending: "Sending…",
+    codeSent: (e) => `We’ve emailed a code to ${e}. Type it here, or tap the link in the email.`,
+    code: "Code from the email", verify: "Sign in", checking: "Checking…", otherEmail: "Use a different email",
+    badEmail: "That email doesn’t look right.",
+    step: (n, title) => `Step ${n} of 4 · ${title}`,
+    steps: ["", "What is it?", "Who is it for?", "Where and when?", "Last check"],
+    next: "Next", back: "Back", addToMap: "Add to map", adding: "Adding…", optional: "(optional)",
+    fName: "Name of the class", fNameHint: "e.g. Toddler football",
+    fOrg: "Who runs it?", fOrgHint: "e.g. Little Kickers Ealing",
+    fOrgHelp: "A club, school, nursery or venue. Private tutors can’t be listed yet.",
+    fLink: "Official website or page", fLinkHint: "Website, Instagram or Facebook page",
+    fLinkHelp: "Parents trust listings with a link. Without one, it shows “No official source”.",
+    fKind: "How does it run?", kind: { weekly: "Weekly class", oneoff: "One-off event", camp: "Holiday camp", nursery: "Nursery" },
+    fCat: "Activity", fOtherCat: "We check “Something else” before it goes on the map.",
+    addCat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre",
+      "Arts / Crafts": "Arts & crafts", "STEM / Thinking": "Science & thinking", "Chess": "Chess",
+      "Outdoor / Nature": "Outdoors", "Childcare / Preschool": "Childcare", "Mixed": "Something else" },
+    fAges: "Ages", ageFrom: "From…", ageTo: "To…", youngest: "Youngest age", oldest: "Oldest age", birth: "Birth", noUpper: "No upper age",
+    fLangs: "Taught in", otherLang: "Other…", otherLangHint: "Which language?",
+    fWhere: "Where", inPerson: "In person",
+    fVenue: "Venue name", fVenueHint: "e.g. St Mary’s Church Hall", fAddress: "Address", fAddressHint: "e.g. 12 The Grove, Ealing",
+    fPostcode: "Postcode", fPostcodeHint: "e.g. W5 5JY",
+    fPostcodeHelp: "Puts the pin on the map. Parents see the full address and get directions to it.",
+    fDays: "Days", fRuns: "Runs", runs: { term: "Term time", year: "All year", hols: "School holidays" },
+    fDate: "Date", fDates: "Dates", firstDay: "First day", lastDay: "Last day",
+    fDatesHelp: "Leave empty if it runs in every school holiday.",
+    fTime: "Time", startsAt: "Starts at", endsAt: "Ends at",
+    fPrice: "Price", price: { free: "Free", paid: "Paid", unsure: "Not sure" }, fPriceHint: "e.g. £12 a session", howMuch: "How much?",
+    fNote: "Anything parents should know?", fNoteHint: "e.g. Drop in, no booking. First session free.",
+    fPreview: "How parents will see it", fresh: "New", agesUnknown: "Ages ?",
+    tickOrg: "It’s run by an organisation, school, club or business, not a private individual.",
+    tickTrue: "As far as I know, these details are right.",
+    stillNeeded: (list) => `Still needed: ${list}.`,
+    need: { name: "the name", org: "who runs it", kind: "how it runs", cat: "the activity", ages: "the ages",
+      agesOrder: "ages the right way round", lang: "the language", otherLang: "which other language",
+      address: "the address", postcode: "the postcode", postcodeFull: "a full postcode, like W5 5JY",
+      date: "the date", days: "the days", price: "the price", priceText: "how much it costs", ticks: "both ticks" },
+    postcodeNotFound: "We couldn’t find that postcode. Check it and try again.",
+    doneTitle: "It’s on the map!",
+    doneText: "Parents can see it now, marked “Not yet confirmed”. When another parent confirms it, it becomes confirmed.",
+    pendingTitle: "Thanks! We’ll check it first",
+    pendingText: "Classes marked “Something else” are checked before they appear, usually within a day.",
+    seeIt: "See it on the map", done: "Done", addAnother: "Add another class",
+    failed: (m) => `That didn’t work: ${m}`,
+    addedBy: (ago) => `Added by a parent · ${ago}`, today: "today", yesterday: "yesterday", daysAgo: (n) => `${n} days ago`,
+    knowIt: "Do you know this class?",
+    knowItText: "If you’ve been, or know it runs, confirm it. One confirmation from another parent is enough.",
+    yesReal: "Yes, it’s real", wrong: "Something’s wrong", reportLink: "Something wrong with this listing?",
+    whatsWrong: "What’s wrong?", reportNote: "Anything to add? (optional)", sendReport: "Send report", cancel: "Cancel",
+    reason: { gone: "It doesn’t run any more", wrong: "Details are wrong", private: "Run by a private individual",
+      notkids: "Not for children", spam: "Spam or fake" },
+    youAdded: "You added this. When another parent confirms it, it shows as confirmed.",
+    youConfirmed: "You confirmed this. Thank you!",
+    youReported: "Thanks, we’ve noted it. If another parent reports it too, it’s hidden until we’ve checked it.",
+    notAllowed: "You can’t do that for this class right now. You may already have done it recently.",
+    askSeen: (day) => `You looked this up on ${day}`, askTitle: (title) => `Did you go to ${title}?`,
+    askYes: "Yes, it was as listed", askDiff: "Something was different", askNo: "We didn’t go",
+    nudge: (n) => (n === 1 ? "1 new class near you isn’t confirmed yet." : `${n} new classes near you aren’t confirmed yet.`),
+    knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
+    pickReason: "Pick what’s wrong first.", andList: " and ",
   },
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
@@ -115,11 +189,11 @@ const STRINGS = {
     within: (r) => `в радиусе ${r}`,
     show: (n) => (n ? `Показать ${classes(n)}` : "Ничего не найдено"),
     loading: "Загружаем занятия…", loadError: "Не удалось загрузить занятия. Проверьте интернет.",
-    checkDetails: "Проверьте детали", online: "Онлайн", holidayClub: "Лагерь на каникулах", suitsBoth: "Подходит обоим", suitsAll: "Подходит всем",
+    notConfirmed: "Пока не подтверждено", online: "Онлайн", holidayClub: "Лагерь на каникулах", suitsBoth: "Подходит обоим", suitsAll: "Подходит всем",
     dWhen: "Когда", dPrice: "Цена", dWhere: "Где", priceUnknown: "Пока не указана", areaOnly: "точный адрес пока не указан",
     parents: "Что говорят родители", good: "Плюсы", watch: "Минусы",
     checkNote: "Часть информации может быть устаревшей. Перед визитом проверьте на официальном сайте.",
-    noSource: "Добавлено сообществом, без официального источника", website: "Официальный сайт", directions: "Маршрут",
+    noSource: "Нет официального источника", website: "Официальный сайт", directions: "Маршрут",
     lighter: "Бледные метки: только район, без точного адреса", nothing: "По этим фильтрам ничего нет.", agesNA: "Возраст не указан",
     tryWeekend: "Попробовать выходные", onlineToo: (n) => `Ещё онлайн: ${classes(n)}`, showWord: "Показать", hideWord: "Скрыть",
     widenText: (n, r) => (n ? `В радиусе ${r} км — только ${classes(n)}.` : `В радиусе ${r} км пока ничего нет.`),
@@ -136,6 +210,70 @@ const STRINGS = {
       "Life skills": "Навыки для жизни", "Mixed": "Кружки", "Events / Parties": "Праздники и события" },
     lang: { Russian: "Русский", English: "Английский" },
     day: { Mon: "Пн", Tue: "Вт", Wed: "Ср", Thu: "Чт", Fri: "Пт", Sat: "Сб", Sun: "Вс" },
+
+    addClass: "Добавить занятие", signIn: "Войти", signedInAs: (e) => `Вы вошли как ${e}`, signOut: "Выйти",
+    signInWhy: "Войдите, чтобы добавлять или подтверждать занятия. Смотреть карту можно без входа.",
+    google: "Войти через Google", email: "Ваш email", sendCode: "Прислать код для входа", sending: "Отправляем…",
+    codeSent: (e) => `Мы отправили код на ${e}. Введите его здесь или нажмите ссылку в письме.`,
+    code: "Код из письма", verify: "Войти", checking: "Проверяем…", otherEmail: "Другой email",
+    badEmail: "Похоже, в email ошибка.",
+    step: (n, title) => `Шаг ${n} из 4 · ${title}`,
+    steps: ["", "Что это?", "Для кого?", "Где и когда?", "Проверка"],
+    next: "Дальше", back: "Назад", addToMap: "Добавить на карту", adding: "Добавляем…", optional: "(необязательно)",
+    fName: "Название занятия", fNameHint: "например, Футбол для малышей",
+    fOrg: "Кто проводит?", fOrgHint: "например, Little Kickers Ealing",
+    fOrgHelp: "Клуб, школа, детский сад или площадка. Частных преподавателей пока не добавляем.",
+    fLink: "Официальный сайт или страница", fLinkHint: "Сайт, Instagram или страница в Facebook",
+    fLinkHelp: "Родители больше доверяют занятиям со ссылкой. Без неё будет пометка «Нет официального источника».",
+    fKind: "Как проходит?", kind: { weekly: "Каждую неделю", oneoff: "Разовое событие", camp: "Лагерь на каникулах", nursery: "Детский сад" },
+    fCat: "Направление", fOtherCat: "«Другое» мы проверяем, прежде чем показать на карте.",
+    addCat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр",
+      "Arts / Crafts": "Творчество", "STEM / Thinking": "Наука и мышление", "Chess": "Шахматы",
+      "Outdoor / Nature": "На природе", "Childcare / Preschool": "Присмотр за детьми", "Mixed": "Другое" },
+    fAges: "Возраст", ageFrom: "От…", ageTo: "До…", youngest: "Младший возраст", oldest: "Старший возраст", birth: "С рождения", noUpper: "Без ограничения",
+    fLangs: "Язык занятий", otherLang: "Другой…", otherLangHint: "Какой язык?",
+    fWhere: "Где", inPerson: "Очно",
+    fVenue: "Название места", fVenueHint: "например, St Mary’s Church Hall", fAddress: "Адрес", fAddressHint: "например, 12 The Grove, Ealing",
+    fPostcode: "Индекс", fPostcodeHint: "например, W5 5JY",
+    fPostcodeHelp: "По индексу ставим метку на карте. Родители видят полный адрес и могут построить маршрут.",
+    fDays: "Дни", fRuns: "Проходит", runs: { term: "В учебное время", year: "Весь год", hols: "На каникулах" },
+    fDate: "Дата", fDates: "Даты", firstDay: "Первый день", lastDay: "Последний день",
+    fDatesHelp: "Оставьте пустым, если лагерь работает на всех каникулах.",
+    fTime: "Время", startsAt: "Начало", endsAt: "Конец",
+    fPrice: "Цена", price: { free: "Бесплатно", paid: "Платно", unsure: "Не знаю" }, fPriceHint: "например, £12 за занятие", howMuch: "Сколько?",
+    fNote: "Что ещё стоит знать родителям?", fNoteHint: "например, Без записи. Первое занятие бесплатно.",
+    fPreview: "Так это увидят родители", fresh: "Новое", agesUnknown: "Возраст ?",
+    tickOrg: "Занятие проводит организация, школа, клуб или компания, а не частное лицо.",
+    tickTrue: "Насколько я знаю, всё указано верно.",
+    stillNeeded: (list) => `Ещё нужно: ${list}.`,
+    need: { name: "название", org: "кто проводит", kind: "как проходит", cat: "направление", ages: "возраст",
+      agesOrder: "возраст по порядку", lang: "язык", otherLang: "какой другой язык",
+      address: "адрес", postcode: "индекс", postcodeFull: "полный индекс, например W5 5JY",
+      date: "дата", days: "дни", price: "цена", priceText: "сколько стоит", ticks: "обе галочки" },
+    postcodeNotFound: "Не нашли такой индекс. Проверьте и попробуйте снова.",
+    doneTitle: "Занятие на карте!",
+    doneText: "Родители уже видят его с пометкой «Пока не подтверждено». Когда другой родитель подтвердит, пометка исчезнет.",
+    pendingTitle: "Спасибо! Сначала проверим",
+    pendingText: "Занятия из раздела «Другое» мы проверяем перед публикацией, обычно в течение дня.",
+    seeIt: "Показать на карте", done: "Готово", addAnother: "Добавить ещё",
+    failed: (m) => `Не получилось: ${m}`,
+    addedBy: (ago) => `Добавил родитель · ${ago}`, today: "сегодня", yesterday: "вчера",
+    daysAgo: (n) => `${n} ${ruForm(n, "день", "дня", "дней")} назад`,
+    knowIt: "Вы знаете это занятие?",
+    knowItText: "Если вы были там или знаете, что оно проходит, подтвердите. Достаточно одного подтверждения другого родителя.",
+    yesReal: "Да, всё так", wrong: "Что-то не так", reportLink: "Что-то не так с этим занятием?",
+    whatsWrong: "Что не так?", reportNote: "Что-нибудь добавить? (необязательно)", sendReport: "Отправить", cancel: "Отмена",
+    reason: { gone: "Больше не проходит", wrong: "Неверные данные", private: "Проводит частное лицо",
+      notkids: "Не для детей", spam: "Спам или обман" },
+    youAdded: "Вы добавили это занятие. Когда другой родитель подтвердит его, пометка исчезнет.",
+    youConfirmed: "Вы подтвердили это занятие. Спасибо!",
+    youReported: "Спасибо, мы учли. Если ещё кто-то пожалуется, занятие скроем до проверки.",
+    notAllowed: "Сейчас это сделать нельзя. Возможно, вы уже делали это недавно.",
+    askSeen: (day) => `Вы смотрели это занятие: ${day}`, askTitle: (title) => `Вы ходили на «${title}»?`,
+    askYes: "Да, всё как указано", askDiff: "Кое-что не так", askNo: "Мы не ходили",
+    nudge: (n) => `${n} ${ruForm(n, "новое занятие рядом ещё не подтверждено", "новых занятия рядом ещё не подтверждены", "новых занятий рядом ещё не подтверждены")}.`,
+    knowThem: "Знаете их?", showAll: "Показать все", caughtUp: "Всё подтверждено. Спасибо!",
+    pickReason: "Сначала выберите, что не так.", andList: " и ",
   },
 };
 
@@ -150,6 +288,10 @@ const ICON = {
   plus: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
   minus: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
   info: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+  add: '<svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  tick: '<svg class="i" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  check: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  mail: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>',
 };
 
 const state = {
@@ -157,10 +299,21 @@ const state = {
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
+  // Accounts and community checks
+  user: null, google: false, mine: { confirmed: {}, reported: {} },
+  auth: null, afterSignIn: null, add: null, box: null, onlyNew: false,
 };
 
 let map, markersLayer;
 let fittedFor = ""; // place + distance the map was last framed for
+
+// Sign-in and anything a parent adds go through supabase-js (vendor/supabase).
+// Reading listings stays a plain fetch, so the map works even if this fails to load.
+const sb = window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  })
+  : null;
 
 function $(id) { return document.getElementById(id); }
 function T() { return STRINGS[state.ui]; }
@@ -229,26 +382,49 @@ function normalize(r) {
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
     g: r.pros || "", b: r.cons || "", w: r.website || "", k: r.status === "Check" ? 1 : 0,
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
+    ca: r.created_at || "", lc: r.last_confirmed_at || "", cb: r.created_by || "", src: r.source || "",
+    ed: r.event_date || "", ee: r.event_end_date || "",
   };
 }
 
 async function loadListings() {
   const cols = ["id", "title", "website", "delivery_mode", "location_area", "address", "postcode", "location", "address_source",
     "format", "category", "age_min_months", "age_max_months", "languages", "runs_when", "holiday_club", "days_of_week",
-    "time_of_day", "start_time", "end_time", "schedule_text", "price_text", "description", "pros", "cons", "status"].join(",");
+    "time_of_day", "start_time", "end_time", "schedule_text", "price_text", "description", "pros", "cons", "status",
+    "created_at", "last_confirmed_at", "created_by", "source", "event_date", "event_end_date"].join(",");
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=${cols}&status=in.(Active,Check)`, {
       headers: { apikey: SUPABASE_KEY },
     });
     if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
-    state.items = (await res.json()).map(normalize).filter(Boolean);
+    state.items = (await res.json()).map(normalize).filter((l) => l && !expired(l));
     state.error = false;
   } catch (e) {
     console.warn("Load error", e);
     state.error = true;
   }
   state.loaded = true;
-  render();
+  render({ keepScroll: true });
+}
+
+// ---- Confirmation status (brief 7.2–7.4) ----
+// Confirmed means another parent said "yes, it's real" in the last 90 days.
+// After 120 days with no confirmation, or once a dated event is over, a listing is hidden (not deleted).
+
+function unconfirmed(l) {
+  return l.k === 1 || (!!l.lc && Date.now() - Date.parse(l.lc) > 90 * DAY_MS);
+}
+function expired(l) {
+  const end = l.ee || l.ed;
+  if (end && end < isoDate(new Date())) return true;
+  const since = Date.parse(l.lc || l.ca || "");
+  return !!since && Date.now() - since > 120 * DAY_MS;
+}
+function mineAdded(l) { return !!(state.user && l.cb === state.user.id); }
+// New community classes nobody has vouched for yet, which the list gently asks about
+function needsYou(l) {
+  return l.src === "Community" && unconfirmed(l) && Date.now() - Date.parse(l.ca || "") < 30 * DAY_MS
+    && !mineAdded(l) && !state.mine.confirmed[l.i] && !state.mine.reported[l.i];
 }
 
 // ---- Filtering ----
@@ -301,6 +477,8 @@ function runsOn(l, d) {
   return "";
 }
 function regularOn(l, d, day, term) {
+  // One-off events and dated camps run on their dates, whatever the school calendar says
+  if (l.ed) return isoDate(d) >= l.ed && isoDate(d) <= (l.ee || l.ed);
   const days = l.d.length ? l.d : (l.f === "Preschool / nursery" || l.f === "Holiday camp" ? WEEKDAYS : []);
   if (!days.includes(day)) return false;
   if (l.r === "Term time" && term === "holiday") return false;
@@ -313,7 +491,7 @@ function regularOn(l, d, day, term) {
   return true;
 }
 function onDates(l, dates) { return dates.some((d) => runsOn(l, d)); }
-function hasDays(l) { return l.d.length > 0 || l.f === "Preschool / nursery" || l.f === "Holiday camp"; }
+function hasDays(l) { return l.d.length > 0 || !!l.ed || l.f === "Preschool / nursery" || l.f === "Holiday camp"; }
 
 // `skip` leaves one filter group out, which is how a chip knows whether it would find anything
 function passes(l, skip) {
@@ -331,11 +509,14 @@ function compute() {
   const rows = state.items.map((l) => ({ l, d: l.on ? null : distKm(state.place, l) }));
   const inPerson = rows.filter((o) => !o.l.on);
   const pool = inPerson.filter((o) => o.d <= state.radius);
-  const nearby = pool.filter((o) => passes(o.l)).sort((a, b) => a.d - b.d);
+  const matching = pool.filter((o) => passes(o.l)).sort((a, b) => a.d - b.d);
+  // "Know them?" narrows the list to new classes waiting for a confirmation
+  const fresh = matching.filter((o) => needsYou(o.l));
+  const nearby = state.onlyNew ? fresh : matching;
   const onlineAll = rows.filter((o) => o.l.on);
   const online = onlineAll.filter((o) => passes(o.l));
   const showOnline = state.showOnline || state.types.includes("online");
-  return { rows, inPerson, pool, nearby, onlineAll, online, showOnline, shown: showOnline ? nearby.concat(online) : nearby };
+  return { rows, inPerson, pool, nearby, fresh, onlineAll, online, showOnline, shown: showOnline ? nearby.concat(online) : nearby };
 }
 
 // Would anything nearby show up if this one choice in `group` were picked?
@@ -420,6 +601,16 @@ function rangeText(h) {
 
 function placeName() { return state.place.kind === "me" ? T().nearMe : state.place.name; }
 
+function ago(iso) {
+  const t = T(), days = Math.floor((Date.now() - Date.parse(iso)) / DAY_MS);
+  return days <= 0 ? t.today : days === 1 ? t.yesterday : t.daysAgo(days);
+}
+
+// "a, b and c"
+function listWords(words) {
+  return words.length > 1 ? `${words.slice(0, -1).join(", ")}${T().andList}${words[words.length - 1]}` : words[0] || "";
+}
+
 // ---- Rendering ----
 
 function pressed(on) { return `aria-pressed="${on ? "true" : "false"}"`; }
@@ -435,6 +626,8 @@ function renderTop() {
   const t = T(), btn = $("placeBtn");
   btn.innerHTML = `${ICON.pin}<span class="place-text"><span class="name">${esc(placeName())}</span><span class="km">${t.within(rLabel(state.radius))}</span></span>${ICON.chevron}`;
   btn.setAttribute("aria-label", `${t.where}: ${placeName()}, ${rLabel(state.radius)}`);
+  $("addBtn").setAttribute("aria-label", t.addClass);
+  $("addBtn").hidden = !sb;
   document.documentElement.lang = state.ui;
 }
 
@@ -479,7 +672,7 @@ function cardHtml(o, dates, multi) {
     tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
   }
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
-  if (l.k) tags.push(`<span class="check">${t.checkDetails}</span>`);
+  if (unconfirmed(l)) tags.push(`<span class="check">${t.notConfirmed}</span>`);
   const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
   const dist = l.on ? t.online : `${l.ap ? "~" : ""}${km(o.d)}`;
   return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
@@ -496,6 +689,14 @@ function renderList(c) {
   if (s.error) { list.innerHTML = `<div class="loading">${t.loadError}</div>`; return; }
 
   let html = "";
+  // One question at a time: "did you go?" first, otherwise a quiet line about new classes
+  const ask = s.onlyNew ? null : pendingAsk();
+  if (ask) html += askHtml(ask);
+  else if (c.fresh.length || s.onlyNew) {
+    html += `<div class="nudge"><span>${esc(c.fresh.length ? t.nudge(c.fresh.length) : t.caughtUp)}</span>
+      <button type="button" class="link-btn" data-act="onlyNew">${s.onlyNew ? t.showAll : t.knowThem}</button></div>`;
+  }
+
   const dates = s.date ? datesFor(s.date) : null;
   const hol = dates && dates.map(schoolHoliday).find(Boolean);
   if (hol) html += `<div class="notice">${esc(t.holNote(t.hol[hol.k], rangeText(hol)))}</div>`;
@@ -526,7 +727,7 @@ function renderList(c) {
 
 function widenInfo(c) {
   const n = c.nearby.length;
-  if (n >= 3) return null;
+  if (n >= 3 || state.onlyNew) return null;
   const next = RADII.filter((r) => r > state.radius)
     .map((r) => ({ r, n: c.inPerson.filter((o) => o.d <= r && passes(o.l)).length }))
     .find((x) => x.n > n);
@@ -536,66 +737,534 @@ function widenInfo(c) {
 
 function renderSheet(c) {
   const s = state, t = T(), el = $("sheet");
-  if (!s.sheet) { el.hidden = true; el.innerHTML = ""; el.dataset.open = ""; return; }
-  // Re-rendering an open sheet keeps its scroll and typed text, and doesn't replay the slide-in
+  if (!s.sheet) { el.hidden = true; el.innerHTML = ""; el.dataset.open = ""; el.dataset.step = ""; return; }
+  // Re-rendering an open sheet keeps its scroll and typed text, and doesn't replay the slide-in.
+  // The add form starts each new step at the top.
   const again = el.dataset.open === s.sheet;
+  const step = s.sheet === "add" && s.add ? String(s.add.step) : "";
   const oldBody = el.querySelector(".sheet-body");
-  const scrollTop = again && oldBody ? oldBody.scrollTop : 0;
+  const scrollTop = again && el.dataset.step === step && oldBody ? oldBody.scrollTop : 0;
   const typed = again && $("areaInput") ? $("areaInput").value : "";
-  let title, body, foot;
-  const show = `<button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`;
+  const p = s.sheet === "place" ? placeSheet(c) : s.sheet === "filters" ? filtersSheet(c)
+    : s.sheet === "signin" ? signInSheet() : addSheet();
 
-  if (s.sheet === "place") {
-    title = t.where;
-    const status = s.placeStatus ? `<p class="status${s.placeWarn ? " warn" : ""}">${esc(s.placeStatus)}</p>` : "";
-    const areas = QUICK_AREAS.map((a, n) =>
-      chipHtml("area", n, a.name, s.place.kind !== "me" && s.place.kind !== "search" && s.place.name === a.name, false)).join("");
-    const radii = RADII.map((r) => chipHtml("radius", r, rLabel(r), s.radius === r, false)).join("");
-    body = `<button type="button" class="row-btn" data-act="nearMe">${ICON.locate}<span>${t.useMyLocation}</span></button>
-      <form class="search-form" id="areaForm"><input id="areaInput" type="text" placeholder="${t.searchArea}" autocomplete="off" aria-label="${t.searchArea}" />
-      <button type="submit">${t.go}</button></form>${status}
-      <div class="sec"><h3>${t.quickAreas}</h3><div class="wrap">${areas}</div></div>
-      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div></div>`;
-    foot = show;
-  } else {
-    title = t.filters;
-    const dates = DATES.map((k) => {
-      const ds = datesFor(k);
-      return chipHtml("date", k, t.date[k], s.date === k, !finds(c, "date", (l) => onDates(l, ds)));
-    }).join("");
-    const when = Object.keys(WHEN).map((w) => chipHtml("when", w, t.w[w], s.when.includes(w), !finds(c, "when", WHEN[w]))).join("");
-    const types = Object.keys(TYPES).map((k) => {
-      const src = k === "online" ? c.onlineAll : c.pool;
-      return chipHtml("type", k, t.ty[k], s.types.includes(k), !src.some((o) => passes(o.l, "types") && TYPES[k](o.l)));
-    }).join("");
-    const counts = {};
-    c.pool.filter((o) => passes(o.l, "cats")).forEach((o) => { counts[o.l.c] = (counts[o.l.c] || 0) + 1; });
-    const cats = CATEGORIES.filter((k) => counts[k] || s.cats.includes(k))
-      .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
-    const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
-    body = `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
-      <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
-      ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
-      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
-      <button type="button" class="row-btn switch-row" data-act="online" ${pressed(s.showOnline)}>
-        <span>${t.includeOnline}</span><span class="switch${s.showOnline ? " on" : ""}"></span></button>`;
-    foot = `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>${show}`;
-  }
-
-  el.innerHTML = `<button type="button" class="backdrop" data-act="closeSheet" aria-label="${t.close}"></button>
-    <div class="sheet${again ? "" : " enter"}" role="dialog" aria-label="${esc(title)}">
-      <div class="sheet-head"><h2>${esc(title)}</h2><button type="button" class="chip sq" data-act="closeSheet" aria-label="${t.close}">${ICON.close}</button></div>
-      <div class="sheet-body">${body}</div>
-      <div class="sheet-foot">${foot}</div>
+  el.innerHTML = `<button type="button" class="backdrop"${p.tall ? ' style="flex:none;height:64px"' : ""} data-act="closeSheet" aria-label="${t.close}"></button>
+    <div class="sheet${p.tall ? " tall" : ""}${again ? "" : " enter"}" role="dialog" aria-label="${esc(p.title)}">
+      <div class="sheet-head"><h2>${esc(p.title)}</h2><button type="button" class="chip sq" data-act="closeSheet" aria-label="${t.close}">${ICON.close}</button></div>
+      ${p.top || ""}
+      <div class="sheet-body">${p.body}</div>
+      ${p.foot ? `<div class="sheet-foot${p.stack ? " stack" : ""}">${p.foot}</div>` : ""}
     </div>`;
   el.hidden = false;
   el.dataset.open = s.sheet;
+  el.dataset.step = step;
   el.querySelector(".sheet-body").scrollTop = scrollTop;
   const form = $("areaForm");
   if (form) {
     $("areaInput").value = typed;
     form.addEventListener("submit", (e) => { e.preventDefault(); searchArea($("areaInput").value); });
   }
+  const authForm = $("authForm");
+  if (authForm) authForm.addEventListener("submit", (e) => { e.preventDefault(); run(s.auth.step === "code" ? "verifyCode" : "sendCode"); });
+}
+
+function placeSheet(c) {
+  const s = state, t = T();
+  const status = s.placeStatus ? `<p class="status${s.placeWarn ? " warn" : ""}">${esc(s.placeStatus)}</p>` : "";
+  const areas = QUICK_AREAS.map((a, n) =>
+    chipHtml("area", n, a.name, s.place.kind !== "me" && s.place.kind !== "search" && s.place.name === a.name, false)).join("");
+  const radii = RADII.map((r) => chipHtml("radius", r, rLabel(r), s.radius === r, false)).join("");
+  return {
+    title: t.where,
+    body: `<button type="button" class="row-btn" data-act="nearMe">${ICON.locate}<span>${t.useMyLocation}</span></button>
+      <form class="search-form" id="areaForm"><input id="areaInput" type="text" placeholder="${t.searchArea}" autocomplete="off" aria-label="${t.searchArea}" />
+      <button type="submit">${t.go}</button></form>${status}
+      <div class="sec"><h3>${t.quickAreas}</h3><div class="wrap">${areas}</div></div>
+      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div></div>`,
+    foot: `<button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
+  };
+}
+
+function filtersSheet(c) {
+  const s = state, t = T();
+  const dates = DATES.map((k) => {
+    const ds = datesFor(k);
+    return chipHtml("date", k, t.date[k], s.date === k, !finds(c, "date", (l) => onDates(l, ds)));
+  }).join("");
+  const when = Object.keys(WHEN).map((w) => chipHtml("when", w, t.w[w], s.when.includes(w), !finds(c, "when", WHEN[w]))).join("");
+  const types = Object.keys(TYPES).map((k) => {
+    const src = k === "online" ? c.onlineAll : c.pool;
+    return chipHtml("type", k, t.ty[k], s.types.includes(k), !src.some((o) => passes(o.l, "types") && TYPES[k](o.l)));
+  }).join("");
+  const counts = {};
+  c.pool.filter((o) => passes(o.l, "cats")).forEach((o) => { counts[o.l.c] = (counts[o.l.c] || 0) + 1; });
+  const cats = CATEGORIES.filter((k) => counts[k] || s.cats.includes(k))
+    .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
+  const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
+  return {
+    title: t.filters,
+    body: `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
+      <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
+      ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
+      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
+      <button type="button" class="row-btn switch-row" data-act="online" ${pressed(s.showOnline)}>
+        <span>${t.includeOnline}</span><span class="switch${s.showOnline ? " on" : ""}"></span></button>`,
+    foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
+      <button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
+  };
+}
+
+function signInSheet() {
+  const t = T(), a = state.auth;
+  const msg = a.error ? `<p class="form-msg" role="alert">${esc(a.error)}</p>` : "";
+  if (a.step === "code") {
+    return {
+      title: t.signIn,
+      body: `<p class="lead">${esc(t.codeSent(a.email))}</p>
+        <form id="authForm" class="field">
+          ${fieldHtml(t.code, inputHtml("auth.code", a.code, 'type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10"'))}
+          <button type="submit" class="primary"${a.busy ? " disabled" : ""}>${a.busy ? t.checking : t.verify}</button>
+        </form>${msg}
+        <button type="button" class="text-btn" data-act="authBack">${t.otherEmail}</button>`,
+    };
+  }
+  const google = state.google ? `<button type="button" class="secondary light" data-act="google">${t.google}</button>` : "";
+  return {
+    title: t.signIn,
+    body: `<p class="lead">${t.signInWhy}</p>${google}
+      <form id="authForm" class="field">
+        ${fieldHtml(t.email, inputHtml("auth.email", a.email, 'type="email" inputmode="email" autocomplete="email" maxlength="200"'))}
+        <button type="submit" class="secondary"${a.busy ? " disabled" : ""}>${ICON.mail}<span>${a.busy ? t.sending : t.sendCode}</span></button>
+      </form>${msg}`,
+  };
+}
+
+// ---- The "Add a class" form ----
+
+function fieldHtml(label, inner, help, optional) {
+  const opt = optional ? ` <span class="opt">${T().optional}</span>` : "";
+  return `<label class="field"><span class="field-label">${label}${opt}</span>${inner}${help ? `<span class="help">${help}</span>` : ""}</label>`;
+}
+// Like fieldHtml, for chips and pairs of inputs that can't sit inside one <label>
+function groupHtml(label, inner, help, optional) {
+  const opt = optional ? ` <span class="opt">${T().optional}</span>` : "";
+  return `<div class="field" role="group" aria-label="${esc(label)}"><span class="field-label">${label}${opt}</span>${inner}${help ? `<span class="help">${help}</span>` : ""}</div>`;
+}
+function inputHtml(field, value, attrs) {
+  return `<input class="input" data-field="${field}" value="${esc(value)}" ${attrs}>`;
+}
+function selectHtml(field, label, empty, options, value) {
+  const opts = options.map(([v, text]) => `<option value="${v}"${String(v) === value ? " selected" : ""}>${esc(text)}</option>`).join("");
+  return `<div class="select"><select class="input" data-field="${field}" aria-label="${esc(label)}"><option value="">${esc(empty)}</option>${opts}</select>${ICON.chevron}</div>`;
+}
+const wrap = (chips) => `<div class="wrap">${chips}</div>`;
+
+function blankAdd() {
+  return {
+    step: 1, tried: 0, busy: false, error: "", name: "", org: "", link: "", kind: "", cat: "",
+    ageFrom: "", ageTo: "", langs: ["English"], otherLang: "", mode: "inperson", venue: "", address: "",
+    postcode: "", geo: null, days: [], runs: "term", date: "", dateTo: "", timeFrom: "", timeTo: "",
+    price: "", priceText: "", note: "", orgOk: false, trueOk: false,
+  };
+}
+
+// What a step still needs before it can move on. Only fields parents can't skip are checked.
+function addMissing(n) {
+  const a = state.add, need = T().need, out = [];
+  if (n === 1) {
+    if (!a.name.trim()) out.push(need.name);
+    if (!a.org.trim()) out.push(need.org);
+    if (!a.kind) out.push(need.kind);
+  }
+  if (n === 2) {
+    if (!a.cat) out.push(need.cat);
+    if (a.ageFrom === "" || a.ageTo === "") out.push(need.ages);
+    else if (Number(a.ageTo) < Number(a.ageFrom)) out.push(need.agesOrder);
+    if (!a.langs.length) out.push(need.lang);
+    else if (a.langs.includes("Other") && !a.otherLang.trim()) out.push(need.otherLang);
+  }
+  if (n === 3) {
+    if (a.mode !== "online") {
+      if (!a.address.trim()) out.push(need.address);
+      const pc = a.postcode.trim();
+      if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(pc)) out.push(pc ? need.postcodeFull : need.postcode);
+    }
+    if (a.kind === "oneoff" && !a.date) out.push(need.date);
+    if ((a.kind === "weekly" || a.kind === "nursery") && !a.days.length) out.push(need.days);
+  }
+  if (n === 4) {
+    if (!a.price) out.push(need.price);
+    else if (a.price === "paid" && !a.priceText.trim()) out.push(need.priceText);
+    if (!a.orgOk || !a.trueOk) out.push(need.ticks);
+  }
+  return out;
+}
+
+function addSheet() {
+  const t = T(), a = state.add, n = a.step;
+  if (n === "done") {
+    return {
+      title: t.addClass, tall: true,
+      body: `<div class="done">
+        <span class="done-mark">${ICON.tick}</span>
+        <h3>${a.pending ? t.pendingTitle : t.doneTitle}</h3>
+        <p class="lead">${a.pending ? t.pendingText : t.doneText}</p>
+        <button type="button" class="primary" data-act="addSeeIt">${a.pending ? t.done : t.seeIt}</button>
+        <button type="button" class="secondary" data-act="addAgain">${t.addAnother}</button>
+      </div>`,
+    };
+  }
+  const miss = addMissing(n);
+  const steps = [null, addStep1, addStep2, addStep3, addStep4];
+  const who = state.user
+    ? `<p class="who">${esc(t.signedInAs(state.user.email || ""))} · <button type="button" data-act="signOut">${t.signOut}</button></p>` : "";
+  const msg = a.error || (a.tried === n && miss.length ? t.stillNeeded(listWords(miss)) : "");
+  const label = a.busy ? (n === 4 ? t.adding : t.checking) : n === 4 ? t.addToMap : t.next;
+  return {
+    title: t.addClass, tall: true, stack: true,
+    top: `<div class="steps"><span>${esc(t.step(n, t.steps[n]))}</span>
+      <div class="bar">${[1, 2, 3, 4].map((i) => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</div></div>`,
+    body: steps[n](a) + who,
+    foot: `${msg ? `<p class="form-msg" role="alert">${esc(msg)}</p>` : ""}
+      <div class="foot-row">${n > 1 ? `<button type="button" class="text-btn" data-act="addBack">${t.back}</button>` : ""}
+      <button type="button" id="addNext" class="primary${miss.length ? " wait" : ""}" data-act="addNext"${a.busy ? " disabled" : ""}>${label}</button></div>`,
+  };
+}
+
+function addStep1(a) {
+  const t = T();
+  return fieldHtml(t.fName, inputHtml("name", a.name, `type="text" maxlength="120" placeholder="${t.fNameHint}"`))
+    + fieldHtml(t.fOrg, inputHtml("org", a.org, `type="text" maxlength="120" placeholder="${t.fOrgHint}"`), t.fOrgHelp)
+    + fieldHtml(t.fLink, inputHtml("link", a.link, `type="url" inputmode="url" maxlength="300" placeholder="${t.fLinkHint}"`), t.fLinkHelp, true)
+    + groupHtml(t.fKind, wrap(Object.keys(ADD_KINDS).map((k) => chipHtml("fKind", k, t.kind[k], a.kind === k, false)).join("")));
+}
+
+function addStep2(a) {
+  const t = T();
+  const from = AGE_FROM.map((v) => [v, v === 0 ? t.birth : String(v)]);
+  const to = AGE_TO.map((v) => [v, v === 99 ? t.noUpper : String(v)]);
+  const langs = ["English", "Russian", "Other"].map((x) => chipHtml("fLang", x, x === "Other" ? t.otherLang : t.lang[x], a.langs.includes(x), false)).join("");
+  const otherLang = a.langs.includes("Other")
+    ? inputHtml("otherLang", a.otherLang, `type="text" maxlength="40" placeholder="${t.otherLangHint}" aria-label="${t.otherLangHint}"`) : "";
+  return groupHtml(t.fCat, wrap(ADD_CATS.map((k) => chipHtml("fCat", k, t.addCat[k], a.cat === k, false)).join("")),
+    a.cat === "Mixed" ? t.fOtherCat : "")
+    + groupHtml(t.fAges, `<div class="pair">${selectHtml("ageFrom", t.youngest, t.ageFrom, from, a.ageFrom)}${selectHtml("ageTo", t.oldest, t.ageTo, to, a.ageTo)}</div>`)
+    + groupHtml(t.fLangs, wrap(langs) + otherLang);
+}
+
+function addStep3(a) {
+  const t = T();
+  let html = groupHtml(t.fWhere, wrap(["inperson", "online"].map((m) =>
+    chipHtml("fMode", m, m === "online" ? t.online : t.inPerson, a.mode === m, false)).join("")));
+  if (a.mode !== "online") {
+    html += fieldHtml(t.fVenue, inputHtml("venue", a.venue, `type="text" maxlength="80" placeholder="${t.fVenueHint}"`), "", true)
+      + fieldHtml(t.fAddress, inputHtml("address", a.address, `type="text" maxlength="120" autocomplete="street-address" placeholder="${t.fAddressHint}"`))
+      + fieldHtml(t.fPostcode, inputHtml("postcode", a.postcode, `type="text" maxlength="9" autocomplete="postal-code" autocapitalize="characters" placeholder="${t.fPostcodeHint}"`), t.fPostcodeHelp);
+  }
+  if (a.kind === "oneoff") {
+    html += fieldHtml(t.fDate, inputHtml("date", a.date, `type="date" min="${isoDate(new Date())}"`));
+  } else if (a.kind === "camp") {
+    html += groupHtml(t.fDates, `<div class="pair">${inputHtml("date", a.date, `type="date" aria-label="${t.firstDay}"`)}${inputHtml("dateTo", a.dateTo, `type="date" aria-label="${t.lastDay}"`)}</div>`, t.fDatesHelp, true);
+  } else {
+    html += groupHtml(t.fDays, wrap(DAY_ORDER.map((d) => chipHtml("fDay", d, t.day[d], a.days.includes(d), false)).join("")))
+      + groupHtml(t.fRuns, wrap(Object.keys(ADD_RUNS).map((r) => chipHtml("fRuns", r, t.runs[r], a.runs === r, false)).join("")));
+  }
+  return html + groupHtml(t.fTime, `<div class="pair">${inputHtml("timeFrom", a.timeFrom, `type="time" aria-label="${t.startsAt}"`)}${inputHtml("timeTo", a.timeTo, `type="time" aria-label="${t.endsAt}"`)}</div>`, "", true);
+}
+
+function addStep4(a) {
+  const t = T();
+  const howMuch = a.price === "paid"
+    ? inputHtml("priceText", a.priceText, `type="text" maxlength="80" placeholder="${t.fPriceHint}" aria-label="${t.howMuch}"`) : "";
+  return groupHtml(t.fPrice, wrap(["free", "paid", "unsure"].map((p) => chipHtml("fPrice", p, t.price[p], a.price === p, false)).join("")) + howMuch)
+    + fieldHtml(t.fNote, `<textarea class="input" data-field="note" rows="3" maxlength="1000" placeholder="${t.fNoteHint}">${esc(a.note)}</textarea>`, "", true)
+    + groupHtml(t.fPreview, previewHtml(a))
+    + `<label class="tick"><input type="checkbox" data-field="orgOk"${a.orgOk ? " checked" : ""}><span>${t.tickOrg}</span></label>`
+    + `<label class="tick"><input type="checkbox" data-field="trueOk"${a.trueOk ? " checked" : ""}><span>${t.tickTrue}</span></label>`;
+}
+
+function formDays(a) {
+  if (a.kind === "oneoff") return a.date ? [dayKey(new Date(`${a.date}T12:00`))] : [];
+  if (a.kind === "camp") return [];
+  return DAY_ORDER.filter((d) => a.days.includes(d));
+}
+function formLangs(a) { return a.langs.map((x) => (x === "Other" ? a.otherLang.trim() : x)).filter(Boolean); }
+function longDate(iso) {
+  return new Date(`${iso}T12:00`).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+}
+
+// The card as parents will see it, built from what's been typed so far
+function previewHtml(a) {
+  const t = T();
+  const l = { mn: Number(a.ageFrom) * 12, mx: a.ageTo === "99" ? null : Number(a.ageTo) * 12, d: formDays(a), st: a.timeFrom, l: formLangs(a) };
+  const when = a.kind === "oneoff" && a.date ? `${longDate(a.date)}${a.timeFrom ? ` ${a.timeFrom}` : ""}` : a.kind === "camp" ? t.kind.camp : whenText(l);
+  const price = a.price === "free" ? t.price.free : a.price === "paid" ? a.priceText.trim() : "";
+  const meta = [when, langText(l), price].filter(Boolean).join(" · ");
+  const area = a.mode === "online" ? t.online : (a.geo && a.geo.area) || a.postcode.trim().toUpperCase();
+  const where = [t.addCat[a.cat], area].filter(Boolean).join(" · ");
+  return `<div class="card">
+    <span class="card-top"><span class="dot" style="background:${catColor(a.cat)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${t.fresh}</span></span>
+    <span class="card-title">${esc(a.name)}</span>
+    ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
+    <span class="tags"><span class="agetag">${esc(a.ageFrom === "" ? t.agesUnknown : ageText(l))}</span><span class="check">${t.notConfirmed}</span>${a.link.trim() ? "" : `<span class="tag">${t.noSource}</span>`}</span>
+  </div>`;
+}
+
+function scheduleText(a) {
+  const time = a.timeFrom ? (a.timeTo ? `${a.timeFrom}–${a.timeTo}` : a.timeFrom) : "";
+  if (a.kind === "oneoff") return [longDate(a.date), time].filter(Boolean).join(", ");
+  if (a.kind === "camp") {
+    const dates = a.date ? (a.dateTo ? `${longDate(a.date)} – ${longDate(a.dateTo)}` : longDate(a.date)) : T().runs.hols;
+    return [dates, time].filter(Boolean).join(", ");
+  }
+  return [daysText(a.days), time, T().runs[a.runs].toLowerCase()].filter(Boolean).join(", ");
+}
+
+// The new row for the listings table. The database fills in who added it, its id and status.
+function listingFromForm(a) {
+  const online = a.mode === "online";
+  const startHour = a.timeFrom ? Number(a.timeFrom.slice(0, 2)) : null;
+  let website = a.link.trim();
+  if (website && !/^https?:\/\//i.test(website)) website = `https://${website}`;
+  return {
+    title: a.name.trim(), provider_name: a.org.trim(), website: website || null, contact_method: website ? "Website" : null,
+    delivery_mode: online ? "Online" : "In-person",
+    location_area: online ? null : a.geo.area || null,
+    address: online ? null : [a.venue.trim(), a.address.trim()].filter(Boolean).join(", "),
+    postcode: online ? null : a.geo.postcode,
+    location: online ? null : `SRID=4326;POINT(${a.geo.lng} ${a.geo.lat})`,
+    address_source: online ? null : "Community: postcode",
+    format: ADD_KINDS[a.kind], category: a.cat,
+    age_min_months: Number(a.ageFrom) * 12, age_max_months: a.ageTo === "99" ? null : Number(a.ageTo) * 12,
+    languages: formLangs(a),
+    runs_when: a.kind === "camp" ? "Holidays" : a.kind === "oneoff" ? null : ADD_RUNS[a.runs],
+    days_of_week: formDays(a),
+    time_of_day: startHour == null ? [] : [startHour < 12 ? "Morning" : startHour < 17 ? "Afternoon" : "Evening"],
+    start_time: a.timeFrom || null, end_time: a.timeTo || null,
+    event_date: (a.kind === "oneoff" || a.kind === "camp") && a.date ? a.date : null,
+    event_end_date: a.kind === "camp" && a.dateTo ? a.dateTo : null,
+    schedule_text: scheduleText(a),
+    price_text: a.price === "free" ? "Free" : a.price === "paid" ? a.priceText.trim() : null,
+    description: a.note.trim() || null,
+  };
+}
+
+// UK postcode → map pin, from postcodes.io (free, open data, no key needed)
+async function lookupPostcode(pc) {
+  const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc.trim())}`);
+  if (!res.ok) return null;
+  const { result: r } = await res.json();
+  return r ? { lat: r.latitude, lng: r.longitude, area: r.admin_ward || r.admin_district || "", postcode: r.postcode } : null;
+}
+
+async function addNext() {
+  const a = state.add, t = T(), n = a.step;
+  a.error = "";
+  if (addMissing(n).length) { a.tried = n; render({ keepScroll: true }); return; }
+  a.tried = 0;
+  if (n === 3 && a.mode !== "online" && !a.geo) {
+    a.busy = true;
+    render({ keepScroll: true });
+    a.geo = await lookupPostcode(a.postcode).catch(() => null);
+    a.busy = false;
+    if (!a.geo) { a.error = t.postcodeNotFound; render({ keepScroll: true }); return; }
+  }
+  if (n < 4) { a.step = n + 1; render({ keepScroll: true }); return; }
+
+  a.busy = true;
+  render({ keepScroll: true });
+  const { data, error } = await sb.from("listings").insert(listingFromForm(a)).select("id, status").single();
+  a.busy = false;
+  if (error) {
+    console.warn("Add failed", error);
+    a.error = t.failed(error.message);
+    render({ keepScroll: true });
+    return;
+  }
+  Object.assign(a, { step: "done", newId: data.id, pending: data.status === "Pending" });
+  await loadListings();
+}
+
+// ---- Confirming and reporting ----
+
+function communityHtml(l) {
+  const t = T(), s = state, b = s.box && s.box.id === l.i ? s.box : null;
+  if (!sb) return "";
+  const err = b && b.error ? `<p class="form-msg" role="alert">${esc(b.error)}</p>` : "";
+  if (mineAdded(l)) return `<div class="community"><p>${t.youAdded}</p></div>`;
+  if (s.mine.reported[l.i]) return `<div class="community"><p>${t.youReported}</p></div>`;
+  if (s.mine.confirmed[l.i] && !unconfirmed(l)) return `<div class="community"><p>${t.youConfirmed}</p></div>`;
+  if (b && b.mode === "report") {
+    const reasons = REASONS.map((r) => chipHtml("reason", r, t.reason[r], b.reason === r, false)).join("");
+    return `<div class="community"><b>${t.whatsWrong}</b>${wrap(reasons)}
+      <textarea class="input" data-field="box.note" rows="2" maxlength="500" placeholder="${t.reportNote}" aria-label="${t.reportNote}">${esc(b.note || "")}</textarea>
+      ${err}<div class="foot-row"><button type="button" class="text-btn" data-act="cancelReport">${t.cancel}</button>
+      <button type="button" class="primary" data-act="sendReport" data-v="${esc(l.i)}"${b.busy ? " disabled" : ""}>${t.sendReport}</button></div></div>`;
+  }
+  if (unconfirmed(l)) {
+    return `<div class="community"><b>${t.knowIt}</b><p>${t.knowItText}</p>${err}
+      <button type="button" class="primary" data-act="confirm" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${ICON.check}<span>${t.yesReal}</span></button>
+      <button type="button" class="secondary" data-act="report" data-v="${esc(l.i)}">${t.wrong}</button></div>`;
+  }
+  return `${err}<button type="button" class="link-btn report-link" data-act="report" data-v="${esc(l.i)}">${t.reportLink}</button>`;
+}
+
+async function confirmListing(id) {
+  state.box = { id, busy: true };
+  render({ keepScroll: true });
+  const { error } = await sb.from("listing_confirmations").insert({ listing_id: id });
+  if (error) {
+    console.warn("Confirm failed", error);
+    state.box = { id, error: error.code === "42501" ? T().notAllowed : T().failed(error.message) };
+    render({ keepScroll: true });
+    return;
+  }
+  state.box = null;
+  state.mine.confirmed[id] = true;
+  await loadListings();
+}
+
+async function sendReport(id) {
+  const b = state.box;
+  if (!b.reason) { b.error = T().pickReason; render({ keepScroll: true }); return; }
+  b.busy = true;
+  b.error = "";
+  render({ keepScroll: true });
+  const { error } = await sb.from("listing_reports").insert({ listing_id: id, reason: b.reason, note: (b.note || "").trim() || null });
+  b.busy = false;
+  if (error) {
+    console.warn("Report failed", error);
+    b.error = error.code === "42501" ? T().notAllowed : T().failed(error.message);
+    render({ keepScroll: true });
+    return;
+  }
+  state.box = null;
+  state.mine.reported[id] = true;
+  await loadListings();
+}
+
+// Someone who looked up the way there or the website is the best person to ask, a bit later, whether it was right.
+// Kept only on this phone.
+const VISITS_KEY = "aroundnow-visits";
+function readJson(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || "null") || fallback; } catch (e) { return fallback; }
+}
+function writeJson(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage unavailable */ }
+}
+function rememberVisit(id) {
+  const v = readJson(VISITS_KEY, {}), now = Date.now();
+  Object.keys(v).forEach((k) => { if (now - v[k].at > 30 * DAY_MS) delete v[k]; });
+  if (!v[id]) v[id] = { at: now, asked: false };
+  writeJson(VISITS_KEY, v);
+}
+function markAsked(id) {
+  const v = readJson(VISITS_KEY, {});
+  if (v[id]) { v[id].asked = true; writeJson(VISITS_KEY, v); }
+}
+// Asked from half a day after the visit, for up to two weeks, and only once
+function pendingAsk() {
+  const v = readJson(VISITS_KEY, {}), now = Date.now();
+  for (const id of Object.keys(v)) {
+    const x = v[id];
+    if (x.asked || now - x.at < 12 * 3600e3 || now - x.at > 14 * DAY_MS) continue;
+    const l = state.items.find((i) => i.i === id);
+    if (l && unconfirmed(l) && !mineAdded(l) && !state.mine.confirmed[id] && !state.mine.reported[id]) return { l, at: x.at };
+  }
+  return null;
+}
+function askHtml({ l, at }) {
+  const t = T(), day = new Date(at).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "long" });
+  return `<div class="ask"><small>${esc(t.askSeen(day))}</small><b>${esc(t.askTitle(l.t))}</b>
+    <div class="wrap"><button type="button" class="primary small" data-act="askYes" data-v="${esc(l.i)}">${t.askYes}</button>
+    <button type="button" class="chip" data-act="askDiff" data-v="${esc(l.i)}">${t.askDiff}</button>
+    <button type="button" class="text-btn" data-act="askNo" data-v="${esc(l.i)}">${t.askNo}</button></div></div>`;
+}
+
+// ---- Accounts (Supabase Auth: Google, or a code sent by email) ----
+
+const AFTER_KEY = "aroundnow-after-sign-in";
+
+function openSignIn(after) {
+  state.afterSignIn = after;
+  state.auth = { step: "email", email: (state.auth && state.auth.email) || "", code: "", busy: false, error: "" };
+  state.detail = null; // the sign-in sheet would otherwise sit underneath the class details
+  state.sheet = "signin";
+}
+
+async function sendCode() {
+  const a = state.auth, t = T();
+  a.email = a.email.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email)) { a.error = t.badEmail; render({ keepScroll: true }); return; }
+  a.busy = true;
+  a.error = "";
+  render({ keepScroll: true });
+  const { error } = await sb.auth.signInWithOtp({ email: a.email, options: { emailRedirectTo: location.origin + location.pathname } });
+  a.busy = false;
+  if (error) a.error = t.failed(error.message);
+  else Object.assign(a, { step: "code", code: "" });
+  render({ keepScroll: true });
+}
+
+async function verifyCode() {
+  const a = state.auth;
+  a.busy = true;
+  a.error = "";
+  render({ keepScroll: true });
+  const { error } = await sb.auth.verifyOtp({ email: a.email, token: a.code.replace(/\s/g, ""), type: "email" });
+  a.busy = false;
+  // Success is picked up by onAuthStateChange below
+  if (error) { a.error = T().failed(error.message); render({ keepScroll: true }); }
+}
+
+function signInWithGoogle() {
+  // The page reloads after Google, so remember what the person was in the middle of
+  try { sessionStorage.setItem(AFTER_KEY, JSON.stringify(state.afterSignIn)); } catch (e) { /* storage unavailable */ }
+  sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } });
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  state.add = null;
+  state.sheet = null;
+  render({ keepScroll: true });
+}
+
+// What this person has already confirmed or reported, so we don't ask twice
+async function loadMine() {
+  state.mine = { confirmed: {}, reported: {} };
+  if (!sb || !state.user) return;
+  const [c, r] = await Promise.all([
+    sb.from("listing_confirmations").select("listing_id"),
+    sb.from("listing_reports").select("listing_id").eq("resolved", false),
+  ]);
+  (c.data || []).forEach((x) => { state.mine.confirmed[x.listing_id] = true; });
+  (r.data || []).forEach((x) => { state.mine.reported[x.listing_id] = true; });
+}
+
+// Carry on with whatever needed the sign-in: adding a class, or the class they were looking at
+function afterSignedIn() {
+  let after = state.afterSignIn;
+  try {
+    after = after || JSON.parse(sessionStorage.getItem(AFTER_KEY) || "null");
+    sessionStorage.removeItem(AFTER_KEY);
+  } catch (e) { /* storage unavailable */ }
+  state.afterSignIn = null;
+  state.auth = null;
+  if (state.sheet === "signin") state.sheet = null;
+  if (after === "add") {
+    if (!state.add || state.add.step === "done") state.add = blankAdd();
+    state.sheet = "add";
+  } else if (after && after.open) {
+    state.detail = after.open;
+  }
+}
+
+// True (and opens sign-in) when this needs an account first
+function needSignIn(id) {
+  if (state.user) return false;
+  openSignIn({ open: id });
+  return true;
 }
 
 function renderDetail(c) {
@@ -614,6 +1283,8 @@ function renderDetail(c) {
       ${l.g ? `<div class="note good">${ICON.plus}<div><b>${t.good}</b><span>${esc(l.g)}</span></div></div>` : ""}
       ${l.b ? `<div class="note bad">${ICON.minus}<div><b>${t.watch}</b><span>${esc(l.b)}</span></div></div>` : ""}</div>` : "";
   const dir = l.y != null && !l.on ? `https://www.google.com/maps/search/?api=1&query=${l.y},${l.x}` : "";
+  const status = (unconfirmed(l) ? `<span class="tag warn">${t.notConfirmed}</span>` : "")
+    + (l.w ? "" : `<span class="tag">${t.noSource}</span>`);
 
   el.innerHTML = `<button type="button" class="backdrop" style="flex:none;height:64px" data-act="closeDetail" aria-label="${t.close}"></button>
     <div class="sheet tall${again ? "" : " enter"}" role="dialog" aria-label="${esc(l.t)}">
@@ -623,6 +1294,8 @@ function renderDetail(c) {
       </div>
       <div class="sheet-body" style="padding:0"><div class="detail-body">
         <h2>${esc(l.t)}</h2>
+        ${l.src === "Community" && l.ca ? `<span class="muted">${esc(t.addedBy(ago(l.ca)))}</span>` : ""}
+        ${status ? `<span class="tags">${status}</span>` : ""}
         <span class="where">${ICON.pin}<span>${esc(whereText(l, o.d))}</span></span>
         <span class="tags">${tags.join("")}</span>
         <dl class="facts">
@@ -632,12 +1305,12 @@ function renderDetail(c) {
         </dl>
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${notes}
-        ${l.k ? `<div class="check-note">${ICON.info}<span>${t.checkNote}</span></div>` : ""}
-        ${l.w ? "" : `<span class="muted">${t.noSource}</span>`}
+        ${l.k && l.w ? `<div class="check-note">${ICON.info}<span>${t.checkNote}</span></div>` : ""}
+        ${communityHtml(l)}
       </div></div>
       <div class="actions">
-        ${l.w ? `<a class="primary" href="${esc(l.w)}" target="_blank" rel="noreferrer"><span>${t.website}</span>${ICON.external}</a>` : ""}
-        ${dir ? `<a class="secondary" href="${dir}" target="_blank" rel="noreferrer">${ICON.directions}<span>${t.directions}</span></a>` : ""}
+        ${l.w ? `<a class="primary" href="${esc(l.w)}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}"><span>${t.website}</span>${ICON.external}</a>` : ""}
+        ${dir ? `<a class="secondary" href="${dir}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}">${ICON.directions}<span>${t.directions}</span></a>` : ""}
       </div>
     </div>`;
   el.hidden = false;
@@ -765,9 +1438,8 @@ async function searchArea(query) {
 
 // ---- Events ----
 
-function toggle(key, v) {
-  state[key] = state[key].includes(v) ? state[key].filter((x) => x !== v) : state[key].concat([v]);
-}
+const flip = (list, v) => (list.includes(v) ? list.filter((x) => x !== v) : list.concat([v]));
+function toggle(key, v) { state[key] = flip(state[key], v); }
 
 const ACTIONS = {
   age: (v) => { toggle("ages", Number(v)); savePrefs(); },
@@ -788,9 +1460,13 @@ const ACTIONS = {
     savePrefs();
   },
   sheet: (v) => { state.sheet = v; state.placeStatus = ""; },
-  closeSheet: () => { state.sheet = null; },
-  open: (v) => { state.detail = v; },
-  closeDetail: () => { state.detail = null; },
+  // Closing the add form keeps what was typed, in case it was a mis-tap
+  closeSheet: () => {
+    if (state.sheet === "signin") state.afterSignIn = null;
+    state.sheet = null;
+  },
+  open: (v) => { state.detail = v; state.box = null; },
+  closeDetail: () => { state.detail = null; state.box = null; },
   panel: () => { state.expanded = !state.expanded; },
   nearMe: () => { useMyLocation(); return "async"; },
   area: (v) => {
@@ -798,18 +1474,92 @@ const ACTIONS = {
     state.place = { lat: a.lat, lng: a.lng, name: a.name, kind: "area" };
     state.sheet = null;
   },
+  onlyNew: () => { state.onlyNew = !state.onlyNew; },
+
+  // Signing in
+  google: () => { signInWithGoogle(); return "async"; },
+  sendCode: () => { sendCode(); return "async"; },
+  verifyCode: () => { verifyCode(); return "async"; },
+  authBack: () => { Object.assign(state.auth, { step: "email", code: "", error: "" }); },
+  signOut: () => { signOut(); return "async"; },
+
+  // Adding a class
+  add: () => {
+    if (!state.user) { openSignIn("add"); return; }
+    if (!state.add || state.add.step === "done") state.add = blankAdd();
+    state.detail = null;
+    state.sheet = "add";
+  },
+  fKind: (v) => { state.add.kind = v; },
+  fCat: (v) => { state.add.cat = v; },
+  fLang: (v) => { state.add.langs = flip(state.add.langs, v); },
+  fMode: (v) => { state.add.mode = v; },
+  fDay: (v) => { state.add.days = flip(state.add.days, v); },
+  fRuns: (v) => { state.add.runs = v; },
+  fPrice: (v) => { state.add.price = v; },
+  addNext: () => { addNext(); return "async"; },
+  addBack: () => { Object.assign(state.add, { step: state.add.step - 1, tried: 0, error: "" }); },
+  addAgain: () => { state.add = blankAdd(); },
+  addSeeIt: () => {
+    const { newId, pending } = state.add;
+    state.add = null;
+    state.sheet = null;
+    if (!pending) state.detail = newId;
+  },
+
+  // Confirming and reporting
+  confirm: (v) => { if (needSignIn(v)) return; confirmListing(v); return "async"; },
+  report: (v) => { if (needSignIn(v)) return; state.box = { id: v, mode: "report", reason: "", note: "" }; },
+  reason: (v) => { Object.assign(state.box, { reason: v, error: "" }); },
+  cancelReport: () => { state.box = null; },
+  sendReport: (v) => { sendReport(v); return "async"; },
+  // Opens the class, so the thank-you (or any problem) shows where it happened
+  askYes: (v) => {
+    markAsked(v);
+    if (needSignIn(v)) return;
+    state.detail = v;
+    confirmListing(v);
+    return "async";
+  },
+  askDiff: (v) => {
+    markAsked(v);
+    if (needSignIn(v)) return;
+    state.detail = v;
+    state.box = { id: v, mode: "report", reason: "", note: "" };
+  },
+  askNo: (v) => { markAsked(v); },
 };
 
-// Actions that only open or close something keep the list where it was
-const KEEP_SCROLL = new Set(["sheet", "closeSheet", "open", "closeDetail", "panel"]);
+// Only actions that change the results send the list back to the top
+const RESETS_SCROLL = new Set(["age", "radius", "lang", "date", "when", "type", "cat", "online", "clear", "resetFilters", "area", "onlyNew"]);
+
+function run(act, v) {
+  if (ACTIONS[act](v) === "async") return;
+  render({ keepScroll: !RESETS_SCROLL.has(act) });
+}
 
 document.addEventListener("click", (e) => {
+  const track = e.target.closest("[data-track]");
+  if (track) rememberVisit(track.dataset.track);
   const el = e.target.closest("[data-act]");
-  if (!el || !ACTIONS[el.dataset.act]) return;
-  const act = el.dataset.act;
-  if (ACTIONS[act](el.dataset.v) === "async") return;
-  render({ keepScroll: KEEP_SCROLL.has(act) });
+  if (el && ACTIONS[el.dataset.act]) run(el.dataset.act, el.dataset.v);
 });
+
+// Typing updates the form without re-rendering it, so the cursor stays where it is
+function onField(e) {
+  const f = e.target.dataset && e.target.dataset.field;
+  if (!f) return;
+  const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+  if (f.startsWith("auth.")) { if (state.auth) state.auth[f.slice(5)] = value; return; }
+  if (f.startsWith("box.")) { if (state.box) state.box[f.slice(4)] = value; return; }
+  if (!state.add) return;
+  state.add[f] = value;
+  if (f === "postcode") state.add.geo = null;
+  const next = $("addNext");
+  if (next) next.classList.toggle("wait", addMissing(state.add.step).length > 0);
+}
+document.addEventListener("input", onField);
+document.addEventListener("change", onField);
 
 // Drag the panel's handle or header up for the full list, down for the map; a tap toggles
 const panel = $("panel");
@@ -854,12 +1604,30 @@ $("list").addEventListener("scroll", (e) => {
 
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
-  if (state.detail) state.detail = null;
-  else if (state.sheet) state.sheet = null;
+  if (state.detail) ACTIONS.closeDetail();
+  else if (state.sheet) ACTIONS.closeSheet();
   else if (state.expanded) state.expanded = false;
   else return;
   render({ keepScroll: true });
 });
+
+if (sb) {
+  sb.auth.onAuthStateChange((event, session) => {
+    const was = state.user && state.user.id;
+    state.user = session ? session.user : null;
+    // supabase-js asks not to call it again from inside this callback, so follow up a moment later
+    setTimeout(async () => {
+      if ((state.user && state.user.id) !== was) await loadMine();
+      if (event === "SIGNED_IN") afterSignedIn();
+      render({ keepScroll: true });
+    }, 0);
+  });
+  // Only offer Google once it's switched on in Supabase
+  fetch(`${SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: SUPABASE_KEY } })
+    .then((res) => res.json())
+    .then((s) => { state.google = !!(s.external && s.external.google); })
+    .catch(() => {});
+}
 
 loadPrefs();
 render();
