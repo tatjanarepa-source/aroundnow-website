@@ -34,16 +34,23 @@ const TYPES = {
   events: (l) => l.f === "Workshop / event",
   online: (l) => l.on === 1,
 };
-// Ealing school holidays (council dates; academies can differ by a day or two).
+// Ealing school holidays, from the council's calendar for community schools
+// (egfl.org.uk/contact/term-and-holiday-dates; academies can differ by a day or two).
 // Half terms are Mon–Fri only: weekend schools usually still meet on the weekends around them.
-// Outside TERM_KNOWN we don't guess, so term-time classes aren't hidden.
-const TERM_KNOWN = { from: "2026-09-03", to: "2027-07-21" };
+// Outside TERM_KNOWN we don't guess, so term-time classes aren't hidden. Add 2028/29 when published.
+const TERM_KNOWN = { from: "2026-09-02", to: "2028-07-26" };
 const SCHOOL_HOLIDAYS = [
   { from: "2026-10-26", to: "2026-10-30", k: "half" },
   { from: "2026-12-19", to: "2027-01-03", k: "xmas" },
   { from: "2027-02-15", to: "2027-02-19", k: "half" },
   { from: "2027-03-26", to: "2027-04-11", k: "easter" },
   { from: "2027-05-31", to: "2027-06-04", k: "half" },
+  { from: "2027-07-28", to: "2027-08-31", k: "summer" },
+  { from: "2027-10-25", to: "2027-10-29", k: "half" },
+  { from: "2027-12-18", to: "2028-01-03", k: "xmas" },
+  { from: "2028-02-14", to: "2028-02-18", k: "half" },
+  { from: "2028-04-01", to: "2028-04-17", k: "easter" },
+  { from: "2028-05-29", to: "2028-06-02", k: "half" },
 ];
 const DATES = ["today", "tomorrow", "weekend"];
 
@@ -82,7 +89,7 @@ const STRINGS = {
     widenCta: (r, extra) => `Show within ${r} km (+${extra})`,
     and: " & ",
     date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
-    hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays" },
+    hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays", summer: "the summer holidays" },
     holNote: (h, range) => `Ealing schools are off for ${h} (${range}). Term-time classes are hidden; holiday clubs are shown.`,
     noDays: (n) => `${n === 1 ? "1 more class nearby doesn’t" : `${n} more classes nearby don’t`} list their days. Check their websites.`,
     w: { weekends: "Weekends", afterschool: "After school", mornings: "Weekday mornings", holidays: "School holidays" },
@@ -117,7 +124,7 @@ const STRINGS = {
     widenCta: (r, extra) => `Показать в радиусе ${r} км (+${extra})`,
     and: " и ",
     date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
-    hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы" },
+    hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы", summer: "летние каникулы" },
     holNote: (h, range) => `В школах Илинга ${h} (${range}). Занятия только в учебное время скрыты, каникулярные клубы показаны.`,
     noDays: (n) => `Ещё ${n} ${ruForm(n, "занятие рядом не указывает", "занятия рядом не указывают", "занятий рядом не указывают")} дни. Проверьте на их сайтах.`,
     w: { weekends: "Выходные", afterschool: "После школы", mornings: "Будни, утро", holidays: "Каникулы" },

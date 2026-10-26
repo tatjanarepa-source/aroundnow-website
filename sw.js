@@ -1,4 +1,4 @@
-const CACHE_NAME = "aroundnow-v8";
+const CACHE_NAME = "aroundnow-v9";
 
 const APP_SHELL = [
   "./",
@@ -33,10 +33,6 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
-
-  // Never cache the live events API — always go to the network for fresh data.
-  if (url.pathname.startsWith("/v1/")) return;
-
   if (event.request.method !== "GET" || url.origin !== self.location.origin) return;
 
   // Network first so updates show up straight away; the cache is only the offline fallback.
