@@ -116,7 +116,8 @@ const STRINGS = {
     addClass: "Add a class", signIn: "Sign in", signedInAs: (e) => `Signed in as ${e}`, signOut: "Sign out",
     signInWhy: "Sign in to add or confirm classes. Looking at the map never needs an account.",
     google: "Continue with Google", email: "Your email", sendCode: "Email me a sign-in code", sending: "Sending…",
-    codeSent: (e) => `We’ve emailed a code to ${e}. Type it here, or tap the link in the email.`,
+    codeSent: (e) => `We’ve emailed a sign-in link to ${e}. Open the email on this phone and tap the link.`,
+    codeInstead: "If the email has a code instead, type it here.",
     code: "Code from the email", verify: "Sign in", checking: "Checking…", otherEmail: "Use a different email",
     badEmail: "That email doesn’t look right.",
     step: (n, title) => `Step ${n} of 4 · ${title}`,
@@ -214,7 +215,8 @@ const STRINGS = {
     addClass: "Добавить занятие", signIn: "Войти", signedInAs: (e) => `Вы вошли как ${e}`, signOut: "Выйти",
     signInWhy: "Войдите, чтобы добавлять или подтверждать занятия. Смотреть карту можно без входа.",
     google: "Войти через Google", email: "Ваш email", sendCode: "Прислать код для входа", sending: "Отправляем…",
-    codeSent: (e) => `Мы отправили код на ${e}. Введите его здесь или нажмите ссылку в письме.`,
+    codeSent: (e) => `Мы отправили ссылку для входа на ${e}. Откройте письмо на этом телефоне и нажмите на ссылку.`,
+    codeInstead: "Если в письме код, введите его здесь.",
     code: "Код из письма", verify: "Войти", checking: "Проверяем…", otherEmail: "Другой email",
     badEmail: "Похоже, в email ошибка.",
     step: (n, title) => `Шаг ${n} из 4 · ${title}`,
@@ -821,6 +823,7 @@ function signInSheet() {
     return {
       title: t.signIn,
       body: `<p class="lead">${esc(t.codeSent(a.email))}</p>
+        <p class="help">${t.codeInstead}</p>
         <form id="authForm" class="field">
           ${fieldHtml(t.code, inputHtml("auth.code", a.code, 'type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10"'))}
           <button type="submit" class="primary"${a.busy ? " disabled" : ""}>${a.busy ? t.checking : t.verify}</button>
@@ -1183,7 +1186,15 @@ function askHtml({ l, at }) {
 
 // ---- Accounts (Supabase Auth: Google, or a code sent by email) ----
 
+// The sign-in link may open in a new tab, and Google reloads the page, so what the person
+// was in the middle of is kept on the phone for an hour
 const AFTER_KEY = "aroundnow-after-sign-in";
+function rememberAfter() { writeJson(AFTER_KEY, { after: state.afterSignIn, at: Date.now() }); }
+function recallAfter() {
+  const saved = readJson(AFTER_KEY, null);
+  try { localStorage.removeItem(AFTER_KEY); } catch (e) { /* storage unavailable */ }
+  return saved && Date.now() - saved.at < 3600e3 ? saved.after : null;
+}
 
 function openSignIn(after) {
   state.afterSignIn = after;
@@ -1199,6 +1210,7 @@ async function sendCode() {
   a.busy = true;
   a.error = "";
   render({ keepScroll: true });
+  rememberAfter();
   const { error } = await sb.auth.signInWithOtp({ email: a.email, options: { emailRedirectTo: location.origin + location.pathname } });
   a.busy = false;
   if (error) a.error = t.failed(error.message);
@@ -1218,8 +1230,7 @@ async function verifyCode() {
 }
 
 function signInWithGoogle() {
-  // The page reloads after Google, so remember what the person was in the middle of
-  try { sessionStorage.setItem(AFTER_KEY, JSON.stringify(state.afterSignIn)); } catch (e) { /* storage unavailable */ }
+  rememberAfter();
   sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } });
 }
 
@@ -1244,11 +1255,8 @@ async function loadMine() {
 
 // Carry on with whatever needed the sign-in: adding a class, or the class they were looking at
 function afterSignedIn() {
-  let after = state.afterSignIn;
-  try {
-    after = after || JSON.parse(sessionStorage.getItem(AFTER_KEY) || "null");
-    sessionStorage.removeItem(AFTER_KEY);
-  } catch (e) { /* storage unavailable */ }
+  const saved = recallAfter();
+  const after = state.afterSignIn || saved;
   state.afterSignIn = null;
   state.auth = null;
   if (state.sheet === "signin") state.sheet = null;

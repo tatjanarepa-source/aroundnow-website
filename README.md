@@ -67,8 +67,9 @@ right one when approving.
 **One-time Supabase settings:**
 - Authentication → URL Configuration: Site URL = the live site; add the live
   site and `http://127.0.0.1:8532` (each with `/**`) to Redirect URLs.
-- Authentication → Emails: in the "Magic Link" and "Confirm signup"
-  templates, include the code `{{ .Token }}` so people can type it in.
+- The sign-in email is Supabase's standard one, with a link. Its wording can
+  only be changed once an email service is connected (below); then add the
+  code `{{ .Token }}` to it so people can type the code in the app instead.
 - Supabase's built-in email only reaches members of your Supabase team, a few
   an hour. Before other parents sign in by email, connect an email service
   (Authentication → SMTP), or switch on Google (Authentication → Providers).
