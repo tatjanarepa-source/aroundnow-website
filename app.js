@@ -48,25 +48,40 @@ const SCHOOL_HOLIDAYS = [
 const DATES = ["today", "tomorrow", "weekend"];
 
 const CATEGORIES = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "Chess", "STEM / Thinking",
-  "Childcare / Preschool", "Outdoor / Nature", "Life skills", "Mixed"];
+  "Childcare / Preschool", "Outdoor / Nature", "Life skills", "Mixed", "Events / Parties"];
+// One colour per activity, for the map pins and the dot on each card
+const CAT_COLORS = {
+  "Languages": "#7cc7ff", "Sports / Dance": "#6ee7a8", "Performing arts": "#c9a2ff", "Arts / Crafts": "#ff9bc9",
+  "Chess": "#a5b4fc", "STEM / Thinking": "#67e8f9", "Childcare / Preschool": "#ffe27a", "Outdoor / Nature": "#5eead4",
+  "Life skills": "#fca5a5", "Mixed": "#ffb86b", "Events / Parties": "#ff9bc9",
+};
+const catColor = (c) => CAT_COLORS[c] || "#a3adc2";
 
 const STRINGS = {
   en: {
-    childAge: "Child’s age", any: "Any", anyAge: "Any age", under1: "Under 1", siblings: "Two kids? Tap both ages",
-    language: "Language", more: "More", activity: "Activity", includeOnline: "Include online classes",
+    age: "Age", under1: "Under 1", ageGroup: "Child’s age. Two kids? Tap both ages",
+    filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", type: "Type", distance: "Distance",
+    includeOnline: "Include online classes", uiSwitch: "App language: English. Tap for Russian",
     where: "Where to look", nearMe: "Near me", useMyLocation: "Use my location", locating: "Finding your location…",
     blocked: "Location is blocked. Allow it in your browser settings, or search an area.",
     locFail: "Couldn’t get your location. Search an area instead.",
     searchArea: "Area, town or postcode", go: "Go", searching: "Looking it up…", notFound: (q) => `Couldn’t find “${q}”.`,
-    quickAreas: "Popular areas", reset: "Reset", clearAll: "Clear all", close: "Close", edit: "Edit",
-    map: "Map", list: "List", loading: "Loading classes…", loadError: "Could not load classes. Check your connection.",
-    needsCheck: "Needs checking", online: "Online", holidayClub: "Holiday club", suitsBoth: "Suits both", suitsAll: "Suits all",
+    quickAreas: "Popular areas", reset: "Reset", clearAll: "Clear all", close: "Close",
+    nearby: (n) => `${n} nearby`, plusOnline: (n) => ` + ${n} online`, fullList: "Full list", showMap: "Show map",
+    within: (r) => `within ${r}`,
+    show: (n) => (n ? `Show ${classes(n)}` : "No matches yet"),
+    loading: "Loading classes…", loadError: "Could not load classes. Check your connection.",
+    checkDetails: "Check details", online: "Online", holidayClub: "Holiday club", suitsBoth: "Suits both", suitsAll: "Suits all",
     dWhen: "When", dPrice: "Price", dWhere: "Where", priceUnknown: "Not listed yet", areaOnly: "exact venue not listed yet",
     parents: "What parents say", good: "Good", watch: "Watch out",
     checkNote: "Some details may be out of date. Check the official page before you go.",
-    noSource: "Community-submitted, no official source", website: "Official website", directions: "Directions", details: "Details",
-    lighter: "Lighter pins: area only, no exact address", nothing: "Nothing matches these filters.", agesNA: "Ages not listed",
-    dWhenAny: "Any day", date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
+    noSource: "Community-submitted, no official source", website: "Official website", directions: "Directions",
+    lighter: "Faded pins: area only, no exact address", nothing: "Nothing matches these filters.", agesNA: "Ages not listed",
+    tryWeekend: "Try this weekend", onlineToo: (n) => `${classes(n)} online too`, showWord: "Show", hideWord: "Hide",
+    widenText: (n, r) => (n ? `Only ${classes(n)} within ${r} km.` : `Nothing within ${r} km yet.`),
+    widenCta: (r, extra) => `Show within ${r} km (+${extra})`,
+    and: " & ",
+    date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
     hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays" },
     holNote: (h, range) => `Ealing schools are off for ${h} (${range}). Term-time classes are hidden; holiday clubs are shown.`,
     noDays: (n) => `${n === 1 ? "1 more class nearby doesn’t" : `${n} more classes nearby don’t`} list their days. Check their websites.`,
@@ -74,26 +89,34 @@ const STRINGS = {
     ty: { weekendschool: "Weekend schools", weekly: "Weekly classes", camps: "Holiday camps", nursery: "Nursery", events: "Events", online: "Online" },
     cat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre", "Arts / Crafts": "Arts & crafts",
       "Chess": "Chess", "STEM / Thinking": "Science & thinking", "Childcare / Preschool": "Nursery", "Outdoor / Nature": "Outdoors",
-      "Life skills": "Life skills", "Mixed": "Clubs" },
+      "Life skills": "Life skills", "Mixed": "Clubs", "Events / Parties": "Events & parties" },
     lang: { Russian: "Russian", English: "English" },
     day: { Mon: "Mon", Tue: "Tue", Wed: "Wed", Thu: "Thu", Fri: "Fri", Sat: "Sat", Sun: "Sun" },
   },
   ru: {
-    childAge: "Возраст ребёнка", any: "Любой", anyAge: "Любой возраст", under1: "До 1", siblings: "Двое детей? Выберите оба",
-    language: "Язык", more: "Ещё", activity: "Направление", includeOnline: "Показывать онлайн-занятия",
+    age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
+    filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", type: "Тип", distance: "Расстояние",
+    includeOnline: "Показывать онлайн-занятия", uiSwitch: "Язык приложения: русский. Нажмите для английского",
     where: "Где искать", nearMe: "Рядом со мной", useMyLocation: "Определить моё местоположение", locating: "Определяем местоположение…",
     blocked: "Доступ к геолокации запрещён. Разрешите его в настройках браузера или найдите район.",
     locFail: "Не удалось определить местоположение. Найдите район.",
     searchArea: "Район, город или индекс", go: "Найти", searching: "Ищем…", notFound: (q) => `Не нашли «${q}».`,
-    quickAreas: "Популярные районы", reset: "Сбросить", clearAll: "Сбросить всё", close: "Закрыть", edit: "Изменить",
-    map: "Карта", list: "Список", loading: "Загружаем занятия…", loadError: "Не удалось загрузить занятия. Проверьте интернет.",
-    needsCheck: "Нужно проверить", online: "Онлайн", holidayClub: "Лагерь на каникулах", suitsBoth: "Подходит обоим", suitsAll: "Подходит всем",
+    quickAreas: "Популярные районы", reset: "Сбросить", clearAll: "Сбросить всё", close: "Закрыть",
+    nearby: (n) => `${n} рядом`, plusOnline: (n) => ` + ${n} онлайн`, fullList: "Весь список", showMap: "Показать карту",
+    within: (r) => `в радиусе ${r}`,
+    show: (n) => (n ? `Показать ${classes(n)}` : "Ничего не найдено"),
+    loading: "Загружаем занятия…", loadError: "Не удалось загрузить занятия. Проверьте интернет.",
+    checkDetails: "Проверьте детали", online: "Онлайн", holidayClub: "Лагерь на каникулах", suitsBoth: "Подходит обоим", suitsAll: "Подходит всем",
     dWhen: "Когда", dPrice: "Цена", dWhere: "Где", priceUnknown: "Пока не указана", areaOnly: "точный адрес пока не указан",
     parents: "Что говорят родители", good: "Плюсы", watch: "Минусы",
     checkNote: "Часть информации может быть устаревшей. Перед визитом проверьте на официальном сайте.",
-    noSource: "Добавлено сообществом, без официального источника", website: "Официальный сайт", directions: "Маршрут", details: "Подробнее",
-    lighter: "Светлые метки: только район, без точного адреса", nothing: "По этим фильтрам ничего нет.", agesNA: "Возраст не указан",
-    dWhenAny: "Любой день", date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
+    noSource: "Добавлено сообществом, без официального источника", website: "Официальный сайт", directions: "Маршрут",
+    lighter: "Бледные метки: только район, без точного адреса", nothing: "По этим фильтрам ничего нет.", agesNA: "Возраст не указан",
+    tryWeekend: "Попробовать выходные", onlineToo: (n) => `Ещё онлайн: ${classes(n)}`, showWord: "Показать", hideWord: "Скрыть",
+    widenText: (n, r) => (n ? `В радиусе ${r} км — только ${classes(n)}.` : `В радиусе ${r} км пока ничего нет.`),
+    widenCta: (r, extra) => `Показать в радиусе ${r} км (+${extra})`,
+    and: " и ",
+    date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
     hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы" },
     holNote: (h, range) => `В школах Илинга ${h} (${range}). Занятия только в учебное время скрыты, каникулярные клубы показаны.`,
     noDays: (n) => `Ещё ${n} ${ruForm(n, "занятие рядом не указывает", "занятия рядом не указывают", "занятий рядом не указывают")} дни. Проверьте на их сайтах.`,
@@ -101,7 +124,7 @@ const STRINGS = {
     ty: { weekendschool: "Школы выходного дня", weekly: "Кружки и секции", camps: "Лагеря", nursery: "Детский сад", events: "Мероприятия", online: "Онлайн" },
     cat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр", "Arts / Crafts": "Творчество",
       "Chess": "Шахматы", "STEM / Thinking": "Наука и мышление", "Childcare / Preschool": "Детский сад", "Outdoor / Nature": "На природе",
-      "Life skills": "Навыки для жизни", "Mixed": "Кружки" },
+      "Life skills": "Навыки для жизни", "Mixed": "Кружки", "Events / Parties": "Праздники и события" },
     lang: { Russian: "Русский", English: "Английский" },
     day: { Mon: "Пн", Tue: "Вт", Wed: "Ср", Thu: "Чт", Fri: "Пт", Sat: "Сб", Sun: "Вс" },
   },
@@ -111,9 +134,7 @@ const ICON = {
   pin: '<svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.33-6-10a6 6 0 1 1 12 0c0 4.67-6 10-6 10z"/><circle cx="12" cy="11" r="2.5"/></svg>',
   chevron: '<svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
   sliders: '<svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>',
-  close: '<svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-  map: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4z"/><path d="M9 4v13.5M15 6.5V20"/></svg>',
-  list: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
+  close: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   locate: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
   external: '<svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>',
   directions: '<svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>',
@@ -124,12 +145,13 @@ const ICON = {
 
 const state = {
   ui: "en", ages: [], radius: 3, langs: [], date: null, when: [], types: [], cats: [],
-  showOnline: false, view: "list", sheet: null, detail: null, compact: false,
+  showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
 };
 
 let map, markersLayer;
+let fittedFor = ""; // place + distance the map was last framed for
 
 function $(id) { return document.getElementById(id); }
 function T() { return STRINGS[state.ui]; }
@@ -285,7 +307,7 @@ function regularOn(l, d, day, term) {
 function onDates(l, dates) { return dates.some((d) => runsOn(l, d)); }
 function hasDays(l) { return l.d.length > 0 || l.f === "Preschool / nursery" || l.f === "Holiday camp"; }
 
-// `skip` leaves one filter group out, which is how each chip counts what it would find
+// `skip` leaves one filter group out, which is how a chip knows whether it would find anything
 function passes(l, skip) {
   const s = state;
   if (skip !== "ages" && s.ages.length && !s.ages.some((a) => fitsAge(l, a))) return false;
@@ -308,6 +330,17 @@ function compute() {
   return { rows, inPerson, pool, nearby, onlineAll, online, showOnline, shown: showOnline ? nearby.concat(online) : nearby };
 }
 
+// Would anything nearby show up if this one choice in `group` were picked?
+function finds(c, group, test) { return c.pool.some((o) => passes(o.l, group) && test(o.l)); }
+
+// Languages actually offered nearby, most common first
+function nearbyLangs(c) {
+  const counts = {};
+  c.pool.filter((o) => passes(o.l, "langs")).forEach((o) => o.l.l.forEach((x) => { counts[x] = (counts[x] || 0) + 1; }));
+  state.langs.forEach((x) => { if (!(x in counts)) counts[x] = 0; });
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a]).map((x) => ({ x, n: counts[x] }));
+}
+
 // ---- Wording ----
 
 function ruForm(n, one, few, many) {
@@ -326,16 +359,10 @@ function km(v) {
 function rLabel(r) { return isRu() ? `${r} км` : `${r} km`; }
 function ageWord(m) { return m === 6 ? T().under1 : m === 144 ? "12+" : String(m / 12); }
 
-function agesSummary() {
-  const labs = state.ages.slice().sort((a, b) => a - b).map(ageWord);
-  if (isRu()) return `Возраст: ${labs.join(", ")}`;
-  if (labs.length === 1) return state.ages[0] === 6 ? "Under 1" : `Age ${labs[0]}`;
-  return `Ages ${labs.join(", ")}`;
-}
-
 function ageText(l) {
   const ru = isRu();
   const f = (m) => {
+    if (m === 0) return "0";
     if (m < 12) return ru ? `${m} мес.` : `${m} mo`;
     const y = m / 12;
     if (Number.isInteger(y)) return String(y);
@@ -344,6 +371,8 @@ function ageText(l) {
   };
   const { mn, mx } = l;
   if (mn == null && mx == null) return T().agesNA;
+  // Baby classes read better in months: "0–13 mo"
+  if (mx != null && mx < 24 && mx % 12) return ru ? `${mn || 0}–${mx} мес.` : `${mn || 0}–${mx} mo`;
   if (ru) {
     if (mn != null && mx != null) return `${f(mn)}–${f(mx)} ${ruForm(Math.floor(mx / 12), "год", "года", "лет")}`;
     if (mn != null) return `от ${f(mn)}${mn < 12 ? "" : mn === 12 ? " года" : " лет"}`;
@@ -366,10 +395,10 @@ function daysText(days) {
 
 function whenText(l) {
   const d = daysText(l.d);
-  return d && l.st ? `${d} · ${l.st}` : d;
+  return d && l.st ? `${d} ${l.st}` : d;
 }
 
-function langText(l) { return l.l.map((x) => T().lang[x] || x).join(" · "); }
+function langText(l) { return l.l.map((x) => T().lang[x] || x).join(T().and); }
 
 function whereText(l, d) {
   if (l.on) return T().online;
@@ -387,112 +416,104 @@ function placeName() { return state.place.kind === "me" ? T().nearMe : state.pla
 
 function pressed(on) { return `aria-pressed="${on ? "true" : "false"}"`; }
 
-function chipHtml(act, v, label, count, on) {
-  const zero = count === 0 && !on ? " zero" : "";
-  const n = count === "" ? "" : `<span class="n">${count}</span>`;
-  return `<button type="button" class="chip${zero}" data-act="${act}" data-v="${esc(v)}" ${pressed(on)}><span>${esc(label)}</span>${n}</button>`;
+// Every filter is the same chip. No counts on chips: one that would find nothing is just dimmed.
+function chipHtml(act, v, label, on, zero, aria) {
+  const dim = zero && !on && state.loaded ? " zero" : "";
+  const name = aria ? ` aria-label="${esc(aria)}"` : "";
+  return `<button type="button" class="chip${dim}" data-act="${act}" data-v="${esc(v)}" ${pressed(on)}${name}>${esc(label)}</button>`;
+}
+
+function renderTop() {
+  const t = T(), btn = $("placeBtn");
+  btn.innerHTML = `${ICON.pin}<span class="place-text"><span class="name">${esc(placeName())}</span><span class="km">${t.within(rLabel(state.radius))}</span></span>${ICON.chevron}`;
+  btn.setAttribute("aria-label", `${t.where}: ${placeName()}, ${rLabel(state.radius)}`);
+  $("uiBtn").textContent = state.ui.toUpperCase();
+  $("uiBtn").setAttribute("aria-label", t.uiSwitch);
+  document.documentElement.lang = state.ui;
 }
 
 function renderFilters(c) {
   const s = state, t = T(), el = $("filters");
-  if (s.compact) {
-    const parts = [s.ages.length ? agesSummary() : t.anyAge, `${placeName()} · ${rLabel(s.radius)}`];
-    if (s.langs.length) parts.push(s.langs.map((x) => t.lang[x] || x).join(", "));
-    if (s.date) parts.push(t.date[s.date]);
-    s.when.forEach((w) => parts.push(t.w[w]));
-    s.types.forEach((k) => parts.push(t.ty[k]));
-    if (s.cats.length) parts.push(`${t.more} · ${s.cats.length}`);
-    el.innerHTML = `<div class="compact-bar">${ICON.sliders}<span>${esc(parts.join(" · "))}</span>
-      <button type="button" class="pill-btn" data-act="expand">${t.edit}</button></div>`;
-    return;
-  }
-
-  const ages = [`<button type="button" class="bubble wide" data-act="ageAny" aria-label="${t.anyAge}" ${pressed(!s.ages.length)}>${t.any}</button>`]
-    .concat(AGES.map((a) => `<button type="button" class="bubble" data-act="age" data-v="${a}" aria-label="${ageWord(a)}" ${pressed(s.ages.includes(a))}>${a === 6 ? "&lt;1" : ageWord(a)}</button>`))
-    .join("");
-
-  const radii = RADII.map((r) => `<button type="button" data-act="radius" data-v="${r}" ${pressed(s.radius === r)}>${rLabel(r)}</button>`).join("");
-
-  // Only languages actually offered nearby, most common first
-  const langCounts = {};
-  c.pool.filter((o) => passes(o.l, "langs")).forEach((o) => o.l.l.forEach((x) => { langCounts[x] = (langCounts[x] || 0) + 1; }));
-  s.langs.forEach((x) => { if (!(x in langCounts)) langCounts[x] = 0; });
-  const langs = chipHtml("langAny", "", t.any, "", !s.langs.length) + Object.keys(langCounts)
-    .sort((a, b) => langCounts[b] - langCounts[a])
-    .map((x) => chipHtml("lang", x, t.lang[x] || x, langCounts[x], s.langs.includes(x))).join("");
-
-  const dates = chipHtml("dateAny", "", t.any, "", !s.date) + DATES.map((k) =>
-    chipHtml("date", k, t.date[k], c.pool.filter((o) => passes(o.l, "date") && onDates(o.l, datesFor(k))).length, s.date === k)).join("");
-  const when = Object.keys(WHEN).map((w) =>
-    chipHtml("when", w, t.w[w], c.pool.filter((o) => passes(o.l, "when") && WHEN[w](o.l)).length, s.when.includes(w))).join("");
-  const types = Object.keys(TYPES).map((k) => {
-    const src = k === "online" ? c.onlineAll : c.pool;
-    return chipHtml("type", k, t.ty[k], src.filter((o) => passes(o.l, "types") && TYPES[k](o.l)).length, s.types.includes(k));
+  const ages = AGES.map((a) => chipHtml("age", a, a === 6 ? "<1" : ageWord(a), s.ages.includes(a),
+    !finds(c, "ages", (l) => fitsAge(l, a)), a === 6 ? t.under1 : "")).join("");
+  // Rarely used filters live in the Filters sheet; its badge says how many are on
+  const hidden = s.when.length + s.types.length + s.cats.length + (s.showOnline ? 1 : 0);
+  const filtersBtn = `<button type="button" class="chip${hidden ? " active" : ""}" data-act="sheet" data-v="filters">${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}</button>`;
+  const dates = DATES.map((k) => {
+    const ds = datesFor(k);
+    return chipHtml("date", k, t.date[k], s.date === k, !finds(c, "date", (l) => onDates(l, ds)));
   }).join("");
-  const moreOn = s.cats.length > 0 || s.showOnline;
+  const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
 
-  el.innerHTML = `<div class="filters-open">
-    <div class="row-label"><b>${t.childAge}</b><span>${t.siblings}</span></div>
-    <div class="hs">${ages}</div>
-    <div class="place-row">
-      <button type="button" class="place-btn" data-act="sheet" data-v="place">${ICON.pin}<span>${esc(placeName())}</span>${ICON.chevron}</button>
-      <span class="seg blue">${radii}</span>
-    </div>
-    <div class="hs"><b>${t.language}</b>${langs}</div>
-    <div class="hs"><b>${t.dWhen}</b>${dates}<span class="divider"></span>${when}</div>
-    <div class="hs">${types}
-      <button type="button" class="chip" data-act="sheet" data-v="more" ${pressed(moreOn)}>${ICON.sliders}<span>${s.cats.length ? `${t.more} · ${s.cats.length}` : t.more}</span></button>
-    </div>
-  </div>`;
+  // Keep each row's sideways scroll, so tapping "9" doesn't jump the row back to the start
+  const keep = [...el.querySelectorAll(".scroller")].map((r) => r.scrollLeft);
+  el.innerHTML = `<div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${ages}</div>
+    <div class="scroller" role="group" aria-label="${esc(t.quick)}">${filtersBtn}${dates}${langs}</div>`;
+  el.querySelectorAll(".scroller").forEach((r, n) => { r.scrollLeft = keep[n] || 0; });
+}
+
+function renderHead(c) {
+  const s = state, t = T();
+  const extra = c.showOnline && c.online.length ? t.plusOnline(c.online.length) : "";
+  $("countLabel").textContent = s.loaded && !s.error ? t.nearby(c.nearby.length) + extra : "";
+}
+
+function renderPanel() {
+  $("panel").classList.toggle("expanded", state.expanded);
+  $("panelBtn").textContent = state.expanded ? T().showMap : T().fullList;
+}
+
+function cardHtml(o, dates, multi) {
+  const s = state, t = T(), l = o.l;
+  // Matched only through its holiday club: the term-time days would mislead
+  const club = dates && !dates.some((d) => runsOn(l, d) === "regular");
+  const meta = [club ? "" : whenText(l), langText(l), shortPrice(l.p)].filter(Boolean).join(" · ");
+  const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
+  if (multi && (l.mn != null || l.mx != null) && s.ages.every((a) => fitsAge(l, a))) {
+    tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
+  }
+  if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
+  if (l.k) tags.push(`<span class="check">${t.checkDetails}</span>`);
+  const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
+  const dist = l.on ? t.online : `${l.ap ? "~" : ""}${km(o.d)}`;
+  return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
+    <span class="card-top"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${esc(dist)}</span></span>
+    <span class="card-title">${esc(l.t)}</span>
+    ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
+    <span class="tags">${tags.join("")}</span>
+  </button>`;
 }
 
 function renderList(c) {
   const s = state, t = T(), list = $("list");
-  if (!s.loaded) { list.innerHTML = `<div class="empty">${t.loading}</div>`; return; }
-  if (s.error) { list.innerHTML = `<div class="empty">${t.loadError}</div>`; return; }
+  if (!s.loaded) { list.innerHTML = `<div class="loading">${t.loading}</div>`; return; }
+  if (s.error) { list.innerHTML = `<div class="loading">${t.loadError}</div>`; return; }
 
   let html = "";
-  const hol = s.date && datesFor(s.date).map(schoolHoliday).find(Boolean);
-  if (hol) html += `<div class="notice"><span>${esc(t.holNote(t.hol[hol.k], rangeText(hol)))}</span></div>`;
+  const dates = s.date ? datesFor(s.date) : null;
+  const hol = dates && dates.map(schoolHoliday).find(Boolean);
+  if (hol) html += `<div class="notice">${esc(t.holNote(t.hol[hol.k], rangeText(hol)))}</div>`;
 
   const w = widenInfo(c);
   if (w) {
-    html += `<div class="notice"><span>${esc(w.text)}</span><button type="button" class="pill-btn solid" data-act="radius" data-v="${w.r}">${esc(w.cta)}</button></div>`;
+    html += `<div class="notice"><span>${esc(w.text)}</span><button type="button" class="primary small" data-act="radius" data-v="${w.r}">${esc(w.cta)}</button></div>`;
   }
 
   const multi = s.ages.length >= 2;
-  html += c.shown.map((o) => {
-    const l = o.l;
-    const tags = [`<span class="tag age">${esc(ageText(l))}</span>`];
-    // Matched only through its holiday club: the term-time days would mislead
-    const club = s.date && !datesFor(s.date).some((d) => runsOn(l, d) === "regular");
-    const wt = club ? "" : whenText(l);
-    if (wt) tags.push(`<span class="tag">${esc(wt)}</span>`);
-    if (l.l.length) tags.push(`<span class="tag">${esc(langText(l))}</span>`);
-    const ps = shortPrice(l.p);
-    if (ps) tags.push(`<span class="tag">${esc(ps)}</span>`);
-    if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
-    if (multi && (l.mn != null || l.mx != null) && s.ages.every((a) => fitsAge(l, a))) {
-      tags.push(`<span class="tag blue">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
-    }
-    return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
-      <span class="card-head"><span class="card-title">${esc(l.t)}</span>${l.k ? `<span class="tag warn">${t.needsCheck}</span>` : ""}</span>
-      <span class="where">${ICON.pin}<span>${esc(whereText(l, o.d))}</span></span>
-      <span class="tags">${tags.join("")}</span>
-    </button>`;
-  }).join("");
+  html += c.shown.map((o) => cardHtml(o, dates, multi)).join("");
 
   if (c.online.length && !s.types.includes("online")) {
-    const label = isRu() ? `Ещё онлайн: ${classes(c.online.length)}` : `${classes(c.online.length)} online too`;
-    const cta = s.showOnline ? (isRu() ? "Скрыть" : "Hide") : (isRu() ? "Показать" : "Show");
-    html += `<button type="button" class="online-row" data-act="online"><span>${esc(label)}</span><span>${cta}</span></button>`;
+    html += `<button type="button" class="online-row" data-act="online"><span>${esc(t.onlineToo(c.online.length))}</span><span>${s.showOnline ? t.hideWord : t.showWord}</span></button>`;
   }
   if (s.date) {
     const n = c.pool.filter((o) => passes(o.l, "date") && !hasDays(o.l)).length;
     if (n) html += `<p class="muted-row">${esc(t.noDays(n))}</p>`;
   }
+  if (c.nearby.some((o) => o.l.ap)) html += `<p class="muted-row">${t.lighter}</p>`;
   if (!c.shown.length && !w) {
-    html += `<div class="empty"><span>${t.nothing}</span><button type="button" class="pill-btn" data-act="clear">${t.clearAll}</button></div>`;
+    const weekend = s.date && s.date !== "weekend"
+      ? `<button type="button" class="chip" data-act="date" data-v="weekend">${t.tryWeekend}</button>` : "";
+    html += `<div class="empty"><span>${t.nothing}</span><div class="wrap">${weekend}<button type="button" class="chip" data-act="clear">${t.clearAll}</button></div></div>`;
   }
   list.innerHTML = html;
 }
@@ -504,75 +525,81 @@ function widenInfo(c) {
     .map((r) => ({ r, n: c.inPerson.filter((o) => o.d <= r && passes(o.l)).length }))
     .find((x) => x.n > n);
   if (!next) return null;
-  const r = state.radius;
-  return {
-    r: next.r,
-    text: isRu()
-      ? (n ? `В радиусе ${r} км — только ${classes(n)}.` : `В радиусе ${r} км пока ничего нет.`)
-      : (n ? `Only ${classes(n)} within ${r} km.` : `Nothing within ${r} km yet.`),
-    cta: isRu() ? `Показать в радиусе ${next.r} км (+${next.n - n})` : `Show within ${next.r} km (+${next.n - n})`,
-  };
-}
-
-function renderHead(c) {
-  const s = state, t = T();
-  const extra = c.showOnline && c.online.length ? (isRu() ? ` + ${c.online.length} онлайн` : ` + ${c.online.length} online`) : "";
-  $("countLabel").textContent = !s.loaded ? "" : isRu()
-    ? `${classes(c.nearby.length)} в радиусе ${s.radius} км${extra}`
-    : `${classes(c.nearby.length)} within ${s.radius} km${extra}`;
-  const hasFilters = s.ages.length || s.langs.length || s.date || s.when.length || s.types.length || s.cats.length || s.showOnline;
-  $("clearBtn").hidden = !hasFilters;
-  $("clearBtn").textContent = t.clearAll;
-  $("viewToggle").innerHTML = s.view === "list" ? `${ICON.map}<span>${t.map}</span>` : `${ICON.list}<span>${t.list}</span>`;
-  document.querySelectorAll("#uiSwitch button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === s.ui)));
-  document.documentElement.lang = s.ui;
+  return { r: next.r, text: T().widenText(n, state.radius), cta: T().widenCta(next.r, next.n - n) };
 }
 
 function renderSheet(c) {
   const s = state, t = T(), el = $("sheet");
-  if (!s.sheet) { el.hidden = true; el.innerHTML = ""; return; }
-  let title, body, foot = "";
-  const total = c.shown.length;
-  const show = total ? (isRu() ? `Показать ${classes(total)}` : `Show ${classes(total)}`) : (isRu() ? "Ничего не найдено" : "No matches yet");
+  if (!s.sheet) { el.hidden = true; el.innerHTML = ""; el.dataset.open = ""; return; }
+  // Re-rendering an open sheet keeps its scroll and typed text, and doesn't replay the slide-in
+  const again = el.dataset.open === s.sheet;
+  const oldBody = el.querySelector(".sheet-body");
+  const scrollTop = again && oldBody ? oldBody.scrollTop : 0;
+  const typed = again && $("areaInput") ? $("areaInput").value : "";
+  let title, body, foot;
+  const show = `<button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`;
 
   if (s.sheet === "place") {
     title = t.where;
     const status = s.placeStatus ? `<p class="status${s.placeWarn ? " warn" : ""}">${esc(s.placeStatus)}</p>` : "";
+    const areas = QUICK_AREAS.map((a, n) =>
+      chipHtml("area", n, a.name, s.place.kind !== "me" && s.place.kind !== "search" && s.place.name === a.name, false)).join("");
+    const radii = RADII.map((r) => chipHtml("radius", r, rLabel(r), s.radius === r, false)).join("");
     body = `<button type="button" class="row-btn" data-act="nearMe">${ICON.locate}<span>${t.useMyLocation}</span></button>
       <form class="search-form" id="areaForm"><input id="areaInput" type="text" placeholder="${t.searchArea}" autocomplete="off" aria-label="${t.searchArea}" />
       <button type="submit">${t.go}</button></form>${status}
-      <p class="sub-title" style="margin-top:18px">${t.quickAreas}</p>
-      ${QUICK_AREAS.map((a, n) => `<button type="button" class="row-btn" data-act="area" data-v="${n}">${ICON.pin}<span>${esc(a.name)}</span></button>`).join("")}`;
+      <div class="sec"><h3>${t.quickAreas}</h3><div class="wrap">${areas}</div></div>
+      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div></div>`;
+    foot = show;
   } else {
-    title = t.more;
+    title = t.filters;
+    const dates = DATES.map((k) => {
+      const ds = datesFor(k);
+      return chipHtml("date", k, t.date[k], s.date === k, !finds(c, "date", (l) => onDates(l, ds)));
+    }).join("");
+    const when = Object.keys(WHEN).map((w) => chipHtml("when", w, t.w[w], s.when.includes(w), !finds(c, "when", WHEN[w]))).join("");
+    const types = Object.keys(TYPES).map((k) => {
+      const src = k === "online" ? c.onlineAll : c.pool;
+      return chipHtml("type", k, t.ty[k], s.types.includes(k), !src.some((o) => passes(o.l, "types") && TYPES[k](o.l)));
+    }).join("");
     const counts = {};
     c.pool.filter((o) => passes(o.l, "cats")).forEach((o) => { counts[o.l.c] = (counts[o.l.c] || 0) + 1; });
     const cats = CATEGORIES.filter((k) => counts[k] || s.cats.includes(k))
-      .map((k) => chipHtml("cat", k, t.cat[k], counts[k] || 0, s.cats.includes(k))).join("");
-    body = `<p class="sub-title">${t.activity}</p><div class="wrap">${cats}</div>
-      <button type="button" class="row-btn" style="justify-content:space-between;margin-top:16px;border-top:1px solid var(--line-soft)" data-act="online" ${pressed(s.showOnline)}>
+      .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
+    const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
+    body = `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
+      <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
+      ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
+      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
+      <button type="button" class="row-btn switch-row" data-act="online" ${pressed(s.showOnline)}>
         <span>${t.includeOnline}</span><span class="switch${s.showOnline ? " on" : ""}"></span></button>`;
-    foot = `<div class="sheet-foot"><button type="button" class="link-btn" data-act="resetMore">${t.reset}</button>
-      <button type="button" class="primary" data-act="closeSheet">${esc(show)}</button></div>`;
+    foot = `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>${show}`;
   }
 
   el.innerHTML = `<button type="button" class="backdrop" data-act="closeSheet" aria-label="${t.close}"></button>
-    <div class="sheet" role="dialog" aria-label="${esc(title)}">
-      <div class="sheet-head"><h2>${esc(title)}</h2><button type="button" class="icon-btn" data-act="closeSheet" aria-label="${t.close}">${ICON.close}</button></div>
-      <div class="sheet-body">${body}</div>${foot}
+    <div class="sheet${again ? "" : " enter"}" role="dialog" aria-label="${esc(title)}">
+      <div class="sheet-head"><h2>${esc(title)}</h2><button type="button" class="chip sq" data-act="closeSheet" aria-label="${t.close}">${ICON.close}</button></div>
+      <div class="sheet-body">${body}</div>
+      <div class="sheet-foot">${foot}</div>
     </div>`;
   el.hidden = false;
+  el.dataset.open = s.sheet;
+  el.querySelector(".sheet-body").scrollTop = scrollTop;
   const form = $("areaForm");
-  if (form) form.addEventListener("submit", (e) => { e.preventDefault(); searchArea($("areaInput").value); });
+  if (form) {
+    $("areaInput").value = typed;
+    form.addEventListener("submit", (e) => { e.preventDefault(); searchArea($("areaInput").value); });
+  }
 }
 
 function renderDetail(c) {
   const t = T(), el = $("detail");
   const o = state.detail && c.rows.find((x) => x.l.i === state.detail);
-  if (!o) { el.hidden = true; el.innerHTML = ""; return; }
+  if (!o) { el.hidden = true; el.innerHTML = ""; el.dataset.open = ""; return; }
+  const again = el.dataset.open === state.detail;
   const l = o.l;
   const type = Object.keys(TYPES).find((k) => TYPES[k](l));
-  const tags = [`<span class="tag age">${esc(ageText(l))}</span>`];
+  const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
   if (type) tags.push(`<span class="tag">${esc(t.ty[type])}</span>`);
   if (l.l.length) tags.push(`<span class="tag">${esc(langText(l))}</span>`);
   if (l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
@@ -583,8 +610,11 @@ function renderDetail(c) {
   const dir = l.y != null && !l.on ? `https://www.google.com/maps/search/?api=1&query=${l.y},${l.x}` : "";
 
   el.innerHTML = `<button type="button" class="backdrop" style="flex:none;height:64px" data-act="closeDetail" aria-label="${t.close}"></button>
-    <div class="sheet tall" role="dialog" aria-label="${esc(l.t)}">
-      <div class="sheet-head" style="justify-content:flex-end"><button type="button" class="icon-btn" data-act="closeDetail" aria-label="${t.close}">${ICON.close}</button></div>
+    <div class="sheet tall${again ? "" : " enter"}" role="dialog" aria-label="${esc(l.t)}">
+      <div class="sheet-head">
+        <span class="card-top" style="flex:1;min-width:0"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(t.cat[l.c] || l.c)}</span></span>
+        <button type="button" class="chip sq" data-act="closeDetail" aria-label="${t.close}">${ICON.close}</button>
+      </div>
       <div class="sheet-body" style="padding:0"><div class="detail-body">
         <h2>${esc(l.t)}</h2>
         <span class="where">${ICON.pin}<span>${esc(whereText(l, o.d))}</span></span>
@@ -605,47 +635,63 @@ function renderDetail(c) {
       </div>
     </div>`;
   el.hidden = false;
+  el.dataset.open = state.detail;
 }
 
 function ensureMap() {
   if (map) return;
-  map = L.map("map", { zoomControl: true });
+  map = L.map("map", { zoomControl: false, attributionControl: false });
+  // Top right, just under the search bar: the bottom of the map is covered by the results panel
+  L.control.attribution({ position: "topright", prefix: false }).addTo(map);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution: "© OpenStreetMap contributors",
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
   markersLayer = L.layerGroup().addTo(map);
   map.setView([state.place.lat, state.place.lng], 13);
 }
 
 function renderMap(c) {
-  const t = T();
-  $("list").hidden = state.view !== "list";
-  $("mapWrap").hidden = state.view !== "map";
-  if (state.view !== "map") return;
   ensureMap();
   markersLayer.clearLayers();
   const centre = [state.place.lat, state.place.lng];
-  L.circle(centre, { radius: state.radius * 1000, color: "#1f5fd6", weight: 2, dashArray: "6 6", fillOpacity: 0.05 }).addTo(markersLayer);
-  L.circleMarker(centre, { radius: 8, color: "#fff", weight: 3, fillColor: "#1f5fd6", fillOpacity: 1 }).addTo(markersLayer);
+  const lime = "#c8f560";
+  L.circle(centre, {
+    radius: state.radius * 1000, color: lime, weight: 1.5, opacity: 0.6, dashArray: "6 6", fillColor: lime, fillOpacity: 0.05, interactive: false,
+  }).addTo(markersLayer);
+  L.circleMarker(centre, { radius: 6, color: lime, weight: 10, opacity: 0.25, fillColor: lime, fillOpacity: 1, interactive: false }).addTo(markersLayer);
 
   for (const o of c.nearby) {
     const l = o.l;
     L.circleMarker([l.y, l.x], {
-      radius: 10, color: "#fff", weight: 2, fillColor: l.ap ? "#8aa6da" : "#1f5fd6", fillOpacity: 1,
-    }).bindPopup(`<b>${esc(l.t)}</b>${esc(whereText(l, o.d))}<br>${esc(ageText(l))}
-      <br><button type="button" class="pill-btn solid" data-act="open" data-v="${esc(l.i)}">${t.details}</button>`).addTo(markersLayer);
+      radius: 8, color: "#0d1322", weight: 3, opacity: l.ap ? 0.6 : 1, fillColor: catColor(l.c), fillOpacity: l.ap ? 0.45 : 1,
+    }).on("click", () => { state.detail = l.i; render({ keepScroll: true }); }).addTo(markersLayer);
   }
-  const approx = c.nearby.some((o) => o.l.ap);
-  $("mapNote").innerHTML = `${esc(isRu() ? `На карте: ${classes(c.nearby.length)}` : `${classes(c.nearby.length)} on the map`)}${approx ? `<span>${t.lighter}</span>` : ""}`;
-  const bounds = L.latLng(centre).toBounds(state.radius * 2000);
-  setTimeout(() => { map.invalidateSize(); map.fitBounds(bounds, { padding: [16, 16] }); }, 0);
+
+  // Re-frame only when the place or distance changes, so filtering doesn't make the map jump
+  const key = `${state.place.lat},${state.place.lng},${state.radius}`;
+  if (key !== fittedFor) {
+    fittedFor = key;
+    fitMap();
+  }
+}
+
+// Fit the search circle into the part of the map you can see: below the top bar, above the panel
+function fitMap() {
+  const app = $("app"), h = app.clientHeight;
+  const panelTop = Math.max(h * 0.45, h - 420); // same as .panel's resting top in style.css
+  const below = $("topbar").getBoundingClientRect().bottom - app.getBoundingClientRect().top;
+  const bounds = L.latLng(state.place.lat, state.place.lng).toBounds(state.radius * 2000);
+  map.invalidateSize();
+  map.fitBounds(bounds, { paddingTopLeft: [16, below + 12], paddingBottomRight: [16, h - panelTop + 12] });
 }
 
 function render({ keepScroll = false } = {}) {
   const c = compute();
+  renderTop();
   renderFilters(c);
   renderHead(c);
+  renderPanel();
   if (!keepScroll) $("list").scrollTop = 0;
   renderList(c);
   renderMap(c);
@@ -718,13 +764,10 @@ function toggle(key, v) {
 }
 
 const ACTIONS = {
-  ui: (v) => { state.ui = v; savePrefs(); },
-  ageAny: () => { state.ages = []; savePrefs(); },
+  ui: () => { state.ui = isRu() ? "en" : "ru"; savePrefs(); },
   age: (v) => { toggle("ages", Number(v)); savePrefs(); },
   radius: (v) => { state.radius = Number(v); savePrefs(); },
-  langAny: () => { state.langs = []; savePrefs(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
-  dateAny: () => { state.date = null; },
   date: (v) => { state.date = state.date === v ? null : v; },
   when: (v) => toggle("when", v),
   type: (v) => toggle("types", v),
@@ -734,13 +777,16 @@ const ACTIONS = {
     Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], showOnline: false });
     savePrefs();
   },
-  resetMore: () => { Object.assign(state, { cats: [], showOnline: false }); },
+  // Everything except age, which is about the child rather than this search
+  resetFilters: () => {
+    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], showOnline: false });
+    savePrefs();
+  },
   sheet: (v) => { state.sheet = v; state.placeStatus = ""; },
   closeSheet: () => { state.sheet = null; },
   open: (v) => { state.detail = v; },
   closeDetail: () => { state.detail = null; },
-  view: () => { state.view = state.view === "list" ? "map" : "list"; state.compact = false; },
-  expand: () => { state.compact = false; },
+  panel: () => { state.expanded = !state.expanded; },
   nearMe: () => { useMyLocation(); return "async"; },
   area: (v) => {
     const a = QUICK_AREAS[Number(v)];
@@ -749,27 +795,55 @@ const ACTIONS = {
   },
 };
 
-// Actions that only open or close a panel keep the list where it was
-const KEEP_SCROLL = new Set(["sheet", "closeSheet", "open", "closeDetail", "expand"]);
+// Actions that only open or close something keep the list where it was
+const KEEP_SCROLL = new Set(["ui", "sheet", "closeSheet", "open", "closeDetail", "panel"]);
 
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-act]");
   if (!el || !ACTIONS[el.dataset.act]) return;
   const act = el.dataset.act;
-  if (!KEEP_SCROLL.has(act) && map) map.closePopup();
   if (ACTIONS[act](el.dataset.v) === "async") return;
   render({ keepScroll: KEEP_SCROLL.has(act) });
 });
 
-// Fold the filters into one line once the list has been scrolled a little
+// Drag the panel's handle or header up for the full list, down for the map; a tap toggles
+const panel = $("panel");
+let drag = null;
+
+panel.addEventListener("pointerdown", (e) => {
+  if (!e.target.closest(".drag-zone") || e.target.closest("button")) return;
+  drag = { y: e.clientY, top: panel.offsetTop, moved: false };
+  panel.setPointerCapture(e.pointerId);
+  panel.classList.add("dragging");
+});
+panel.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const dy = e.clientY - drag.y;
+  if (Math.abs(dy) > 6) drag.moved = true;
+  const h = $("app").clientHeight;
+  panel.style.top = `${Math.min(h - 120, Math.max(60, drag.top + dy))}px`;
+});
+function endDrag(e) {
+  if (!drag) return;
+  const { y, moved } = drag;
+  drag = null;
+  panel.classList.remove("dragging");
+  panel.style.top = "";
+  if (e.type !== "pointercancel") {
+    const dy = e.clientY - y;
+    if (!moved) state.expanded = !state.expanded;
+    else if (Math.abs(dy) > 40) state.expanded = dy < 0;
+  }
+  renderPanel();
+}
+panel.addEventListener("pointerup", endDrag);
+panel.addEventListener("pointercancel", endDrag);
+
+// Scrolling the list while the panel is low opens it fully
 $("list").addEventListener("scroll", (e) => {
-  const el = e.currentTarget;
-  if (!state.compact && el.scrollTop > 40 && el.scrollHeight - el.clientHeight > 260) {
-    state.compact = true;
-    renderFilters(compute());
-  } else if (state.compact && el.scrollTop <= 0) {
-    state.compact = false;
-    renderFilters(compute());
+  if (!state.expanded && e.currentTarget.scrollTop > 24) {
+    state.expanded = true;
+    renderPanel();
   }
 }, { passive: true });
 
@@ -777,6 +851,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
   if (state.detail) state.detail = null;
   else if (state.sheet) state.sheet = null;
+  else if (state.expanded) state.expanded = false;
   else return;
   render({ keepScroll: true });
 });

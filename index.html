@@ -3,43 +3,38 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#0d1322" />
+<meta name="color-scheme" content="dark" />
 <title>AroundNow</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="icons/icon-192.png" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@600;700&display=swap" />
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
 
-  <header class="topbar">
+  <div id="map" class="map"></div>
+
+  <header class="topbar" id="topbar">
     <span class="logo">Around<span>Now</span></span>
-    <span class="seg" id="uiSwitch">
-      <button type="button" data-act="ui" data-v="en" aria-label="English">EN</button>
-      <button type="button" data-act="ui" data-v="ru" aria-label="Русский">RU</button>
-    </span>
+    <span class="topbar-rule" aria-hidden="true"></span>
+    <button type="button" id="placeBtn" class="place-btn" data-act="sheet" data-v="place"></button>
+    <button type="button" id="uiBtn" class="chip sq" data-act="ui"></button>
   </header>
 
-  <section id="filters" class="filters" aria-label="Filters"></section>
-
-  <div class="results-head">
-    <span id="countLabel" aria-live="polite"></span>
-    <button type="button" id="clearBtn" class="link-btn" data-act="clear" hidden></button>
-  </div>
-
-  <main class="content">
-    <div id="list" class="list"></div>
-    <div id="mapWrap" class="map-wrap" hidden>
-      <div id="map"></div>
-      <p id="mapNote" class="map-note"></p>
+  <section id="panel" class="panel" aria-label="Results">
+    <div class="handle drag-zone" aria-hidden="true"><span></span></div>
+    <div id="filters" class="filters"></div>
+    <div class="results-head drag-zone">
+      <span id="countLabel" class="count" aria-live="polite"></span>
+      <button type="button" id="panelBtn" class="link-btn" data-act="panel"></button>
     </div>
-  </main>
-
-  <button type="button" id="viewToggle" class="fab" data-act="view"></button>
+    <div id="list" class="list"></div>
+  </section>
 
   <div id="sheet" class="overlay" hidden></div>
   <div id="detail" class="overlay" hidden></div>
