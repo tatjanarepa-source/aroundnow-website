@@ -31,6 +31,8 @@ public: the database only allows reading visible listings.
 - `supabase/schema.sql` — tables (`listings`, plus a private
   `listing_contacts` table with no public access) and the search function.
   Paste it into Supabase → SQL Editor to set up a fresh project
+- `supabase/migrations/` — later changes, run after `schema.sql`, oldest first.
+  So far: v1 shows organisations only; private individuals are kept but hidden
 - `npm run import:listings` — loads `data/listings-seed.csv` (the mums'
   spreadsheet) into Supabase. Needs the secret key in `.env`; both `data/`
   and `.env` are git-ignored because they hold private contact details

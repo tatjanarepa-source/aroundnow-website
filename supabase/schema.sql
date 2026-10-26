@@ -1,6 +1,7 @@
 -- AroundNow listings database.
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- Safe to re-run: it only creates things that don't exist yet.
+-- Later changes live in supabase/migrations/: run those after this, oldest first.
 
 create extension if not exists postgis;
 
