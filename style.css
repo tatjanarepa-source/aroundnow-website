@@ -315,6 +315,7 @@ svg.i {
   font-weight: 700;
 }
 .online-row span:last-child { color: var(--blue); }
+.muted-row { flex: none; margin: 0; padding: 0 4px; color: var(--muted); font-size: 14px; }
 
 .empty {
   display: flex;

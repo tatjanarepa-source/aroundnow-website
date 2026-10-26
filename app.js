@@ -34,6 +34,19 @@ const TYPES = {
   events: (l) => l.f === "Workshop / event",
   online: (l) => l.on === 1,
 };
+// Ealing school holidays (council dates; academies can differ by a day or two).
+// Half terms are Mon–Fri only: weekend schools usually still meet on the weekends around them.
+// Outside TERM_KNOWN we don't guess, so term-time classes aren't hidden.
+const TERM_KNOWN = { from: "2026-09-03", to: "2027-07-21" };
+const SCHOOL_HOLIDAYS = [
+  { from: "2026-10-26", to: "2026-10-30", k: "half" },
+  { from: "2026-12-19", to: "2027-01-03", k: "xmas" },
+  { from: "2027-02-15", to: "2027-02-19", k: "half" },
+  { from: "2027-03-26", to: "2027-04-11", k: "easter" },
+  { from: "2027-05-31", to: "2027-06-04", k: "half" },
+];
+const DATES = ["today", "tomorrow", "weekend"];
+
 const CATEGORIES = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "Chess", "STEM / Thinking",
   "Childcare / Preschool", "Outdoor / Nature", "Life skills", "Mixed"];
 
@@ -53,6 +66,10 @@ const STRINGS = {
     checkNote: "Some details may be out of date. Check the official page before you go.",
     noSource: "Community-submitted, no official source", website: "Official website", directions: "Directions", details: "Details",
     lighter: "Lighter pins: area only, no exact address", nothing: "Nothing matches these filters.", agesNA: "Ages not listed",
+    dWhenAny: "Any day", date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
+    hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays" },
+    holNote: (h, range) => `Ealing schools are off for ${h} (${range}). Term-time classes are hidden; holiday clubs are shown.`,
+    noDays: (n) => `${n === 1 ? "1 more class nearby doesn’t" : `${n} more classes nearby don’t`} list their days. Check their websites.`,
     w: { weekends: "Weekends", afterschool: "After school", mornings: "Weekday mornings", holidays: "School holidays" },
     ty: { weekendschool: "Weekend schools", weekly: "Weekly classes", camps: "Holiday camps", nursery: "Nursery", events: "Events", online: "Online" },
     cat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre", "Arts / Crafts": "Arts & crafts",
@@ -76,6 +93,10 @@ const STRINGS = {
     checkNote: "Часть информации может быть устаревшей. Перед визитом проверьте на официальном сайте.",
     noSource: "Добавлено сообществом, без официального источника", website: "Официальный сайт", directions: "Маршрут", details: "Подробнее",
     lighter: "Светлые метки: только район, без точного адреса", nothing: "По этим фильтрам ничего нет.", agesNA: "Возраст не указан",
+    dWhenAny: "Любой день", date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
+    hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы" },
+    holNote: (h, range) => `В школах Илинга ${h} (${range}). Занятия только в учебное время скрыты, каникулярные клубы показаны.`,
+    noDays: (n) => `Ещё ${n} ${ruForm(n, "занятие рядом не указывает", "занятия рядом не указывают", "занятий рядом не указывают")} дни. Проверьте на их сайтах.`,
     w: { weekends: "Выходные", afterschool: "После школы", mornings: "Будни, утро", holidays: "Каникулы" },
     ty: { weekendschool: "Школы выходного дня", weekly: "Кружки и секции", camps: "Лагеря", nursery: "Детский сад", events: "Мероприятия", online: "Онлайн" },
     cat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр", "Arts / Crafts": "Творчество",
@@ -102,7 +123,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", ages: [], radius: 3, langs: [], when: [], types: [], cats: [],
+  ui: "en", ages: [], radius: 3, langs: [], date: null, when: [], types: [], cats: [],
   showOnline: false, view: "list", sheet: null, detail: null, compact: false,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -174,7 +195,7 @@ function normalize(r) {
     i: r.id, t: r.title, a: online ? "Online" : r.location_area || "", y: pt ? pt.y : null, x: pt ? pt.x : null,
     ap: (r.address_source || "").startsWith("Approximate") ? 1 : 0, on: online ? 1 : 0,
     mn: r.age_min_months, mx: r.age_max_months, l: langs, d: r.days_of_week || [], tm: r.time_of_day || [],
-    st: (r.start_time || "").slice(0, 5), f: r.format || "", c: r.category || "", r: r.runs_when || "",
+    st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "", c: r.category || "", r: r.runs_when || "",
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
     g: r.pros || "", b: r.cons || "", w: r.website || "", k: r.status === "Check" ? 1 : 0,
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
@@ -184,7 +205,7 @@ function normalize(r) {
 async function loadListings() {
   const cols = ["id", "title", "website", "delivery_mode", "location_area", "address", "postcode", "location", "address_source",
     "format", "category", "age_min_months", "age_max_months", "languages", "runs_when", "holiday_club", "days_of_week",
-    "time_of_day", "start_time", "schedule_text", "price_text", "description", "pros", "cons", "status"].join(",");
+    "time_of_day", "start_time", "end_time", "schedule_text", "price_text", "description", "pros", "cons", "status"].join(",");
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=${cols}&status=in.(Active,Check)`, {
       headers: { apikey: SUPABASE_KEY },
@@ -211,11 +232,65 @@ function distKm(p, l) {
 
 function fitsAge(l, a) { return (l.mn == null || l.mn <= a) && (l.mx == null || l.mx >= a); }
 
+// ---- Dates ----
+// Listings store a weekly pattern (days + term time / holidays), not dates,
+// so "today" means: runs on today's weekday, and today is in term if it's term-time only.
+
+function isoDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function dayKey(d) { return DAY_ORDER[(d.getDay() + 6) % 7]; }
+
+function datesFor(key) {
+  const now = new Date();
+  const at = (n) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
+  if (key === "today") return [at(0)];
+  if (key === "tomorrow") return [at(1)];
+  const dow = now.getDay(); // 0 = Sunday
+  if (dow === 6) return [at(0), at(1)];
+  if (dow === 0) return [at(0)];
+  return [at(6 - dow), at(7 - dow)];
+}
+
+function schoolHoliday(d) {
+  const iso = isoDate(d);
+  return SCHOOL_HOLIDAYS.find((h) => h.from <= iso && iso <= h.to) || null;
+}
+// "term", "holiday", or null when we don't know the school calendar for that date
+function termOn(d) {
+  const iso = isoDate(d);
+  if (iso < TERM_KNOWN.from || iso > TERM_KNOWN.to) return null;
+  return schoolHoliday(d) ? "holiday" : "term";
+}
+
+// "regular", "club" (holiday club on a school-holiday weekday), or "" if not on that day
+function runsOn(l, d) {
+  const day = dayKey(d), term = termOn(d);
+  if (regularOn(l, d, day, term)) return "regular";
+  if (term === "holiday" && WEEKDAYS.includes(day) && (l.f === "Holiday camp" || l.h)) return "club";
+  return "";
+}
+function regularOn(l, d, day, term) {
+  const days = l.d.length ? l.d : (l.f === "Preschool / nursery" || l.f === "Holiday camp" ? WEEKDAYS : []);
+  if (!days.includes(day)) return false;
+  if (l.r === "Term time" && term === "holiday") return false;
+  if ((l.r === "Holidays" || l.f === "Holiday camp") && term === "term") return false;
+  // Already finished today
+  if (isoDate(d) === isoDate(new Date()) && l.et) {
+    const now = new Date();
+    if (`${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}` >= l.et) return false;
+  }
+  return true;
+}
+function onDates(l, dates) { return dates.some((d) => runsOn(l, d)); }
+function hasDays(l) { return l.d.length > 0 || l.f === "Preschool / nursery" || l.f === "Holiday camp"; }
+
 // `skip` leaves one filter group out, which is how each chip counts what it would find
 function passes(l, skip) {
   const s = state;
   if (skip !== "ages" && s.ages.length && !s.ages.some((a) => fitsAge(l, a))) return false;
   if (skip !== "langs" && s.langs.length && !s.langs.some((x) => l.l.includes(x))) return false;
+  if (skip !== "date" && s.date && !onDates(l, datesFor(s.date))) return false;
   if (skip !== "when" && s.when.length && !s.when.some((w) => WHEN[w](l))) return false;
   if (skip !== "types" && s.types.length && !s.types.some((t) => TYPES[t](l))) return false;
   if (skip !== "cats" && s.cats.length && !s.cats.includes(l.c)) return false;
@@ -301,6 +376,11 @@ function whereText(l, d) {
   return `${l.a} · ${l.ap ? "~" : ""}${km(d)}`;
 }
 
+function rangeText(h) {
+  const f = (iso) => new Date(`${iso}T12:00`).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { day: "numeric", month: "short" });
+  return `${f(h.from)} – ${f(h.to)}`;
+}
+
 function placeName() { return state.place.kind === "me" ? T().nearMe : state.place.name; }
 
 // ---- Rendering ----
@@ -318,6 +398,7 @@ function renderFilters(c) {
   if (s.compact) {
     const parts = [s.ages.length ? agesSummary() : t.anyAge, `${placeName()} · ${rLabel(s.radius)}`];
     if (s.langs.length) parts.push(s.langs.map((x) => t.lang[x] || x).join(", "));
+    if (s.date) parts.push(t.date[s.date]);
     s.when.forEach((w) => parts.push(t.w[w]));
     s.types.forEach((k) => parts.push(t.ty[k]));
     if (s.cats.length) parts.push(`${t.more} · ${s.cats.length}`);
@@ -340,6 +421,8 @@ function renderFilters(c) {
     .sort((a, b) => langCounts[b] - langCounts[a])
     .map((x) => chipHtml("lang", x, t.lang[x] || x, langCounts[x], s.langs.includes(x))).join("");
 
+  const dates = chipHtml("dateAny", "", t.any, "", !s.date) + DATES.map((k) =>
+    chipHtml("date", k, t.date[k], c.pool.filter((o) => passes(o.l, "date") && onDates(o.l, datesFor(k))).length, s.date === k)).join("");
   const when = Object.keys(WHEN).map((w) =>
     chipHtml("when", w, t.w[w], c.pool.filter((o) => passes(o.l, "when") && WHEN[w](o.l)).length, s.when.includes(w))).join("");
   const types = Object.keys(TYPES).map((k) => {
@@ -356,7 +439,8 @@ function renderFilters(c) {
       <span class="seg blue">${radii}</span>
     </div>
     <div class="hs"><b>${t.language}</b>${langs}</div>
-    <div class="hs">${when}<span class="divider"></span>${types}
+    <div class="hs"><b>${t.dWhen}</b>${dates}<span class="divider"></span>${when}</div>
+    <div class="hs">${types}
       <button type="button" class="chip" data-act="sheet" data-v="more" ${pressed(moreOn)}>${ICON.sliders}<span>${s.cats.length ? `${t.more} · ${s.cats.length}` : t.more}</span></button>
     </div>
   </div>`;
@@ -368,6 +452,9 @@ function renderList(c) {
   if (s.error) { list.innerHTML = `<div class="empty">${t.loadError}</div>`; return; }
 
   let html = "";
+  const hol = s.date && datesFor(s.date).map(schoolHoliday).find(Boolean);
+  if (hol) html += `<div class="notice"><span>${esc(t.holNote(t.hol[hol.k], rangeText(hol)))}</span></div>`;
+
   const w = widenInfo(c);
   if (w) {
     html += `<div class="notice"><span>${esc(w.text)}</span><button type="button" class="pill-btn solid" data-act="radius" data-v="${w.r}">${esc(w.cta)}</button></div>`;
@@ -377,12 +464,14 @@ function renderList(c) {
   html += c.shown.map((o) => {
     const l = o.l;
     const tags = [`<span class="tag age">${esc(ageText(l))}</span>`];
-    const wt = whenText(l);
+    // Matched only through its holiday club: the term-time days would mislead
+    const club = s.date && !datesFor(s.date).some((d) => runsOn(l, d) === "regular");
+    const wt = club ? "" : whenText(l);
     if (wt) tags.push(`<span class="tag">${esc(wt)}</span>`);
     if (l.l.length) tags.push(`<span class="tag">${esc(langText(l))}</span>`);
     const ps = shortPrice(l.p);
     if (ps) tags.push(`<span class="tag">${esc(ps)}</span>`);
-    if (s.when.includes("holidays") && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
+    if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
     if (multi && (l.mn != null || l.mx != null) && s.ages.every((a) => fitsAge(l, a))) {
       tags.push(`<span class="tag blue">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
     }
@@ -397,6 +486,10 @@ function renderList(c) {
     const label = isRu() ? `Ещё онлайн: ${classes(c.online.length)}` : `${classes(c.online.length)} online too`;
     const cta = s.showOnline ? (isRu() ? "Скрыть" : "Hide") : (isRu() ? "Показать" : "Show");
     html += `<button type="button" class="online-row" data-act="online"><span>${esc(label)}</span><span>${cta}</span></button>`;
+  }
+  if (s.date) {
+    const n = c.pool.filter((o) => passes(o.l, "date") && !hasDays(o.l)).length;
+    if (n) html += `<p class="muted-row">${esc(t.noDays(n))}</p>`;
   }
   if (!c.shown.length && !w) {
     html += `<div class="empty"><span>${t.nothing}</span><button type="button" class="pill-btn" data-act="clear">${t.clearAll}</button></div>`;
@@ -427,7 +520,7 @@ function renderHead(c) {
   $("countLabel").textContent = !s.loaded ? "" : isRu()
     ? `${classes(c.nearby.length)} в радиусе ${s.radius} км${extra}`
     : `${classes(c.nearby.length)} within ${s.radius} km${extra}`;
-  const hasFilters = s.ages.length || s.langs.length || s.when.length || s.types.length || s.cats.length || s.showOnline;
+  const hasFilters = s.ages.length || s.langs.length || s.date || s.when.length || s.types.length || s.cats.length || s.showOnline;
   $("clearBtn").hidden = !hasFilters;
   $("clearBtn").textContent = t.clearAll;
   $("viewToggle").innerHTML = s.view === "list" ? `${ICON.map}<span>${t.map}</span>` : `${ICON.list}<span>${t.list}</span>`;
@@ -631,12 +724,14 @@ const ACTIONS = {
   radius: (v) => { state.radius = Number(v); savePrefs(); },
   langAny: () => { state.langs = []; savePrefs(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
+  dateAny: () => { state.date = null; },
+  date: (v) => { state.date = state.date === v ? null : v; },
   when: (v) => toggle("when", v),
   type: (v) => toggle("types", v),
   cat: (v) => toggle("cats", v),
   online: () => { state.showOnline = !state.showOnline; },
   clear: () => {
-    Object.assign(state, { ages: [], langs: [], when: [], types: [], cats: [], showOnline: false });
+    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], showOnline: false });
     savePrefs();
   },
   resetMore: () => { Object.assign(state, { cats: [], showOnline: false }); },
