@@ -94,7 +94,6 @@ const STRINGS = {
     notConfirmed: "Not yet confirmed", online: "Online", holidayClub: "Holiday club", suitsBoth: "Suits both", suitsAll: "Suits all",
     dWhen: "When", dPrice: "Price", dWhere: "Where", priceUnknown: "Not listed yet", areaOnly: "exact venue not listed yet",
     parents: "What parents say", good: "Good", watch: "Watch out",
-    checkNote: "Some details may be out of date. Check the official page before you go.",
     noSource: "No official source", website: "Official website", directions: "Directions",
     lighter: "Faded pins: area only, no exact address", nothing: "Nothing matches these filters.", agesNA: "Ages not listed",
     tryWeekend: "Try this weekend", onlineToo: (n) => `${classes(n)} online too`, showWord: "Show", hideWord: "Hide",
@@ -175,7 +174,7 @@ const STRINGS = {
     askYes: "Yes, it was as listed", askDiff: "Something was different", askNo: "We didn’t go",
     nudge: (n) => (n === 1 ? "1 new class near you isn’t confirmed yet." : `${n} new classes near you aren’t confirmed yet.`),
     knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
-    pickReason: "Pick what’s wrong first.", andList: " and ",
+    pickReason: "Pick what’s wrong first.", andList: " and ", here: (n) => `${classes(n)} here`,
   },
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
@@ -193,7 +192,6 @@ const STRINGS = {
     notConfirmed: "Пока не подтверждено", online: "Онлайн", holidayClub: "Лагерь на каникулах", suitsBoth: "Подходит обоим", suitsAll: "Подходит всем",
     dWhen: "Когда", dPrice: "Цена", dWhere: "Где", priceUnknown: "Пока не указана", areaOnly: "точный адрес пока не указан",
     parents: "Что говорят родители", good: "Плюсы", watch: "Минусы",
-    checkNote: "Часть информации может быть устаревшей. Перед визитом проверьте на официальном сайте.",
     noSource: "Нет официального источника", website: "Официальный сайт", directions: "Маршрут",
     lighter: "Бледные метки: только район, без точного адреса", nothing: "По этим фильтрам ничего нет.", agesNA: "Возраст не указан",
     tryWeekend: "Попробовать выходные", onlineToo: (n) => `Ещё онлайн: ${classes(n)}`, showWord: "Показать", hideWord: "Скрыть",
@@ -275,7 +273,7 @@ const STRINGS = {
     askYes: "Да, всё как указано", askDiff: "Кое-что не так", askNo: "Мы не ходили",
     nudge: (n) => `${n} ${ruForm(n, "новое занятие рядом ещё не подтверждено", "новых занятия рядом ещё не подтверждены", "новых занятий рядом ещё не подтверждены")}.`,
     knowThem: "Знаете их?", showAll: "Показать все", caughtUp: "Всё подтверждено. Спасибо!",
-    pickReason: "Сначала выберите, что не так.", andList: " и ",
+    pickReason: "Сначала выберите, что не так.", andList: " и ", here: (n) => `Здесь ${classes(n)}`,
   },
 };
 
@@ -289,7 +287,6 @@ const ICON = {
   directions: '<svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>',
   plus: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
   minus: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
-  info: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
   add: '<svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   tick: '<svg class="i" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   check: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
@@ -304,9 +301,11 @@ const state = {
   // Accounts and community checks
   user: null, google: false, mine: { confirmed: {}, reported: {} },
   auth: null, afterSignIn: null, add: null, box: null, onlyNew: false,
+  group: null, // classes behind a tapped map bubble
 };
 
-let map, markersLayer;
+let map, markersLayer, pinsLayer;
+let lastNearby = []; // what the pins show, so they can be regrouped after zooming
 let fittedFor = ""; // place + distance the map was last framed for
 
 // Sign-in and anything a parent adds go through supabase-js (vendor/supabase).
@@ -674,7 +673,7 @@ function cardHtml(o, dates, multi) {
     tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
   }
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
-  if (unconfirmed(l)) tags.push(`<span class="check">${t.notConfirmed}</span>`);
+  if (unconfirmed(l)) tags.push(`<span class="tag warn">${t.notConfirmed}</span>`);
   const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
   const dist = l.on ? t.online : `${l.ap ? "~" : ""}${km(o.d)}`;
   return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
@@ -748,7 +747,7 @@ function renderSheet(c) {
   const scrollTop = again && el.dataset.step === step && oldBody ? oldBody.scrollTop : 0;
   const typed = again && $("areaInput") ? $("areaInput").value : "";
   const p = s.sheet === "place" ? placeSheet(c) : s.sheet === "filters" ? filtersSheet(c)
-    : s.sheet === "signin" ? signInSheet() : addSheet();
+    : s.sheet === "signin" ? signInSheet() : s.sheet === "group" ? groupSheet(c) : addSheet();
 
   el.innerHTML = `<button type="button" class="backdrop"${p.tall ? ' style="flex:none;height:64px"' : ""} data-act="closeSheet" aria-label="${t.close}"></button>
     <div class="sheet${p.tall ? " tall" : ""}${again ? "" : " enter"}" role="dialog" aria-label="${esc(p.title)}">
@@ -813,6 +812,19 @@ function filtersSheet(c) {
         <span>${t.includeOnline}</span><span class="switch${s.showOnline ? " on" : ""}"></span></button>`,
     foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
       <button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
+  };
+}
+
+// Classes behind one map bubble that share an address
+function groupSheet(c) {
+  const t = T(), ids = state.group || [];
+  const items = c.nearby.filter((o) => ids.includes(o.l.i));
+  const dates = state.date ? datesFor(state.date) : null;
+  return {
+    title: t.here(items.length),
+    body: items.length
+      ? `<div class="group-list">${items.map((o) => cardHtml(o, dates, state.ages.length >= 2)).join("")}</div>`
+      : `<p class="lead">${t.nothing}</p>`,
   };
 }
 
@@ -1009,7 +1021,7 @@ function previewHtml(a) {
     <span class="card-top"><span class="dot" style="background:${catColor(a.cat)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${t.fresh}</span></span>
     <span class="card-title">${esc(a.name)}</span>
     ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
-    <span class="tags"><span class="agetag">${esc(a.ageFrom === "" ? t.agesUnknown : ageText(l))}</span><span class="check">${t.notConfirmed}</span>${a.link.trim() ? "" : `<span class="tag">${t.noSource}</span>`}</span>
+    <span class="tags"><span class="agetag">${esc(a.ageFrom === "" ? t.agesUnknown : ageText(l))}</span><span class="tag warn">${t.notConfirmed}</span>${a.link.trim() ? "" : `<span class="tag">${t.noSource}</span>`}</span>
   </div>`;
 }
 
@@ -1313,7 +1325,6 @@ function renderDetail(c) {
         </dl>
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${notes}
-        ${l.k && l.w ? `<div class="check-note">${ICON.info}<span>${t.checkNote}</span></div>` : ""}
         ${communityHtml(l)}
       </div></div>
       <div class="actions">
@@ -1335,7 +1346,48 @@ function ensureMap() {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
   markersLayer = L.layerGroup().addTo(map);
+  pinsLayer = L.layerGroup().addTo(map);
+  map.on("zoomend", () => drawPins(lastNearby));
   map.setView([state.place.lat, state.place.lng], 13);
+}
+
+// Pins closer together than a fingertip on screen become one numbered bubble
+function drawPins(nearby) {
+  pinsLayer.clearLayers();
+  const groups = [];
+  for (const o of nearby) {
+    const p = map.latLngToLayerPoint([o.l.y, o.l.x]);
+    const g = groups.find((x) => x.p.distanceTo(p) < 24);
+    if (g) g.items.push(o);
+    else groups.push({ p, items: [o] });
+  }
+  for (const { items } of groups) {
+    const l = items[0].l;
+    if (items.length === 1) {
+      L.circleMarker([l.y, l.x], {
+        radius: 8, color: "#0d1322", weight: 3, opacity: l.ap ? 0.6 : 1, fillColor: catColor(l.c), fillOpacity: l.ap ? 0.45 : 1,
+      }).on("click", () => { state.detail = l.i; render({ keepScroll: true }); }).addTo(pinsLayer);
+      continue;
+    }
+    const lat = items.reduce((sum, o) => sum + o.l.y, 0) / items.length;
+    const lng = items.reduce((sum, o) => sum + o.l.x, 0) / items.length;
+    L.marker([lat, lng], {
+      icon: L.divIcon({ className: "cluster", html: String(items.length), iconSize: [34, 34] }),
+      title: T().here(items.length),
+    }).on("click", () => openGroup(items)).addTo(pinsLayer);
+  }
+}
+
+// A bubble zooms in to split up. Classes at the same address never split, so those are listed instead.
+function openGroup(items) {
+  const bounds = L.latLngBounds(items.map((o) => [o.l.y, o.l.x]));
+  if (map.getZoom() < 16 && bounds.getNorthEast().distanceTo(bounds.getSouthWest()) > 60) {
+    map.flyToBounds(bounds, { ...visibleArea(), maxZoom: 17, duration: 0.6 });
+    return;
+  }
+  state.group = items.map((o) => o.l.i);
+  state.sheet = "group";
+  render({ keepScroll: true });
 }
 
 function renderMap(c) {
@@ -1348,12 +1400,8 @@ function renderMap(c) {
   }).addTo(markersLayer);
   L.circleMarker(centre, { radius: 6, color: lime, weight: 10, opacity: 0.25, fillColor: lime, fillOpacity: 1, interactive: false }).addTo(markersLayer);
 
-  for (const o of c.nearby) {
-    const l = o.l;
-    L.circleMarker([l.y, l.x], {
-      radius: 8, color: "#0d1322", weight: 3, opacity: l.ap ? 0.6 : 1, fillColor: catColor(l.c), fillOpacity: l.ap ? 0.45 : 1,
-    }).on("click", () => { state.detail = l.i; render({ keepScroll: true }); }).addTo(markersLayer);
-  }
+  lastNearby = c.nearby;
+  drawPins(c.nearby);
 
   // Re-frame only when the place or distance changes, so filtering doesn't make the map jump
   const key = `${state.place.lat},${state.place.lng},${state.radius}`;
@@ -1363,14 +1411,19 @@ function renderMap(c) {
   }
 }
 
-// Fit the search circle into the part of the map you can see: below the top bar, above the panel
-function fitMap() {
+// The part of the map you can see: below the top bar, above the resting panel
+function visibleArea() {
   const app = $("app"), h = app.clientHeight;
   const panelTop = Math.max(h * 0.45, h - 420); // same as .panel's resting top in style.css
   const below = $("topbar").getBoundingClientRect().bottom - app.getBoundingClientRect().top;
+  return { paddingTopLeft: [16, below + 12], paddingBottomRight: [16, h - panelTop + 12] };
+}
+
+// Fit the search circle into the part of the map you can see
+function fitMap() {
   const bounds = L.latLng(state.place.lat, state.place.lng).toBounds(state.radius * 2000);
   map.invalidateSize();
-  map.fitBounds(bounds, { paddingTopLeft: [16, below + 12], paddingBottomRight: [16, h - panelTop + 12] });
+  map.fitBounds(bounds, visibleArea());
 }
 
 function render({ keepScroll = false } = {}) {
