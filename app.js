@@ -64,11 +64,13 @@ const CAT_COLORS = {
 };
 const catColor = (c) => CAT_COLORS[c] || "#a3adc2";
 
+// App text. Only English is offered for now; the Russian set is kept for when
+// the app gets a language choice again (state.ui picks the set).
 const STRINGS = {
   en: {
     age: "Age", under1: "Under 1", ageGroup: "Child’s age. Two kids? Tap both ages",
     filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", type: "Type", distance: "Distance",
-    includeOnline: "Include online classes", uiSwitch: "App language: English. Tap for Russian",
+    includeOnline: "Include online classes",
     where: "Where to look", nearMe: "Near me", useMyLocation: "Use my location", locating: "Finding your location…",
     blocked: "Location is blocked. Allow it in your browser settings, or search an area.",
     locFail: "Couldn’t get your location. Search an area instead.",
@@ -103,7 +105,7 @@ const STRINGS = {
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
     filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", type: "Тип", distance: "Расстояние",
-    includeOnline: "Показывать онлайн-занятия", uiSwitch: "Язык приложения: русский. Нажмите для английского",
+    includeOnline: "Показывать онлайн-занятия",
     where: "Где искать", nearMe: "Рядом со мной", useMyLocation: "Определить моё местоположение", locating: "Определяем местоположение…",
     blocked: "Доступ к геолокации запрещён. Разрешите его в настройках браузера или найдите район.",
     locFail: "Не удалось определить местоположение. Найдите район.",
@@ -178,7 +180,6 @@ const PREFS_KEY = "aroundnow-prefs";
 function loadPrefs() {
   try {
     const p = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
-    if (p.ui === "en" || p.ui === "ru") state.ui = p.ui;
     if (Array.isArray(p.ages)) state.ages = p.ages.filter((a) => AGES.includes(a));
     if (Array.isArray(p.langs)) state.langs = p.langs.filter((x) => typeof x === "string");
     if (RADII.includes(p.radius)) state.radius = p.radius;
@@ -186,7 +187,7 @@ function loadPrefs() {
 }
 function savePrefs() {
   try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ ui: state.ui, ages: state.ages, langs: state.langs, radius: state.radius }));
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ ages: state.ages, langs: state.langs, radius: state.radius }));
   } catch (e) { /* storage unavailable */ }
 }
 
@@ -434,8 +435,6 @@ function renderTop() {
   const t = T(), btn = $("placeBtn");
   btn.innerHTML = `${ICON.pin}<span class="place-text"><span class="name">${esc(placeName())}</span><span class="km">${t.within(rLabel(state.radius))}</span></span>${ICON.chevron}`;
   btn.setAttribute("aria-label", `${t.where}: ${placeName()}, ${rLabel(state.radius)}`);
-  $("uiBtn").textContent = state.ui.toUpperCase();
-  $("uiBtn").setAttribute("aria-label", t.uiSwitch);
   document.documentElement.lang = state.ui;
 }
 
@@ -771,7 +770,6 @@ function toggle(key, v) {
 }
 
 const ACTIONS = {
-  ui: () => { state.ui = isRu() ? "en" : "ru"; savePrefs(); },
   age: (v) => { toggle("ages", Number(v)); savePrefs(); },
   radius: (v) => { state.radius = Number(v); savePrefs(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
@@ -803,7 +801,7 @@ const ACTIONS = {
 };
 
 // Actions that only open or close something keep the list where it was
-const KEEP_SCROLL = new Set(["ui", "sheet", "closeSheet", "open", "closeDetail", "panel"]);
+const KEEP_SCROLL = new Set(["sheet", "closeSheet", "open", "closeDetail", "panel"]);
 
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-act]");
