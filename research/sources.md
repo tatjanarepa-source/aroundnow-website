@@ -18,6 +18,8 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
   website** lists it as running now. If the newest evidence is older than 12 months, or it
   appears only on a directory (Happity, Eventbrite, Hoop) with past dates, it does **not**
   count: put it under "Leads not checked" in `log.md` instead.
+- **A parent's first-hand report** ("I go every Thursday") counts as fresh evidence. Still look
+  for the organiser's own page to get the exact times; parents' times can be off.
 - Never guess a day, time, age or price. Leave it empty and say what's missing in `NeedsInfo`.
 - Every row gets `Status = Check`, so it shows as "Not yet confirmed" until a parent confirms it.
 - Note how current the timetable is ("2026/27 timetable", "page updated Sep 2026") in `NeedsInfo`.
@@ -26,7 +28,13 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 ## Source types
 
 ### Places that host classes
-- **Churches and church halls**: parish websites, "what's on" or "hall hire" pages, and baby/toddler groups.
+- **Churches and church halls**: don't rely on keyword searches; groups have their own names
+  ("Mini Saints", "Tiddlers", "Shining Stars"). Sweep venue by venue instead:
+  1. List every church in the area: A Church Near You (Church of England: search the postcode),
+     plus Catholic parishes, Baptist, Methodist, URC, Salvation Army and independent churches.
+  2. For each church, open its events page (`achurchnearyou.com/church/<id>/service-and-events/events-all/`)
+     and its own website's "what's on" or "children and families" page.
+  3. Write in `log.md` which churches you checked, so the next run doesn't repeat them.
 - **Pubs with function rooms**: "what's on" or "events" pages (e.g. The Drapers Arms in Ealing).
 - **Community centres and halls**: council-run and charity-run.
 - **Libraries**: rhyme time, Bounce and Rhyme, Lego club, homework club.
@@ -57,6 +65,7 @@ tennis, chess, coding, cooking.
 | Lead | Area | Notes |
 |---|---|---|
 | The Drapers Arms | Ealing Broadway | Pub; offers some classes from about 3 years. Find its events page |
+| All Saints Ealing, W5 3JJ | Ealing Common | Done: Mini Saints (found by a parent, missed by keyword search) |
 | La Chouette Nursery School | Ealing W5 3TJ | French nursery |
 | Ealing libraries: Northfields, Greenford, Hanwell, Acton | Ealing | Rhyme times; addresses already confirmed |
 | Ealing Junior Chess Club | Ealing | |

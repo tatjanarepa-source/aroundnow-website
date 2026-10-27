@@ -20,7 +20,10 @@ Don't wait until the end; a run can be cut off at any time.
 RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
 
 ## 3. Research
-- Start with known leads for the area, then search. 4–8 searches is usually plenty.
+- Start with known leads for the area.
+- For **venues** (churches, libraries, community centres, leisure centres): first list every venue in
+  the area, then open each one's events or what's-on page. Keyword searches miss groups with their own
+  names. For **providers** (franchises, activities): search, then confirm on their site.
 - Confirm every class on the provider's own site (or the council's). Quote, don't guess.
 - Apply the **freshness rule** in `sources.md`: if the newest evidence is over 12 months old, don't add
   the row; list it under "Leads not checked" with the date you found.

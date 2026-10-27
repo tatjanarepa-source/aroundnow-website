@@ -8,6 +8,7 @@ ticks the line and adds a row to "Done". Keep batches small (up to ~10 classes).
 Ealing first, then the rest of London borough by borough, then England (franchise finders only).
 
 - [x] Ealing: churches, church halls and pubs (incl. The Drapers Arms)
+- [ ] Ealing: churches, sweep 2: list every church via A Church Near You + other denominations, check each events page (checked so far: St Mary's, St Andrew's URC, St John's, St Stephen's, All Saints, St Paul's hall)
 - [ ] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [ ] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times)
 - [ ] Ealing: council family hubs and children's centres
@@ -27,7 +28,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
-| 2026-10-27 | Ealing: churches, church halls and pubs | `2026-10-27-ealing-churches-pubs.csv` | 6 | 4 church toddler groups, Perform drama ×2 at St Paul's hall. Drapers Arms and Little Lounge dropped (evidence from 2025). No other Ealing pub found with kids' activities |
+| 2026-10-27 | Ealing: churches, church halls and pubs | `2026-10-27-ealing-churches-pubs.csv` | 7 | 5 church toddler groups (incl. Mini Saints, All Saints, added from a parent's tip), Perform drama ×2 at St Paul's hall. Drapers Arms and Little Lounge dropped (evidence from 2025). No other Ealing pub found with kids' activities |
 
 ## Leads not checked
 
