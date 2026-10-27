@@ -63,7 +63,7 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 - The council's Family Information Service / Local Offer directory.
 
 ### Franchises (one "find a class" page covers a whole region)
-Baby Ballet, Tumble Tots, Water Babies, Puddle Ducks, Monkey Music, Hartbeeps, Toddler Sense,
+Bach to Baby (family concerts), Baby Ballet, Tumble Tots, Water Babies, Puddle Ducks, Monkey Music, Hartbeeps, Toddler Sense,
 Baby Sensory, Jo Jingles, Little Kickers, Mini Professionals, Stagecoach, Perform, Razzamataz,
 Kumon, Explore Learning, Crafty Kids, Rugbytots, Footy Pups, Diddi Dance.
 
