@@ -70,7 +70,9 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
   - Note the **organiser** in the batch row. Later we can pull their upcoming dates automatically.
 
 ### Council
-- Family hubs and children's centres (the council's "family hubs" page).
+- Family hubs and children's centres (the council's "family hubs" page). Ealing: monthly PDF timetables linked from
+  `ealingfamiliesdirectory.org.uk/childrens-centre-timetables` (needs a real browser to find the links; the PDFs themselves
+  download fine). Read the 3 locality PDFs; the text is in 5 day columns, so extract by column (pypdf with positions)
 - The council's Family Information Service / Local Offer directory.
 
 ### Franchises (one "find a class" page covers a whole region)

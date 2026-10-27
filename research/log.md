@@ -14,7 +14,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: Eventbrite kids, baby and family events (next 2 months)
 - [x] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [x] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times) **(run locally: council sites block the cloud run)**. Done locally 2026-10-27; repeat every 2–3 months (libraries.ealing.gov.uk/events/category/kids)
-- [ ] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**
+- [x] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**. Done locally 2026-10-27 from the October timetables; **monthly re-check** (new PDFs each month at ealingfamiliesdirectory.org.uk/childrens-centre-timetables)
 - [ ] Ealing: Eventbrite, browse in Chrome (monthly: Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past 3 months) **(run locally: Eventbrite search needs a real browser)**. Last done 2026-10-27
 - [ ] Ealing: franchises (Baby Ballet, Hartbeeps, Toddler Sense, Jo Jingles, Water Babies…)
 - [ ] Ealing: gymnastics and swimming
@@ -32,6 +32,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-27 | Ealing: children's centres (local, Chrome) | `2026-10-27-ealing-family-hubs.csv` | 21 | ealingfamiliesdirectory.org.uk works in a real browser; it links monthly PDF timetables (3 locality PDFs cover all centres: ACE, NAG, SWE). One row per centre with its open sessions (stay and play, music, little explorers, Tiny Sports Stars, baby groups) in ScheduleText, plus rows for sessions at other venues (Acton library, Southall library, North Hanwell Baptist, Copley Close, North Primary School). Left out: NHS clinics, referral-only and booked courses (infant massage, talk and play), Maples (sessions mostly clinics, Friary Park venue address unknown), Hathaway and Log Cabin (no sessions running), Northolt Park (moved to Petts Hill). Prices not stated in the PDFs |
 | 2026-10-27 | Ealing: libraries (local, Chrome) | `2026-10-27-ealing-libraries.csv` | 11 | The council events site works in a real browser. Kids category (178 sessions, ~117 load) read on libraries.ealing.gov.uk; addresses from ealing.gov.uk find-your-library. Added: Hanwell storytime; Ealing Central Wed bounce & rhyme, kids chess club, Sat craft (only this week's dates published); Northolt bounce & rhyme, storytime, Sat storytime & craft; Southall and Jubilee Gardens bounce & rhyme; Acton coding club and Saturday craft. Ealing Central Fri bounce & rhyme is already live as E01 (still running, 30 Oct listed). No kids' events listed at Greenford, Northfields or West Ealing. Left out: one-off scavenger hunts and Halloween/Diwali crafts, Hanwell homework club, Acton craft corner and colouring club (irregular weeks) |
 | 2026-10-27 | Ealing: Eventbrite in Chrome | (none) | 0 | Eventbrite's own Ealing kids/baby/toddler pages show only ~6 promoted adult events. Google `site:eventbrite.co.uk` found 10 Ealing pages: Bach to Baby (already listed), NHS paediatric OT parent workshops (for parents, not added), candlelit Christmas concert at St John's W13 and Ealing Beaver Project walks (general events, not kids' activities). Eventbrite is thin for Ealing kids; Ticket Tailor, Happity and organisers' own sites matter more |
 | 2026-10-27 | Ealing: libraries | `2026-10-27-ealing-libraries.csv` | 0 | Blocked: libraries.ealing.gov.uk, ealing.events.mylibrary.digital and ealingfamiliesdirectory.org.uk return 403 to the research tool, so no session could be read first-hand. Leads below. Needs a person (or a run with browser access) |
@@ -53,7 +54,8 @@ Things a person should look at (Facebook-only groups, pages that need a login, u
 - Ealing Abbey parish hall (Charbury Grove, W5 2DY): Happity shows a Thursday group, 3 months–10 years, details missing. No parish page found.
 - Kingsdown Methodist Church (W13): Splash and Dash Pre-School Playgroup (Ofsted listed). Check under nurseries.
 - Hartbeeps Baby Beeps at Haven Green Baptist (Tuesdays, Happity 2024). Check under franchises.
-- Log Cabin Children's Centre, Northfields Avenue W5: Stay and Play, booking needed (April 2026 timetable). Check under council.
+- Log Cabin and Hathaway children's centres: "no sessions running" on the October 2026 timetable page.
+- Maples Children's Centre (W3 7LL): stay and play at Friary Park community centre (Tue 9:30–11, 0–4, drop in) and story and rhyme (Thu 9:30–10:30, pre-booked). Find the Friary Park venue address.
 - No weekday toddler group found for St Peter's, St Barnabas or St Matthew's own websites either.
 - Eventbrite Ealing search pages (`eventbrite.co.uk/d/united-kingdom--ealing/kids/`) need a real browser; worth a look by a person.
 - The Drayton Court, W13: "Bring Your Baby" pub quiz, 13 Nov (search snippet only; a parents' event rather than a kids' one).
