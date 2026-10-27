@@ -56,6 +56,20 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 - **Parks and gardens**: forest school, nature clubs, park rangers' events.
 - **Museums, galleries and theatres**: family workshops and holiday activities.
 
+### Football club community trusts
+Professional clubs' charities run toddler football, gymnastics, dance, holiday camps and after-school clubs, often
+under their own brand names. Ealing area: **Brentford FC Community Sports Trust** (Mini Bees football, Tumble Bees
+gymnastics, Boogie Bees dance at Gunnersbury Park Sports Hub; done 2026-10-27), **QPR in the Community Trust**,
+**Fulham FC Foundation**, **Chelsea Foundation**. Their own site often links an old timetable; the current term is on
+their booking platform.
+
+### Booking platforms (best for current timetables)
+- **Pebble** (activities.bookpebble.co.uk): a provider's `/supplier/...` page lists every venue with this term's
+  sessions, ages and "next session" date. Find it with Google `site:activities.bookpebble.co.uk <provider>`.
+  Venue sections expand on click; each session card opens a panel with times and the lowest price.
+- **ClassForKids** (classforkids.io) and **Happity** (happity.co.uk): good for finding leads; confirm on the provider's site.
+- School after-school clubs listed there (e.g. "Mount Carmel – Year 3&4 tennis") are usually for that school's pupils only: skip.
+
 ### Event sites
 - **Ticket Tailor** (tickettailor.com): used by small charities, e.g. Ealing 135
   (`tickettailor.com/events/ealing135`): stay & plays, forest school. Organiser pages list all upcoming dates.
@@ -103,3 +117,10 @@ tennis, chess, coding, cooking.
 | Polish Saturday school near St Benedict's | Ealing | |
 | Hartbeeps, Toddler Sense, Jo Jingles | Ealing | Franchises |
 | Forest school: Horsenden Hill, Walpole Park, Pitshanger Park | Ealing | |
+| Footy Fun 4 Kids (Mini Kickers, 1–3 years) | Ealing | footyfun4kids.com; drop-in toddler football |
+| Little Kickers Ealing and Uxbridge | Ealing | Franchise, 18 months–8 years |
+| Toddlers & Kids Football at All Saints, Ealing Common | Ealing Common | Saturdays, seen on clubhubuk.co.uk; find the organiser |
+| First Steps Sports Club, We Make Footballers, Ealing United FC | Ealing | Football 2–12 years |
+| Twisters gymnastics and dance | West Ealing / Acton | twisters.org.uk; preschool gym at St John's W13, Acton Baptist Church |
+| Ealing Gymnastics, YMCA South Ealing, Club des Sports, The Little Gym Chiswick | Ealing / Chiswick | Gymnastics |
+| QPR in the Community Trust, Fulham FC Foundation | West London | Club community trusts, like Brentford's |
