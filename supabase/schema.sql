@@ -26,7 +26,7 @@ create table if not exists public.listings (
                     'Holiday camp', 'Workshop / event', 'Online course')),
   category        text check (category in (
                     'Languages', 'Arts / Crafts', 'Performing arts', 'Sports / Dance', 'Chess',
-                    'STEM / Thinking', 'Childcare / Preschool', 'Outdoor / Nature',
+                    'STEM / Thinking', 'Childcare / Preschool', 'Outdoor / Nature', 'Soft play',
                     'Events / Parties', 'Life skills', 'Mixed')),
   subjects        text[] not null default '{}',
   age_min_months  int check (age_min_months >= 0),

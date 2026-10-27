@@ -16,7 +16,7 @@ const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA"; // public
 const FORMATS = ["Group class", "After-school class", "Workshop / event", "Holiday camp", "Preschool / nursery",
   "Weekend school", "Online course"];
 const CATEGORIES = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "Chess", "STEM / Thinking",
-  "Childcare / Preschool", "Outdoor / Nature", "Life skills", "Mixed", "Events / Parties"];
+  "Childcare / Preschool", "Outdoor / Nature", "Soft play", "Life skills", "Mixed", "Events / Parties"];
 const RUNS = ["Term time", "Year-round", "Holidays"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const TIMES = ["Morning", "Afternoon", "Evening"];

@@ -55,19 +55,19 @@ const SCHOOL_HOLIDAYS = [
 const DATES = ["today", "tomorrow", "weekend"];
 
 const CATEGORIES = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "Chess", "STEM / Thinking",
-  "Childcare / Preschool", "Outdoor / Nature", "Life skills", "Mixed", "Events / Parties"];
+  "Childcare / Preschool", "Outdoor / Nature", "Soft play", "Life skills", "Mixed", "Events / Parties"];
 // One colour per activity, for the map pins and the dot on each card
 const CAT_COLORS = {
   "Languages": "#7cc7ff", "Sports / Dance": "#6ee7a8", "Performing arts": "#c9a2ff", "Arts / Crafts": "#ff9bc9",
   "Chess": "#a5b4fc", "STEM / Thinking": "#67e8f9", "Childcare / Preschool": "#ffe27a", "Outdoor / Nature": "#5eead4",
-  "Life skills": "#fca5a5", "Mixed": "#ffb86b", "Events / Parties": "#ff9bc9",
+  "Soft play": "#fb923c", "Life skills": "#fca5a5", "Mixed": "#ffb86b", "Events / Parties": "#ff9bc9",
 };
 const catColor = (c) => CAT_COLORS[c] || "#a3adc2";
 
 // "Add a class" form choices, mapped onto the stored fields.
 // "Something else" is stored as Mixed, which the database holds back for an admin to check.
 const ADD_CATS = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "STEM / Thinking", "Chess",
-  "Outdoor / Nature", "Childcare / Preschool", "Mixed"];
+  "Outdoor / Nature", "Soft play", "Childcare / Preschool", "Mixed"];
 const ADD_KINDS = { weekly: "Group class", oneoff: "Workshop / event", camp: "Holiday camp", nursery: "Preschool / nursery" };
 const ADD_RUNS = { term: "Term time", year: "Year-round", hols: "Holidays" };
 const AGE_FROM = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16];
@@ -108,7 +108,7 @@ const STRINGS = {
     ty: { weekendschool: "Weekend schools", weekly: "Weekly classes", camps: "Holiday camps", nursery: "Nursery", events: "Events", online: "Online" },
     cat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre", "Arts / Crafts": "Arts & crafts",
       "Chess": "Chess", "STEM / Thinking": "Science & thinking", "Childcare / Preschool": "Nursery", "Outdoor / Nature": "Outdoors",
-      "Life skills": "Life skills", "Mixed": "Clubs", "Events / Parties": "Events & parties" },
+      "Soft play": "Soft play", "Life skills": "Life skills", "Mixed": "Clubs", "Events / Parties": "Events & parties" },
     lang: { Russian: "Russian", English: "English" },
     day: { Mon: "Mon", Tue: "Tue", Wed: "Wed", Thu: "Thu", Fri: "Fri", Sat: "Sat", Sun: "Sun" },
 
@@ -131,7 +131,7 @@ const STRINGS = {
     fCat: "Activity", fOtherCat: "We check “Something else” before it goes on the map.",
     addCat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre",
       "Arts / Crafts": "Arts & crafts", "STEM / Thinking": "Science & thinking", "Chess": "Chess",
-      "Outdoor / Nature": "Outdoors", "Childcare / Preschool": "Childcare", "Mixed": "Something else" },
+      "Outdoor / Nature": "Outdoors", "Soft play": "Soft play", "Childcare / Preschool": "Childcare", "Mixed": "Something else" },
     fAges: "Ages", ageFrom: "From…", ageTo: "To…", youngest: "Youngest age", oldest: "Oldest age", birth: "Birth", noUpper: "No upper age",
     fLangs: "Taught in", otherLang: "Other…", otherLangHint: "Which language?",
     fWhere: "Where", inPerson: "In person",
@@ -209,7 +209,7 @@ const STRINGS = {
     ty: { weekendschool: "Школы выходного дня", weekly: "Кружки и секции", camps: "Лагеря", nursery: "Детский сад", events: "Мероприятия", online: "Онлайн" },
     cat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр", "Arts / Crafts": "Творчество",
       "Chess": "Шахматы", "STEM / Thinking": "Наука и мышление", "Childcare / Preschool": "Детский сад", "Outdoor / Nature": "На природе",
-      "Life skills": "Навыки для жизни", "Mixed": "Кружки", "Events / Parties": "Праздники и события" },
+      "Soft play": "Игровые комнаты", "Life skills": "Навыки для жизни", "Mixed": "Кружки", "Events / Parties": "Праздники и события" },
     lang: { Russian: "Русский", English: "Английский" },
     day: { Mon: "Пн", Tue: "Вт", Wed: "Ср", Thu: "Чт", Fri: "Пт", Sat: "Сб", Sun: "Вс" },
 
@@ -232,7 +232,7 @@ const STRINGS = {
     fCat: "Направление", fOtherCat: "«Другое» мы проверяем, прежде чем показать на карте.",
     addCat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр",
       "Arts / Crafts": "Творчество", "STEM / Thinking": "Наука и мышление", "Chess": "Шахматы",
-      "Outdoor / Nature": "На природе", "Childcare / Preschool": "Присмотр за детьми", "Mixed": "Другое" },
+      "Outdoor / Nature": "На природе", "Soft play": "Игровые комнаты", "Childcare / Preschool": "Присмотр за детьми", "Mixed": "Другое" },
     fAges: "Возраст", ageFrom: "От…", ageTo: "До…", youngest: "Младший возраст", oldest: "Старший возраст", birth: "С рождения", noUpper: "Без ограничения",
     fLangs: "Язык занятий", otherLang: "Другой…", otherLangHint: "Какой язык?",
     fWhere: "Где", inPerson: "Очно",
