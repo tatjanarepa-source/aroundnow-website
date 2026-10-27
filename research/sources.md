@@ -35,6 +35,9 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
   2. For each church, open its events page (`achurchnearyou.com/church/<id>/service-and-events/events-all/`)
      and its own website's "what's on" or "children and families" page.
   3. Write in `log.md` which churches you checked, so the next run doesn't repeat them.
+  Note: churches rarely post weekday groups on A Church Near You. Their own website ("hosting our
+  community", "children and families") and booking pages are usually where they are.
+  Ealing's Church of England churches are A Church Near You IDs 15685–15700.
 - **Pubs with function rooms**: "what's on" or "events" pages (e.g. The Drapers Arms in Ealing).
 - **Community centres and halls**: council-run and charity-run.
 - **Libraries**: rhyme time, Bounce and Rhyme, Lego club, homework club.
@@ -43,6 +46,8 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 - **Museums, galleries and theatres**: family workshops and holiday activities.
 
 ### Event sites
+- **Ticket Tailor** (tickettailor.com): used by small charities, e.g. Ealing 135
+  (`tickettailor.com/events/ealing135`): stay & plays, forest school. Organiser pages list all upcoming dates.
 - **Eventbrite** (eventbrite.co.uk): search "<area> kids", "<area> baby", "<area> toddler" and
   family events. Many small organisers (churches, charities, baby groups) take bookings there.
   Read the event pages the way a parent would; no bulk scraping (against Eventbrite's terms).
