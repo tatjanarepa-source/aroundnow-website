@@ -60,11 +60,17 @@ for (const r of rows) {
   for (const t of list(r.TimeOfDay)) if (!TIMES.includes(t)) note(r, "errors", `TimeOfDay "${t}" should be one of ${TIMES.join(",")}`);
   for (const f of ["AgeMinMonths", "AgeMaxMonths"]) if (r[f] && !/^\d+$/.test(r[f])) note(r, "errors", `${f} must be whole months`);
   for (const f of ["StartTime", "EndTime"]) if (r[f] && !/^\d\d:\d\d$/.test(r[f])) note(r, "errors", `${f} must look like 09:30`);
+  const today = new Date().toISOString().slice(0, 10);
+  for (const f of ["EventDate", "EventEndDate"]) if (r[f] && !/^\d{4}-\d\d-\d\d$/.test(r[f])) note(r, "errors", `${f} must look like 2026-10-31`);
+  if (r.EventEndDate && !r.EventDate) note(r, "errors", "EventEndDate without EventDate");
+  if (r.EventEndDate && r.EventEndDate < r.EventDate) note(r, "errors", "EventEndDate is before EventDate");
+  if ((r.EventEndDate || r.EventDate) && (r.EventEndDate || r.EventDate) < today) note(r, "errors", "event is already over");
+  if (r.Format === "Workshop / event" && !r.EventDate && !list(r.DaysOfWeek).length) note(r, "warnings", "event without a date or days");
   if (r.ContactDetails_PRIVATE) note(r, "errors", "ContactDetails_PRIVATE must stay empty: batch files are public on GitHub");
   if (r.Status !== "Check") note(r, "errors", 'Status must be "Check" (research is never shown as confirmed)');
   if (r.DeliveryMode !== "Online" && !r.Postcode) note(r, "errors", "in-person listing without a postcode");
   if (!r.AgeMinMonths && !r.AgeMaxMonths) note(r, "warnings", "no ages");
-  if (!list(r.DaysOfWeek).length && r.Format !== "Online course") note(r, "warnings", "no days (won't match Today/Tomorrow/Weekend)");
+  if (!list(r.DaysOfWeek).length && !r.EventDate && r.Format !== "Online course") note(r, "warnings", "no days (won't match Today/Tomorrow/Weekend)");
 }
 
 // 2. Map pins from postcodes
@@ -102,6 +108,8 @@ for (const f of readdirSync(dirname(path)).filter((f) => f.endsWith(".csv") && f
 }
 for (const r of rows) {
   for (const o of others) {
+    // A live row with an ID from this file is this batch, already imported (re-importing updates it)
+    if (o.where === "live" && seenIds.has(o.id)) continue;
     if (o.id === r.RecordID) { note(r, "errors", `RecordID already used (${o.where})`); continue; }
     const samePlace = pc(o.postcode) && pc(o.postcode) === pc(r.Postcode);
     const sameSite = host(o.website) && host(o.website) === host(r.Website);

@@ -479,17 +479,17 @@ function runsOn(l, d) {
 }
 function regularOn(l, d, day, term) {
   // One-off events and dated camps run on their dates, whatever the school calendar says
-  if (l.ed) return isoDate(d) >= l.ed && isoDate(d) <= (l.ee || l.ed);
+  if (l.ed) return isoDate(d) >= l.ed && isoDate(d) <= (l.ee || l.ed) && !endedToday(l, d);
   const days = l.d.length ? l.d : (l.f === "Preschool / nursery" || l.f === "Holiday camp" ? WEEKDAYS : []);
   if (!days.includes(day)) return false;
   if (l.r === "Term time" && term === "holiday") return false;
   if ((l.r === "Holidays" || l.f === "Holiday camp") && term === "term") return false;
-  // Already finished today
-  if (isoDate(d) === isoDate(new Date()) && l.et) {
-    const now = new Date();
-    if (`${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}` >= l.et) return false;
-  }
-  return true;
+  return !endedToday(l, d);
+}
+function endedToday(l, d) {
+  if (isoDate(d) !== isoDate(new Date()) || !l.et) return false;
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}` >= l.et;
 }
 function onDates(l, dates) { return dates.some((d) => runsOn(l, d)); }
 function hasDays(l) { return l.d.length > 0 || !!l.ed || l.f === "Preschool / nursery" || l.f === "Holiday camp"; }
@@ -584,8 +584,16 @@ function daysText(days) {
 }
 
 function whenText(l) {
-  const d = daysText(l.d);
+  const d = l.ed ? eventDateText(l) : daysText(l.d);
   return d && l.st ? `${d} ${l.st}` : d;
+}
+
+// "Sat 31 Oct", or "Mon 26 – Fri 30 Oct" for events over several days
+function eventDateText(l) {
+  const f = (iso, o) => new Date(`${iso}T12:00`).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", o);
+  if (!l.ee || l.ee === l.ed) return f(l.ed, { weekday: "short", day: "numeric", month: "short" });
+  const sameMonth = l.ed.slice(0, 7) === l.ee.slice(0, 7);
+  return `${f(l.ed, sameMonth ? { weekday: "short", day: "numeric" } : { weekday: "short", day: "numeric", month: "short" })} – ${f(l.ee, { weekday: "short", day: "numeric", month: "short" })}`;
 }
 
 function langText(l) { return l.l.map((x) => T().lang[x] || x).join(T().and); }
@@ -1319,7 +1327,7 @@ function renderDetail(c) {
         <span class="where">${ICON.pin}<span>${esc(whereText(l, o.d))}</span></span>
         <span class="tags">${tags.join("")}</span>
         <dl class="facts">
-          <div><dt>${t.dWhen}</dt><dd>${esc(l.s || daysText(l.d) || "—")}</dd></div>
+          <div><dt>${t.dWhen}</dt><dd>${esc([l.ed ? whenText(l) : "", l.s || (l.ed ? "" : daysText(l.d))].filter(Boolean).join(". ") || "—")}</dd></div>
           <div><dt>${t.dPrice}</dt><dd>${esc(l.p || t.priceUnknown)}</dd></div>
           <div><dt>${t.dWhere}</dt><dd>${esc(where)}</dd></div>
         </dl>

@@ -47,7 +47,8 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
   family events. Many small organisers (churches, charities, baby groups) take bookings there.
   Read the event pages the way a parent would; no bulk scraping (against Eventbrite's terms).
   - A **recurring** event with upcoming dates becomes a normal listing (that counts as fresh).
-  - A **one-off** event goes under "Leads not checked" until the app supports dated events.
+  - A **one-off** event with an upcoming date becomes a listing with `Format = Workshop / event` and
+    `EventDate` (and `EventEndDate` if it runs over several days). It disappears from the app after it ends.
   - Note the **organiser** in the batch row. Later we can pull their upcoming dates automatically.
 
 ### Council

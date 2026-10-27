@@ -91,6 +91,22 @@ npm run dev
 then open `http://127.0.0.1:8532`. Geolocation only works over HTTPS or on
 `localhost`.
 
+## Finding more classes (repeatable research)
+
+Say **"find classes"** in Claude Code. The `find-classes` skill takes the next job
+in `research/log.md`, follows the checklist and rules in `research/sources.md`
+(own websites, no Facebook, evidence from the last 12 months), and saves a batch
+to `research/batches/`. Then:
+
+```
+npm run check:batch -- research/batches/<file>.csv       # checks fields, adds map pins, flags duplicates
+npm run import:listings -- research/batches/<file>.csv   # puts it on the live site (needs .env)
+```
+
+Batches use the seed columns plus `EventDate` / `EventEndDate` for one-off events
+and dated camps; those show under Today / Tomorrow / This weekend and disappear
+once they're over.
+
 ## Deploying
 
 ```

@@ -32,6 +32,8 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
   - `Category`: Languages | Sports / Dance | Performing arts | Arts / Crafts | Chess | STEM / Thinking | Childcare / Preschool | Outdoor / Nature | Life skills | Mixed | Events / Parties
   - `RunsWhen`: Term time | Year-round | Holidays. `HolidayClub`: Yes | No
   - `DaysOfWeek`: `Mon, Sat`. `TimeOfDay`: Morning | Afternoon | Evening. `StartTime`/`EndTime`: `09:30`
+  - One-off events and dated camps: `EventDate` / `EventEndDate` as `2026-10-31` (only upcoming ones).
+    Leave `DaysOfWeek` empty for a one-off event
   - Ages in **months** (3 years = 36). `LanguageSupport`: e.g. `English` or `Russian, English`
   - `Status`: always `Check`. `ContactMethod`: Website / Email / Phone. Leave `ContactDetails_PRIVATE` empty
   - `NeedsInfo`: what's missing or uncertain, and how current the timetable looks

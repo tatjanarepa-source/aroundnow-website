@@ -43,6 +43,8 @@ const listings = rows.map((r) => ({
   start_time: text(r.StartTime),
   end_time: text(r.EndTime),
   schedule_text: text(r.ScheduleText),
+  event_date: text(r.EventDate),
+  event_end_date: text(r.EventEndDate),
   price_text: text(r.PriceText),
   description: text(r.Description),
   pros: text(r.Pros),
