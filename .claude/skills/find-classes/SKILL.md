@@ -22,6 +22,8 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
 ## 3. Research
 - Start with known leads for the area, then search. 4–8 searches is usually plenty.
 - Confirm every class on the provider's own site (or the council's). Quote, don't guess.
+- Apply the **freshness rule** in `sources.md`: if the newest evidence is over 12 months old, don't add
+  the row; list it under "Leads not checked" with the date you found.
 - Fill the columns like this:
   - `Format`: Group class | After-school class | Workshop / event | Holiday camp | Preschool / nursery | Weekend school | Online course
   - `Category`: Languages | Sports / Dance | Performing arts | Arts / Crafts | Chess | STEM / Thinking | Childcare / Preschool | Outdoor / Nature | Life skills | Mixed | Events / Parties

@@ -27,12 +27,14 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
-| 2026-10-27 | Ealing: churches, church halls and pubs | `2026-10-27-ealing-churches-pubs.csv` | 8 | 5 church toddler groups, Perform drama ×2 at St Paul's hall, Kids' Table at The Drapers Arms (only source dated Nov 2025). No other Ealing pub found with kids' activities |
+| 2026-10-27 | Ealing: churches, church halls and pubs | `2026-10-27-ealing-churches-pubs.csv` | 6 | 4 church toddler groups, Perform drama ×2 at St Paul's hall. Drapers Arms and Little Lounge dropped (evidence from 2025). No other Ealing pub found with kids' activities |
 
 ## Leads not checked
 
 Things a person should look at (Facebook-only groups, pages that need a login, unclear venues).
 
+- The Kids' Table at The Drapers Arms (24-25 High Street, W5 5DB): Sundays 12:00–16:00, ages 3–10, free for diners. Only source is Happity, dated Nov 2025. Ask the pub.
+- The Little Lounge, Salvation Army West Ealing (8 Leeland Road, W13 9HH): Mon/Wed 10:00–11:30 term time, 0–5. Only source is Eventbrite, April 2025.
 - Baby Sensory at St Mary's Ealing (W5 5RH): weekday mornings, listing from 2024. Check under franchises.
 - The Drapers Arms pumpkin painting and carving, Sat 31 Oct 2026, 10:00–13:00: a one-off event; the app has no event dates yet.
 - No toddler group found online for: Ealing Abbey, Christ the Saviour, St Barnabas Pitshanger, Ealing Green Church, Ealing Christian Centre. Ask local parents.

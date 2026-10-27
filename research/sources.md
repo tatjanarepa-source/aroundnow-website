@@ -13,6 +13,11 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 - **No Facebook, Instagram or WhatsApp scraping.** Leads from there go in `log.md` as
   "lead, not checked" for a person to look at.
 - **Organisations only.** No private individuals (a tutor working from home, a childminder).
+- **Freshness: what counts.** A class goes on the map only if there is evidence from the
+  **last 12 months** (a dated timetable or term, upcoming dates), or the organisation's **own
+  website** lists it as running now. If the newest evidence is older than 12 months, or it
+  appears only on a directory (Happity, Eventbrite, Hoop) with past dates, it does **not**
+  count: put it under "Leads not checked" in `log.md` instead.
 - Never guess a day, time, age or price. Leave it empty and say what's missing in `NeedsInfo`.
 - Every row gets `Status = Check`, so it shows as "Not yet confirmed" until a parent confirms it.
 - Note how current the timetable is ("2026/27 timetable", "page updated Sep 2026") in `NeedsInfo`.
