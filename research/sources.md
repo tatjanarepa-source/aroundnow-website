@@ -59,7 +59,9 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 ### Event sites
 - **Ticket Tailor** (tickettailor.com): used by small charities, e.g. Ealing 135
   (`tickettailor.com/events/ealing135`): stay & plays, forest school. Organiser pages list all upcoming dates.
-- **Eventbrite** (eventbrite.co.uk): search "<area> kids", "<area> baby", "<area> toddler" and
+- **Eventbrite** (eventbrite.co.uk): its own search pages need a real browser and mostly show promoted adult
+  events. Best route: Google `site:eventbrite.co.uk <area> toddler OR baby OR kids OR family`. Thin for Ealing kids
+  (Oct 2026). Otherwise search "<area> kids", "<area> baby", "<area> toddler" and
   family events. Many small organisers (churches, charities, baby groups) take bookings there.
   Read the event pages the way a parent would; no bulk scraping (against Eventbrite's terms).
   - A **recurring** event with upcoming dates becomes a normal listing (that counts as fresh).

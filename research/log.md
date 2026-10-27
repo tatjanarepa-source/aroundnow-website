@@ -15,7 +15,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [ ] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times) **(run locally: council sites block the cloud run)**
 - [ ] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**
-- [ ] Ealing: Eventbrite, browse in Chrome (weekly: kids, baby, toddler, family; next 6 weeks) **(run locally: Eventbrite search needs a real browser)**
+- [ ] Ealing: Eventbrite, browse in Chrome (monthly: Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past 3 months) **(run locally: Eventbrite search needs a real browser)**. Last done 2026-10-27
 - [ ] Ealing: franchises (Baby Ballet, Hartbeeps, Toddler Sense, Jo Jingles, Water Babies…)
 - [ ] Ealing: gymnastics and swimming
 - [ ] Ealing: art, music and drama
@@ -32,6 +32,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-27 | Ealing: Eventbrite in Chrome | (none) | 0 | Eventbrite's own Ealing kids/baby/toddler pages show only ~6 promoted adult events. Google `site:eventbrite.co.uk` found 10 Ealing pages: Bach to Baby (already listed), NHS paediatric OT parent workshops (for parents, not added), candlelit Christmas concert at St John's W13 and Ealing Beaver Project walks (general events, not kids' activities). Eventbrite is thin for Ealing kids; Ticket Tailor, Happity and organisers' own sites matter more |
 | 2026-10-27 | Ealing: libraries | `2026-10-27-ealing-libraries.csv` | 0 | Blocked: libraries.ealing.gov.uk, ealing.events.mylibrary.digital and ealingfamiliesdirectory.org.uk return 403 to the research tool, so no session could be read first-hand. Leads below. Needs a person (or a run with browser access) |
 | 2026-10-27 | Ealing: council family hubs | `2026-10-27-ealing-family-hubs.csv` | 0 | Blocked: the April 2026 centre timetable PDFs on ealing.gov.uk now 404 and the families directory returns 403. Leads below |
 | 2026-10-27 | Ealing: language (Gemstones added locally via Google) | `2026-10-27-ealing-language.csv` | 2 | La Chouette bilingual nursery (2026-27 terms and fees on its site; May 2024 post says it will move, no new address); Polish Saturday school at St Gregory's (no lesson times found; 2026/27 enrolment closed in July). Znaniye Russian School Ealing (Sat 10:00-14:00, Ealing Green College, W5 5EW) left out: already live as R033, not re-checked here |
