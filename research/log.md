@@ -7,7 +7,7 @@ ticks the line and adds a row to "Done". Keep batches small (up to ~10 classes).
 
 Ealing first, then the rest of London borough by borough, then England (franchise finders only).
 
-- [ ] Ealing: churches, church halls and pubs (incl. The Drapers Arms)
+- [x] Ealing: churches, church halls and pubs (incl. The Drapers Arms)
 - [ ] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [ ] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times)
 - [ ] Ealing: council family hubs and children's centres
@@ -27,7 +27,13 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-27 | Ealing: churches, church halls and pubs | `2026-10-27-ealing-churches-pubs.csv` | 8 | 5 church toddler groups, Perform drama ×2 at St Paul's hall, Kids' Table at The Drapers Arms (only source dated Nov 2025). No other Ealing pub found with kids' activities |
 
 ## Leads not checked
 
 Things a person should look at (Facebook-only groups, pages that need a login, unclear venues).
+
+- Baby Sensory at St Mary's Ealing (W5 5RH): weekday mornings, listing from 2024. Check under franchises.
+- The Drapers Arms pumpkin painting and carving, Sat 31 Oct 2026, 10:00–13:00: a one-off event; the app has no event dates yet.
+- No toddler group found online for: Ealing Abbey, Christ the Saviour, St Barnabas Pitshanger, Ealing Green Church, Ealing Christian Centre. Ask local parents.
+- Other Ealing pubs: none found with regular kids' sessions. Worth asking parents which pubs have kids' corners.
