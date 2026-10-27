@@ -58,18 +58,46 @@ const contacts = rows
   .filter((r) => text(r.ContactDetails_PRIVATE))
   .map((r) => ({ listing_id: r.RecordID, contact_details: r.ContactDetails_PRIVATE.trim() }));
 
+// Research batches carry LastChecked: it restarts the 90-day "needs re-checking" clock.
+// A class a parent has already confirmed keeps its status, and the newer of the two dates wins.
+if (rows.length && rows.every((r) => r.LastChecked)) {
+  const existing = await current(listings.map((l) => l.id));
+  listings.forEach((l, i) => {
+    const was = existing.get(l.id);
+    const checked = new Date(`${rows[i].LastChecked}T12:00:00Z`).toISOString();
+    l.last_confirmed_at = was?.last_confirmed_at && was.last_confirmed_at > checked ? was.last_confirmed_at : checked;
+    if (was && was.status !== "Check") l.status = was.status;
+  });
+}
+
 await upsert("listings", listings);
 await upsert("listing_contacts", contacts);
 console.log(`Imported ${listings.length} listings (${listings.filter((l) => l.location).length} with a map pin) and ${contacts.length} private contacts.`);
 
+function authHeaders() {
+  const headers = { apikey: SUPABASE_SECRET_KEY };
+  // Legacy service_role keys are JWTs and also need the Authorization header.
+  if (SUPABASE_SECRET_KEY.startsWith("eyJ")) headers.Authorization = `Bearer ${SUPABASE_SECRET_KEY}`;
+  return headers;
+}
+
+async function current(ids) {
+  const res = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/listings?select=id,status,last_confirmed_at&id=in.(${ids.map(encodeURIComponent).join(",")})`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    console.error(`Failed to read current listings: ${res.status} ${await res.text()}`);
+    process.exit(1);
+  }
+  return new Map((await res.json()).map((l) => [l.id, l]));
+}
+
 async function upsert(table, body) {
   const headers = {
-    apikey: SUPABASE_SECRET_KEY,
+    ...authHeaders(),
     "Content-Type": "application/json",
     Prefer: "resolution=merge-duplicates,return=minimal",
   };
-  // Legacy service_role keys are JWTs and also need the Authorization header.
-  if (SUPABASE_SECRET_KEY.startsWith("eyJ")) headers.Authorization = `Bearer ${SUPABASE_SECRET_KEY}`;
   const res = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${table}`, {
     method: "POST",
     headers,

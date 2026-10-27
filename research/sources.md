@@ -12,6 +12,8 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
   (Hoop, Happity, Netmums) are fine for *finding* leads, but confirm on the provider's site.
 - **No Facebook, Instagram or WhatsApp scraping.** Leads from there go in `log.md` as
   "lead, not checked" for a person to look at.
+- **Church services for children count** (e.g. toddler services followed by stay & play). Say it's a
+  service in `Description`/`NeedsInfo` so parents know.
 - **Organisations only.** No private individuals (a tutor working from home, a childminder).
 - **Freshness: what counts.** A class goes on the map only if there is evidence from the
   **last 12 months** (a dated timetable or term, upcoming dates), or the organisation's **own

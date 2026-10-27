@@ -62,6 +62,8 @@ for (const r of rows) {
   for (const f of ["StartTime", "EndTime"]) if (r[f] && !/^\d\d:\d\d$/.test(r[f])) note(r, "errors", `${f} must look like 09:30`);
   const today = new Date().toISOString().slice(0, 10);
   for (const f of ["EventDate", "EventEndDate"]) if (r[f] && !/^\d{4}-\d\d-\d\d$/.test(r[f])) note(r, "errors", `${f} must look like 2026-10-31`);
+  if (!/^\d{4}-\d\d-\d\d$/.test(r.LastChecked || "")) note(r, "errors", "LastChecked must be the date you checked it, like 2026-10-31");
+  else if (r.LastChecked > today) note(r, "errors", "LastChecked is in the future");
   if (r.EventEndDate && !r.EventDate) note(r, "errors", "EventEndDate without EventDate");
   if (r.EventEndDate && r.EventEndDate < r.EventDate) note(r, "errors", "EventEndDate is before EventDate");
   if ((r.EventEndDate || r.EventDate) && (r.EventEndDate || r.EventDate) < today) note(r, "errors", "event is already over");

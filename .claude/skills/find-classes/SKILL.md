@@ -38,8 +38,20 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
   - `Status`: always `Check`. `ContactMethod`: Website / Email / Phone. Leave `ContactDetails_PRIVATE` empty
   - `NeedsInfo`: what's missing or uncertain, and how current the timetable looks
   - `AddressSource`: the site the address came from. `Source`: `Web research YYYY-MM-DD`
+  - `LastChecked`: the date you confirmed it (today). Importing it restarts the 90-day clock
   - Leave `Lat`/`Lng` empty; the check script fills them.
 - One row per venue and class. If a provider runs the same class at 3 venues, that's 3 rows.
+
+## Re-check run ("re-check classes")
+Classes show "Needs re-checking" 90 days after their last check and disappear at 120 days unless a
+parent confirms them. A re-check run keeps good ones alive:
+1. List the live listings checked longest ago: `GET /rest/v1/listings?select=id,title,website,last_confirmed_at,created_at&order=last_confirmed_at.asc.nullsfirst&limit=15`
+   (publishable key from `scripts/check-batch.mjs`). Skip anything checked in the last 60 days.
+2. Copy each one's row from its batch file (or `data/listings-seed.csv`) into
+   `research/batches/YYYY-MM-DD-recheck.csv`, open its website and update times, prices and `NeedsInfo`.
+3. Still running → `LastChecked` = today. Gone or no fresh evidence → leave it out and note it in the log
+   (it will expire by itself; tell the user if it should be removed sooner).
+4. Check, log and finish as below. Importing keeps parents' confirmations.
 
 ## 4. Check
 Run `npm run check:batch -- research/batches/<file>.csv`. Fix every ERROR. For "may duplicate"

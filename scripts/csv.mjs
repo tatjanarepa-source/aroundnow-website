@@ -32,4 +32,4 @@ export function toCsv(rows, header) {
 export const LISTING_COLUMNS = ["RecordID", "Title", "ProviderName", "Website", "ContactMethod", "ContactDetails_PRIVATE",
   "DeliveryMode", "LocationArea", "Postcode", "Address", "Format", "Category", "Subjects", "AgeMinMonths", "AgeMaxMonths",
   "LanguageSupport", "RunsWhen", "HolidayClub", "DaysOfWeek", "TimeOfDay", "StartTime", "EndTime", "ScheduleText",
-  "EventDate", "EventEndDate", "PriceText", "Description", "Pros", "Cons", "Status", "NeedsInfo", "AddressSource", "Lat", "Lng", "Source"];
+  "EventDate", "EventEndDate", "PriceText", "Description", "Pros", "Cons", "Status", "NeedsInfo", "AddressSource", "Lat", "Lng", "Source", "LastChecked"];

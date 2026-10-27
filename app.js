@@ -159,7 +159,10 @@ const STRINGS = {
     pendingText: "Classes marked “Something else” are checked before they appear, usually within a day.",
     seeIt: "See it on the map", done: "Done", addAnother: "Add another class",
     failed: (m) => `That didn’t work: ${m}`,
-    addedBy: (ago) => `Added by a parent · ${ago}`, today: "today", yesterday: "yesterday", daysAgo: (n) => `${n} days ago`,
+    addedBy: (ago) => `Added by a parent · ${ago}`, needsRecheck: "Needs re-checking",
+    checked: (date, how) => `Last checked ${date}${how ? ` · ${how}` : ""}`,
+    checkedHow: { parent: "confirmed by a parent", web: "on the organiser’s website" },
+    recheckHint: "Not checked for over 3 months. If you know it’s still running, please confirm.", today: "today", yesterday: "yesterday", daysAgo: (n) => `${n} days ago`,
     knowIt: "Do you know this class?",
     knowItText: "If you’ve been, or know it runs, confirm it. One confirmation from another parent is enough.",
     yesReal: "Yes, it’s real", wrong: "Something’s wrong", reportLink: "Something wrong with this listing?",
@@ -257,7 +260,10 @@ const STRINGS = {
     pendingText: "Занятия из раздела «Другое» мы проверяем перед публикацией, обычно в течение дня.",
     seeIt: "Показать на карте", done: "Готово", addAnother: "Добавить ещё",
     failed: (m) => `Не получилось: ${m}`,
-    addedBy: (ago) => `Добавил родитель · ${ago}`, today: "сегодня", yesterday: "вчера",
+    addedBy: (ago) => `Добавил родитель · ${ago}`, needsRecheck: "Нужно перепроверить",
+    checked: (date, how) => `Проверено ${date}${how ? ` · ${how}` : ""}`,
+    checkedHow: { parent: "подтвердил родитель", web: "на сайте организатора" },
+    recheckHint: "Не проверялось больше 3 месяцев. Если знаете, что занятие идёт, подтвердите.", today: "сегодня", yesterday: "вчера",
     daysAgo: (n) => `${n} ${ruForm(n, "день", "дня", "дней")} назад`,
     knowIt: "Вы знаете это занятие?",
     knowItText: "Если вы были там или знаете, что оно проходит, подтвердите. Достаточно одного подтверждения другого родителя.",
@@ -413,7 +419,23 @@ async function loadListings() {
 // After 120 days with no confirmation, or once a dated event is over, a listing is hidden (not deleted).
 
 function unconfirmed(l) {
-  return l.k === 1 || (!!l.lc && Date.now() - Date.parse(l.lc) > 90 * DAY_MS);
+  return l.k === 1 || stale(l);
+}
+// Nobody has checked it for 90 days (a parent's confirmation, or when it was added or researched)
+function stale(l) {
+  const since = Date.parse(l.lc || l.ca || "");
+  return !!since && Date.now() - since > 90 * DAY_MS;
+}
+function statusTag(l) {
+  return `<span class="tag warn">${stale(l) ? T().needsRecheck : T().notConfirmed}</span>`;
+}
+// "Last checked 27 Oct 2026 · on the organiser's website"
+function checkedText(l) {
+  const t = T(), at = l.lc || l.ca;
+  if (!at) return "";
+  const date = new Date(at).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
+  const how = l.lc && !l.k ? t.checkedHow.parent : l.src.startsWith("Web research") ? t.checkedHow.web : "";
+  return t.checked(date, how);
 }
 function expired(l) {
   const end = l.ee || l.ed;
@@ -681,7 +703,7 @@ function cardHtml(o, dates, multi) {
     tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
   }
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
-  if (unconfirmed(l)) tags.push(`<span class="tag warn">${t.notConfirmed}</span>`);
+  if (unconfirmed(l)) tags.push(statusTag(l));
   const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
   const dist = l.on ? t.online : `${l.ap ? "~" : ""}${km(o.d)}`;
   return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
@@ -1311,7 +1333,7 @@ function renderDetail(c) {
       ${l.g ? `<div class="note good">${ICON.plus}<div><b>${t.good}</b><span>${esc(l.g)}</span></div></div>` : ""}
       ${l.b ? `<div class="note bad">${ICON.minus}<div><b>${t.watch}</b><span>${esc(l.b)}</span></div></div>` : ""}</div>` : "";
   const dir = l.y != null && !l.on ? `https://www.google.com/maps/search/?api=1&query=${l.y},${l.x}` : "";
-  const status = (unconfirmed(l) ? `<span class="tag warn">${t.notConfirmed}</span>` : "")
+  const status = (unconfirmed(l) ? statusTag(l) : "")
     + (l.w ? "" : `<span class="tag">${t.noSource}</span>`);
 
   el.innerHTML = `<button type="button" class="backdrop" style="flex:none;height:64px" data-act="closeDetail" aria-label="${t.close}"></button>
@@ -1322,7 +1344,9 @@ function renderDetail(c) {
       </div>
       <div class="sheet-body" style="padding:0"><div class="detail-body">
         <h2>${esc(l.t)}</h2>
-        ${l.src === "Community" && l.ca ? `<span class="muted">${esc(t.addedBy(ago(l.ca)))}</span>` : ""}
+        ${l.src === "Community" && !l.lc && l.ca ? `<span class="muted">${esc(t.addedBy(ago(l.ca)))}</span>`
+          : checkedText(l) ? `<span class="muted">${esc(checkedText(l))}</span>` : ""}
+        ${stale(l) ? `<span class="muted">${t.recheckHint}</span>` : ""}
         ${status ? `<span class="tags">${status}</span>` : ""}
         <span class="where">${ICON.pin}<span>${esc(whereText(l, o.d))}</span></span>
         <span class="tags">${tags.join("")}</span>
