@@ -82,6 +82,7 @@ tennis, chess, coding, cooking.
 |---|---|---|
 | The Drapers Arms | Ealing Broadway | Pub; offers some classes from about 3 years. Find its events page |
 | All Saints Ealing, W5 3JJ | Ealing Common | Done: Mini Saints (found by a parent, missed by keyword search) |
+| Samotsvety / Самоцветы ("Gemstones") Russian weekend school | Ealing | Parent tip. Not found online 2026-10-27 (searched English + Cyrillic); maybe Facebook/WhatsApp only. Ask the user for a website or venue |
 | La Chouette Nursery School | Ealing W5 3TJ | French nursery |
 | Ealing libraries: Northfields, Greenford, Hanwell, Acton | Ealing | Rhyme times; addresses already confirmed |
 | Ealing Junior Chess Club | Ealing | |
