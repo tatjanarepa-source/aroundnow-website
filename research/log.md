@@ -24,6 +24,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] Ealing: ballet and dance
 - [ ] Ealing: sport (football, tennis, martial arts) and chess
 - [ ] Ealing: parks, forest school, museums
+- [ ] West London: riding schools and city farms (toddler pony sessions, lessons, pony days): Stag Lodge, Barnfield, Littlebourne, Deen City Farm
 - [ ] Ealing: holiday camps
 - [ ] London: Russian-speaking classes and schools (all boroughs)
 - [ ] London: French and other language nurseries and Saturday schools
@@ -36,6 +37,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-27 | Ealing Riding School (parent's tip, local) | `2026-10-27-ealing-riding-school.csv` | 6 | Dotty Club (parents may call it "Dolly club"): pony stay and play Fri and Sat 9:30–11:00, 2–7 years, £10 per family. Also Peek-at-Ponies (free, Thu 13:00, 2–5), Wild Tree House forest school (Thu 10:30, 2–8, £10), yard pony rides (Tue/Thu, 4–6, £35), Start To Ride lessons 5+ (£36 / 30 min; updates live listing E07) and After School Stable Club (6–14, £49). Pages undated but site lists Oct and Dec 2026 events. Postcode W5 3XD from directories |
 | 2026-10-27 | First Swim Chiswick (parent's tip "1st swim", local) | `2026-10-27-chiswick-first-swim.csv` | 3 | Baby (6 weeks–2), toddler (2–4) and Kick-Start Kids (4–7) lessons at 500c Chiswick High Road W4 5AG. Winter term from 23 Nov 2026, 8 lessons: babies £192 (Sat £212), kids £210. Times come from the site's class finder (pick level + location, Search); only Level 1 read. No First Time Toddlers L1 in Chiswick this term |
 | 2026-10-27 | Ealing: Everyone Active pools and soft play (local) | `2026-10-27-ealing-everyone-active.csv` | 10 | Ealing has 3 council pools, all Everyone Active: Acton Centre, Dormers Wells, Northolt (Gurnell closed for redevelopment). Each: family swim (adult ~£6, junior £2.65), inclusive (SEND) family swim, children's lessons (£41.46/month DD; adult-and-baby from 4 months at Acton and Northolt). Northolt has the only soft play (£5.65, 90-minute sessions daily, inclusive session Thu 11:00). everyoneactive.com centre pages work in Chrome: click LOAD MORE, then each activity card shows days, times and prices |
 | 2026-10-27 | Brentford and Chiswick pools, soft play (parent's tip, local) | `2026-10-27-brentford-chiswick-pools-soft-play.csv` | 9 | Lampton Leisure (Hounslow): Brentford Fountain soft play £4.20, family swim £14.75 (wave machine, slide), swim school, recreational gymnastics (20 months+); New Chiswick Pool swim school and inflatable obstacle course £8.15. Pool times are in an embedded widget, not read: days left empty. Snakes & Ladders Syon Park (full hours and prices, Toddler Thursdays music) and Finnegan's World West Ealing (weekends, £9/hour; its postcode W13 9DD was retired in May 2026). New category Soft play. Leads: Tippitoes, council play centres |

@@ -75,6 +75,9 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
   to the centre's timetable or app, and leave `DaysOfWeek` empty if you can't read the days.
 - **Soft play**: independent soft play cafés and play centres, and leisure-centre soft play (category `Soft play`).
 - **Parks and gardens**: forest school, nature clubs, park rangers' events.
+- **Riding schools and city farms**: besides riding lessons (usually 5+), many run toddler pony sessions, stay and play,
+  forest school and holiday pony days. Check the "early years" or "experiences" pages, not just lessons.
+  Search Google `riding school <area> children` and `city farm <area>`. Ealing Riding School done 2026-10-27.
 - **Museums, galleries and theatres**: family workshops and holiday activities.
 
 ### Football club community trusts
@@ -150,4 +153,5 @@ tennis, chess, coding, cooking.
 | Hanwell POP (Dickens Yard), KIDZ#1, YMCA South Ealing | Ealing | Soft play leads |
 | Everyone Active Ealing centres | Ealing | Done 2026-10-27: pools at Acton, Dormers Wells, Northolt (soft play at Northolt). Gurnell closed for redevelopment. Reynolds and Elthorne (no pools) not checked |
 | Heston Pools & Fitness (Lampton) | Hounslow | Soft play and gymnastics, like Brentford Fountain |
+| Stag Lodge Stables (Richmond Park), Barnfield Riding School, Littlebourne Equestrian (Uxbridge), Deen City Farm (Merton) | West / South-west London | Riding schools and farms to check |
 | First Swim (parents say "1st swim") | Chiswick, Twickenham | Done 2026-10-27 (Chiswick). Twickenham pool, 92 Queens Road TW1 4ET, not added. Look for other private swim schools (they hire school and hotel pools) |
