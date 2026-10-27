@@ -20,7 +20,8 @@ Don't wait until the end; a run can be cut off at any time.
 RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
 
 ## 3. Research
-- Start with known leads for the area.
+- Start with known leads for the area. Read "How to search" in `sources.md`: in a local session, use
+  Google in Chrome; it finds far more than the built-in search.
 - For **venues** (churches, libraries, community centres, leisure centres): first list every venue in
   the area, then open each one's events or what's-on page. Keyword searches miss groups with their own
   names. For **providers** (franchises, activities): search, then confirm on their site.

@@ -6,6 +6,15 @@ or a new lead. A run takes **one area × one source type** (see `log.md` for wha
 Focus for now: **Russian-speaking and English-speaking** classes. Other languages
 (French, Polish, Spanish, German…) are welcome as a separate source type.
 
+## How to search
+
+- **Google finds what the built-in search misses** (Gemstones didn't appear in 3 built-in searches but was
+  Google's first result). In a local session, search Google in Chrome (`google.com/search?q=...&hl=en`) and
+  read the results page. The cloud run has no browser, so for hard-to-find things mark the job "run locally".
+- Search the way a parent would: "<activity> <area>", "Russian Saturday school <area>", "baby class <postcode>".
+  Also try the name in other languages (Самоцветы = Gemstones) and the venue ("Saturday school Little Ealing Primary").
+- Schools rent their halls at weekends: "<school name> Saturday" finds language schools and clubs.
+
 ## Rules
 
 - Use the organisation's **own website** (or the council's) as the source. Directories
@@ -82,7 +91,7 @@ tennis, chess, coding, cooking.
 |---|---|---|
 | The Drapers Arms | Ealing Broadway | Pub; offers some classes from about 3 years. Find its events page |
 | All Saints Ealing, W5 3JJ | Ealing Common | Done: Mini Saints (found by a parent, missed by keyword search) |
-| Samotsvety / Самоцветы ("Gemstones") Russian weekend school | Ealing | Parent tip. Not found online 2026-10-27 (searched English + Cyrillic); maybe Facebook/WhatsApp only. Ask the user for a website or venue |
+| Gemstones (Samotsvety) Russian Saturday school | Little Ealing W5 4EA | Done 2026-10-27. Our search tool missed it; Google found it at once (gemstoneselc.com) |
 | La Chouette Nursery School | Ealing W5 3TJ | French nursery |
 | Ealing libraries: Northfields, Greenford, Hanwell, Acton | Ealing | Rhyme times; addresses already confirmed |
 | Ealing Junior Chess Club | Ealing | |
