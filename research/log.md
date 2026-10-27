@@ -9,6 +9,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 - [x] Ealing: churches, church halls and pubs (incl. The Drapers Arms)
 - [ ] Ealing: churches, sweep 2: list every church via A Church Near You + other denominations, check each events page (checked so far: St Mary's, St Andrew's URC, St John's, St Stephen's, All Saints, St Paul's hall)
+- [ ] Ealing: Eventbrite kids, baby and family events (next 2 months)
 - [ ] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [ ] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times)
 - [ ] Ealing: council family hubs and children's centres

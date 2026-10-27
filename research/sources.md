@@ -42,6 +42,14 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 - **Parks and gardens**: forest school, nature clubs, park rangers' events.
 - **Museums, galleries and theatres**: family workshops and holiday activities.
 
+### Event sites
+- **Eventbrite** (eventbrite.co.uk): search "<area> kids", "<area> baby", "<area> toddler" and
+  family events. Many small organisers (churches, charities, baby groups) take bookings there.
+  Read the event pages the way a parent would; no bulk scraping (against Eventbrite's terms).
+  - A **recurring** event with upcoming dates becomes a normal listing (that counts as fresh).
+  - A **one-off** event goes under "Leads not checked" until the app supports dated events.
+  - Note the **organiser** in the batch row. Later we can pull their upcoming dates automatically.
+
 ### Council
 - Family hubs and children's centres (the council's "family hubs" page).
 - The council's Family Information Service / Local Offer directory.
