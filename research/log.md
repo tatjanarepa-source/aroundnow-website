@@ -18,6 +18,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] Ealing: Eventbrite, browse in Chrome (monthly: Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past 3 months) **(run locally: Eventbrite search needs a real browser)**. Last done 2026-10-27
 - [ ] Ealing: franchises (Baby Ballet, Hartbeeps, Toddler Sense, Jo Jingles, Water Babies…)
 - [ ] Ealing: gymnastics and swimming (Everyone Active pools done 2026-10-27; still to do: gymnastics clubs, private swim schools)
+- [ ] Chiswick and Ealing: private swim schools (start with "1st swim" in Chiswick, a parent's tip)
 - [ ] Ealing: soft play (Tippitoes, council play centres, Hanwell POP, KIDZ#1, YMCA South Ealing)
 - [ ] Ealing: art, music and drama
 - [ ] Ealing: ballet and dance
