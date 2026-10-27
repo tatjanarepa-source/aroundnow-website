@@ -3,6 +3,7 @@
 // Re-running is safe: rows are matched on RecordID and updated in place.
 
 import { readFileSync } from "node:fs";
+import { parseCsv } from "./csv.mjs";
 
 const { SUPABASE_URL, SUPABASE_SECRET_KEY } = process.env;
 if (!SUPABASE_URL || !SUPABASE_SECRET_KEY || SUPABASE_SECRET_KEY.includes("paste")) {
@@ -11,7 +12,7 @@ if (!SUPABASE_URL || !SUPABASE_SECRET_KEY || SUPABASE_SECRET_KEY.includes("paste
 }
 
 const csvPath = process.argv[2] || "data/listings-seed.csv";
-const rows = parseCsv(readFileSync(csvPath, "utf8").replace(/^﻿/, ""));
+const rows = parseCsv(readFileSync(csvPath, "utf8"));
 
 const list = (s) => (s || "").split(",").map((v) => v.trim()).filter(Boolean);
 const text = (s) => (s && s.trim()) || null;
@@ -76,28 +77,4 @@ async function upsert(table, body) {
     console.error(`Failed to import ${table}: ${res.status} ${await res.text()}`);
     process.exit(1);
   }
-}
-
-// Minimal RFC 4180 CSV parser (quoted fields, embedded commas/newlines, "" escapes).
-function parseCsv(src) {
-  const records = [];
-  let field = "", record = [], inQuotes = false;
-  for (let i = 0; i < src.length; i++) {
-    const c = src[i];
-    if (inQuotes) {
-      if (c === '"' && src[i + 1] === '"') { field += '"'; i++; }
-      else if (c === '"') inQuotes = false;
-      else field += c;
-    } else if (c === '"') inQuotes = true;
-    else if (c === ",") { record.push(field); field = ""; }
-    else if (c === "\n" || c === "\r") {
-      if (c === "\r" && src[i + 1] === "\n") i++;
-      record.push(field); field = "";
-      if (record.some((v) => v !== "")) records.push(record);
-      record = [];
-    } else field += c;
-  }
-  if (field || record.length) { record.push(field); records.push(record); }
-  const [header, ...data] = records;
-  return data.map((vals) => Object.fromEntries(header.map((h, i) => [h, vals[i] ?? ""])));
 }

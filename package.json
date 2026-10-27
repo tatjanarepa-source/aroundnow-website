@@ -5,6 +5,7 @@
     "dev": "python -m http.server 8532",
     "deploy": "node scripts/build.mjs && npx wrangler deploy",
     "import:listings": "node --env-file=.env scripts/import-listings.mjs",
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "check:batch": "node scripts/check-batch.mjs"
   }
 }
