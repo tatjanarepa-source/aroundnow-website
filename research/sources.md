@@ -15,6 +15,24 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
   Also try the name in other languages (Самоцветы = Gemstones) and the venue ("Saturday school Little Ealing Primary").
 - Schools rent their halls at weekends: "<school name> Saturday" finds language schools and clubs.
 
+## Any council area: the checklist
+
+Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then further out). Each step is one queue job.
+
+1. **Children's centres / family hubs** (free stay and play, music, baby groups): search Google
+   `<council> children's centres timetable` or `<council> family hubs timetable`. Councils publish monthly PDFs
+   or "what's on" pages, often on a separate "families directory" site. Sessions are free (parent confirmed for Ealing).
+2. **Libraries**: `<council> libraries events kids` (rhyme time, Bounce and Rhyme, storytime, Lego, coding, chess).
+   Most councils use one events system; find its "Kids" category.
+3. **Council play centres / adventure playgrounds**: `<council> play centres` or `adventure playground <area>`.
+4. **Leisure centres**: find who runs them (`<council> leisure centres`): Everyone Active, Better (GLL), Lampton
+   Leisure (Hounslow), Places Leisure, Fusion. For each centre list: swimming lessons, family / fun swim (with price),
+   soft play, kids' gymnastics, trampolining, holiday camps. Pay-as-you-go price pages give soft play and swim prices.
+5. **Soft play**: Google `soft play <area>` and the Places map: independent cafés, big play centres, leisure-centre soft play.
+   Category `Soft play`. Opening days go in `DaysOfWeek`, sessions and prices in `ScheduleText` / `PriceText`.
+6. **Football club community trusts** (see below) and franchises with a class finder.
+7. **Churches and community halls**, venue by venue (see Churches).
+
 ## Rules
 
 - Use the organisation's **own website** (or the council's) as the source. Directories
@@ -52,7 +70,10 @@ Focus for now: **Russian-speaking and English-speaking** classes. Other language
 - **Pubs with function rooms**: "what's on" or "events" pages (e.g. The Drapers Arms in Ealing).
 - **Community centres and halls**: council-run and charity-run.
 - **Libraries**: rhyme time, Bounce and Rhyme, Lego club, homework club.
-- **Leisure centres**: swimming lessons, gymnastics, trampolining (Everyone Active, GLL/Better).
+- **Leisure centres**: swimming lessons, family swim, soft play, gymnastics, trampolining (Everyone Active, GLL/Better,
+  Lampton Leisure in Hounslow). Pool timetables are often embedded widgets that are hard to read; give the price and point
+  to the centre's timetable or app, and leave `DaysOfWeek` empty if you can't read the days.
+- **Soft play**: independent soft play cafés and play centres, and leisure-centre soft play (category `Soft play`).
 - **Parks and gardens**: forest school, nature clubs, park rangers' events.
 - **Museums, galleries and theatres**: family workshops and holiday activities.
 
@@ -124,3 +145,8 @@ tennis, chess, coding, cooking.
 | Twisters gymnastics and dance | West Ealing / Acton | twisters.org.uk; preschool gym at St John's W13, Acton Baptist Church |
 | Ealing Gymnastics, YMCA South Ealing, Club des Sports, The Little Gym Chiswick | Ealing / Chiswick | Gymnastics |
 | QPR in the Community Trust, Fulham FC Foundation | West London | Club community trusts, like Brentford's |
+| Tippitoes, Lammas Park Play Centre (Elers Rd W13 9QD) | Ealing | Drop-in toddler stay and play with soft play circuit, Mon–Fri 9:15–10:45 (under 4s) per directories; only Facebook/Instagram, reopened 2 Sep 2026. Needs a parent to confirm |
+| Ealing Council play centres (Acton Park, Dormers Wells, Pitzhanger, Islip Manor, Lammas Park…) | Ealing | ealing.gov.uk play centres page: 0–12, term time Mon–Fri 16:00–18:15, Sat 13:00–17:15. Page undated and lists Northolt Park (moved), so check it's current |
+| Hanwell POP (Dickens Yard), KIDZ#1, YMCA South Ealing | Ealing | Soft play leads |
+| Everyone Active Ealing centres (Gurnell, Acton, Dormers Wells, Northolt, Reynolds, Elthorne) | Ealing | Swimming lessons, family swim, soft play |
+| Heston Pools & Fitness (Lampton) | Hounslow | Soft play and gymnastics, like Brentford Fountain |

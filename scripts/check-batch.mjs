@@ -84,14 +84,22 @@ if (toGeocode.length) {
     body: JSON.stringify({ postcodes: toGeocode.map((r) => r.Postcode) }),
   });
   const { result } = await res.json();
-  toGeocode.forEach((r, i) => {
-    const hit = result?.[i]?.result;
-    if (!hit) return note(r, "errors", `postcode ${r.Postcode} not found`);
+  for (const [i, r] of toGeocode.entries()) {
+    let hit = result?.[i]?.result;
+    // Organisations often still print a postcode that Royal Mail has since retired; it still has a location
+    if (!hit) {
+      const old = await fetch(`https://api.postcodes.io/terminated_postcodes/${encodeURIComponent(r.Postcode)}`).then((x) => x.json());
+      if (old?.result) {
+        hit = old.result;
+        note(r, "warnings", `postcode ${r.Postcode} was retired in ${old.result.year_terminated}; pin uses its old location`);
+      }
+    }
+    if (!hit) { note(r, "errors", `postcode ${r.Postcode} not found`); continue; }
     r.Postcode = hit.postcode;
     r.Lat = String(hit.latitude);
     r.Lng = String(hit.longitude);
     if (!r.LocationArea) r.LocationArea = hit.admin_ward || hit.admin_district || "";
-  });
+  }
   writeFileSync(path, toCsv(rows, LISTING_COLUMNS));
 }
 

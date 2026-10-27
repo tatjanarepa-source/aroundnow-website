@@ -17,7 +17,8 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**. Done locally 2026-10-27 from the October timetables; **monthly re-check** (new PDFs each month at ealingfamiliesdirectory.org.uk/childrens-centre-timetables)
 - [ ] Ealing: Eventbrite, browse in Chrome (monthly: Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past 3 months) **(run locally: Eventbrite search needs a real browser)**. Last done 2026-10-27
 - [ ] Ealing: franchises (Baby Ballet, Hartbeeps, Toddler Sense, Jo Jingles, Water Babies…)
-- [ ] Ealing: gymnastics and swimming
+- [ ] Ealing: gymnastics and swimming (Everyone Active centres: lessons, family swim)
+- [ ] Ealing: soft play (Tippitoes, council play centres, Hanwell POP, KIDZ#1, YMCA South Ealing)
 - [ ] Ealing: art, music and drama
 - [ ] Ealing: ballet and dance
 - [ ] Ealing: sport (football, tennis, martial arts) and chess
@@ -25,13 +26,16 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] Ealing: holiday camps
 - [ ] London: Russian-speaking classes and schools (all boroughs)
 - [ ] London: French and other language nurseries and Saturday schools
-- [ ] Hounslow: churches, libraries, family hubs
-- [ ] Hammersmith & Fulham: churches, libraries, family hubs
+- [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md)
+- [ ] Hounslow: leisure centres (Lampton: Heston, Isleworth, Hanworth, Feltham), soft play, churches
+- [ ] Hammersmith & Fulham: follow "Any council area" in sources.md
+- [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md
 
 ## Done
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-27 | Brentford and Chiswick pools, soft play (parent's tip, local) | `2026-10-27-brentford-chiswick-pools-soft-play.csv` | 9 | Lampton Leisure (Hounslow): Brentford Fountain soft play £4.20, family swim £14.75 (wave machine, slide), swim school, recreational gymnastics (20 months+); New Chiswick Pool swim school and inflatable obstacle course £8.15. Pool times are in an embedded widget, not read: days left empty. Snakes & Ladders Syon Park (full hours and prices, Toddler Thursdays music) and Finnegan's World West Ealing (weekends, £9/hour; its postcode W13 9DD was retired in May 2026). New category Soft play. Leads: Tippitoes, council play centres |
 | 2026-10-27 | Brentford FC Community Sports Trust (parent's tip, local) | `2026-10-27-ealing-brentford-cst.csv` | 8 | Mini Bees football (Mon, Fri, Sat) and Tumble Bees gymnastics (Mon, Fri toddlers; Big Bees Thu; Hive 1 Thu; Hive 2 Wed) at Gunnersbury Park Sports Hub W3 8LQ, all 2026/27 on Pebble. Their own site still links the 2025 timetable PDF; Pebble's supplier page has the current term. Boogie Bees dance: no current sessions on Pebble. Left out: Mount Carmel school after-school clubs (pupils only), Ealing SEND multi-sports at Greenford Sports Centre (8–16, check day) and adult sessions. Google leads for similar football and gymnastics saved in sources.md |
 | 2026-10-27 | Ealing: children's centres (local, Chrome) | `2026-10-27-ealing-family-hubs.csv` | 21 | ealingfamiliesdirectory.org.uk works in a real browser; it links monthly PDF timetables (3 locality PDFs cover all centres: ACE, NAG, SWE). One row per centre with its open sessions (stay and play, music, little explorers, Tiny Sports Stars, baby groups) in ScheduleText, plus rows for sessions at other venues (Acton library, Southall library, North Hanwell Baptist, Copley Close, North Primary School). Left out: NHS clinics, referral-only and booked courses (infant massage, talk and play), Maples (sessions mostly clinics, Friary Park venue address unknown), Hathaway and Log Cabin (no sessions running), Northolt Park (moved to Petts Hill). Prices not stated in the PDFs |
 | 2026-10-27 | Ealing: libraries (local, Chrome) | `2026-10-27-ealing-libraries.csv` | 11 | The council events site works in a real browser. Kids category (178 sessions, ~117 load) read on libraries.ealing.gov.uk; addresses from ealing.gov.uk find-your-library. Added: Hanwell storytime; Ealing Central Wed bounce & rhyme, kids chess club, Sat craft (only this week's dates published); Northolt bounce & rhyme, storytime, Sat storytime & craft; Southall and Jubilee Gardens bounce & rhyme; Acton coding club and Saturday craft. Ealing Central Fri bounce & rhyme is already live as E01 (still running, 30 Oct listed). No kids' events listed at Greenford, Northfields or West Ealing. Left out: one-off scavenger hunts and Halloween/Diwali crafts, Hanwell homework club, Acton craft corner and colouring club (irregular weeks) |
