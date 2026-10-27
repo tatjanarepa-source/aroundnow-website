@@ -125,6 +125,8 @@ tennis, chess, coding, cooking.
 ### Language
 - **Russian**: Saturday and Sunday schools, Russian-speaking clubs, art, music, chess, ballet.
 - **French**: nurseries, *écoles du samedi*, Petite École.
+- **Mandarin**: bilingual nurseries and their stay-and-play sessions (e.g. A Little Me Time, Ealing Broadway). Search
+  `Mandarin nursery <area>`, bilingualfinder.co.uk.
 - **Other**: Polish Saturday schools (often at Catholic parishes), Spanish, German, Italian, Japanese, Ukrainian.
 
 ## Known leads (check these first in their area)

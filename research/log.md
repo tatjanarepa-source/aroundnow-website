@@ -37,6 +37,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-27 | Mandarin nursery, Ealing Broadway (parent's tip, local) | `2026-10-27-ealing-mandarin-nursery.csv` | 2 | A Little Me Time, 58 The Mall W5 3TA (the former family café): Ofsted-registered Mandarin–English nursery for ages 1–5, and the Little Explorers Play Club (Fri 9:15–10:00, £5 per family; booking form only shows May 2026 dates). Finnegan's World: soft play now weekends only, weekday nursery (2–5) "opening soon"; its soft play note updated in the pools/soft play batch |
 | 2026-10-27 | Ealing Riding School (parent's tip, local) | `2026-10-27-ealing-riding-school.csv` | 6 | Dotty Club (parents may call it "Dolly club"): pony stay and play Fri and Sat 9:30–11:00, 2–7 years, £10 per family. Also Peek-at-Ponies (free, Thu 13:00, 2–5), Wild Tree House forest school (Thu 10:30, 2–8, £10), yard pony rides (Tue/Thu, 4–6, £35), Start To Ride lessons 5+ (£36 / 30 min; updates live listing E07) and After School Stable Club (6–14, £49). Pages undated but site lists Oct and Dec 2026 events. Postcode W5 3XD from directories |
 | 2026-10-27 | First Swim Chiswick (parent's tip "1st swim", local) | `2026-10-27-chiswick-first-swim.csv` | 3 | Baby (6 weeks–2), toddler (2–4) and Kick-Start Kids (4–7) lessons at 500c Chiswick High Road W4 5AG. Winter term from 23 Nov 2026, 8 lessons: babies £192 (Sat £212), kids £210. Times come from the site's class finder (pick level + location, Search); only Level 1 read. No First Time Toddlers L1 in Chiswick this term |
 | 2026-10-27 | Ealing: Everyone Active pools and soft play (local) | `2026-10-27-ealing-everyone-active.csv` | 10 | Ealing has 3 council pools, all Everyone Active: Acton Centre, Dormers Wells, Northolt (Gurnell closed for redevelopment). Each: family swim (adult ~£6, junior £2.65), inclusive (SEND) family swim, children's lessons (£41.46/month DD; adult-and-baby from 4 months at Acton and Northolt). Northolt has the only soft play (£5.65, 90-minute sessions daily, inclusive session Thu 11:00). everyoneactive.com centre pages work in Chrome: click LOAD MORE, then each activity card shows days, times and prices |
@@ -55,6 +56,9 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 ## Leads not checked
 
 Things a person should look at (Facebook-only groups, pages that need a login, unclear venues).
+
+- Finnegan's World nursery (41 Broadway, West Ealing): weekday nursery for ages 2–5 "opening soon" (2026); add it when it opens.
+- Cafés and soft plays turning into nurseries is a pattern: when a soft play page says "nursery", check whether weekday play still runs.
 
 - Brentford FC CST: Boogie Bees dance (2+, Gunnersbury Park) has no current sessions on Pebble; Ealing SEND multi-sports at Greenford Sports Centre UB1 2NP, 18:00-19:00, ages 8-16 (day not read).
 
