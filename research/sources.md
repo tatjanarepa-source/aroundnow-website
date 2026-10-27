@@ -148,5 +148,5 @@ tennis, chess, coding, cooking.
 | Tippitoes, Lammas Park Play Centre (Elers Rd W13 9QD) | Ealing | Drop-in toddler stay and play with soft play circuit, Mon–Fri 9:15–10:45 (under 4s) per directories; only Facebook/Instagram, reopened 2 Sep 2026. Needs a parent to confirm |
 | Ealing Council play centres (Acton Park, Dormers Wells, Pitzhanger, Islip Manor, Lammas Park…) | Ealing | ealing.gov.uk play centres page: 0–12, term time Mon–Fri 16:00–18:15, Sat 13:00–17:15. Page undated and lists Northolt Park (moved), so check it's current |
 | Hanwell POP (Dickens Yard), KIDZ#1, YMCA South Ealing | Ealing | Soft play leads |
-| Everyone Active Ealing centres (Gurnell, Acton, Dormers Wells, Northolt, Reynolds, Elthorne) | Ealing | Swimming lessons, family swim, soft play |
+| Everyone Active Ealing centres | Ealing | Done 2026-10-27: pools at Acton, Dormers Wells, Northolt (soft play at Northolt). Gurnell closed for redevelopment. Reynolds and Elthorne (no pools) not checked |
 | Heston Pools & Fitness (Lampton) | Hounslow | Soft play and gymnastics, like Brentford Fountain |
