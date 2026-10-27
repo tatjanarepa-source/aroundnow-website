@@ -5,7 +5,6 @@ Ideas and problems to come back to. Newest first. Tick when done.
 ## Open
 
 - [ ] **Classes to research next** (parents' tips and leads, full list in `research/sources.md` → Known leads):
-  - "1st swim" swim school in Chiswick (parent's tip)
   - Tippitoes at Lammas Park play centre: only on Facebook/Instagram, needs a parent to confirm times
   - Ealing Council play centres (free, 0–12): council page is undated, check they're still open
   - Soft play: Hanwell POP, KIDZ#1, YMCA South Ealing

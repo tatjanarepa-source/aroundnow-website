@@ -150,4 +150,4 @@ tennis, chess, coding, cooking.
 | Hanwell POP (Dickens Yard), KIDZ#1, YMCA South Ealing | Ealing | Soft play leads |
 | Everyone Active Ealing centres | Ealing | Done 2026-10-27: pools at Acton, Dormers Wells, Northolt (soft play at Northolt). Gurnell closed for redevelopment. Reynolds and Elthorne (no pools) not checked |
 | Heston Pools & Fitness (Lampton) | Hounslow | Soft play and gymnastics, like Brentford Fountain |
-| "1st swim" swim school | Chiswick | Parent's tip 2026-10-27; exact name and venue not checked yet. Also look for other private swim schools (they hire school and hotel pools) |
+| First Swim (parents say "1st swim") | Chiswick, Twickenham | Done 2026-10-27 (Chiswick). Twickenham pool, 92 Queens Road TW1 4ET, not added. Look for other private swim schools (they hire school and hotel pools) |
