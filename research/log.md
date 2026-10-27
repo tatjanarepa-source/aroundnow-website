@@ -13,8 +13,8 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: churches, sweep 2: list every church via A Church Near You + other denominations, check each events page (checked so far: St Mary's, St Andrew's URC, St John's, St Stephen's, All Saints, St Paul's hall)
 - [x] Ealing: Eventbrite kids, baby and family events (next 2 months)
 - [x] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
-- [x] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times)
-- [x] Ealing: council family hubs and children's centres
+- [ ] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times) **(run locally: council sites block the cloud run)**
+- [ ] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**
 - [ ] Ealing: franchises (Baby Ballet, Hartbeeps, Toddler Sense, Jo Jingles, Water Babies…)
 - [ ] Ealing: gymnastics and swimming
 - [ ] Ealing: art, music and drama
