@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v19";
+const APP_VERSION = "v20";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -103,7 +103,8 @@ const STRINGS = {
     widenText: (n, r) => (n ? `Only ${classes(n)} within ${r}.` : `Nothing within ${r} yet.`),
     widenCta: (r, extra) => `Show within ${r} (+${extra})`,
     moreOutside: (n, r) => `${n} more within ${r}`, about: "about ",
-    units: { mi: "Miles", km: "Kilometres" },    ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
+    units: { mi: "Miles", km: "Kilometres" },
+    ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
     and: " & ",
     date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
     hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays", summer: "the summer holidays" },
@@ -211,7 +212,8 @@ const STRINGS = {
     widenText: (n, r) => (n ? `В радиусе ${r} — только ${classes(n)}.` : `В радиусе ${r} пока ничего нет.`),
     widenCta: (r, extra) => `Показать в радиусе ${r} (+${extra})`,
     moreOutside: (n, r) => `Ещё ${n} в радиусе ${r}`, about: "около ",
-    units: { mi: "Мили", km: "Километры" },    ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
+    units: { mi: "Мили", km: "Километры" },
+    ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
     and: " и ",
     date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
     hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы", summer: "летние каникулы" },
@@ -735,7 +737,7 @@ function cardHtml(o, dates, multi) {
   if (unconfirmed(l)) tags.push(statusTag(l));
   const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
   const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
-  return `<button type="button" class="card" style="--cat:${catColor(l.c)}" data-act="open" data-v="${esc(l.i)}">
+  return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
     <span class="card-top"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${esc(far)}</span></span>
     <span class="card-title">${esc(l.t)}</span>
     ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
@@ -1827,8 +1829,6 @@ if (sb) {
 }
 
 loadPrefs();
-// Design options to compare before choosing one (docs/tasks.md): ?look=fill or ?look=deep
-document.documentElement.dataset.look = (new URLSearchParams(location.search).get("look") || "").replace(/,/g, " ");
 render();
 loadListings();
 useMyLocation({ quiet: true });
