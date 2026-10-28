@@ -13,7 +13,9 @@ const QUICK_AREAS = [
   { name: "Notting Hill", lat: 51.5136, lng: -0.2006 },
 ];
 
-const RADII = [1, 3, 5, 10];
+// Distance choices. Distances are worked out in km; UK parents think in miles, so miles are the default.
+const MILE = 1.609344;
+const RADII = { km: [1, 3, 5, 10], mi: [0.5, 2, 3, 6] };
 const AGES = [6, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144]; // months; 6 = "under 1", 144 = "12+"
 const DAY_ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -70,8 +72,9 @@ const ADD_CATS = ["Languages", "Sports / Dance", "Performing arts", "Arts / Craf
   "Outdoor / Nature", "Soft play", "Museums", "Childcare / Preschool", "Mixed"];
 const ADD_KINDS = { weekly: "Group class", oneoff: "Workshop / event", camp: "Holiday camp", nursery: "Preschool / nursery" };
 const ADD_RUNS = { term: "Term time", year: "Year-round", hols: "Holidays" };
-const AGE_FROM = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16];
-const AGE_TO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 99]; // 99 = no upper age
+// Add form ages, in months: baby classes start at weeks or months, older ones go by years
+const AGE_FROM = [0, 3, 6, 9, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 168, 192];
+const AGE_TO = [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 168, 192, 216, 999]; // 999 = no upper age
 const REASONS = ["gone", "wrong", "private", "notkids", "spam"];
 const DAY_MS = 864e5;
 
@@ -81,7 +84,6 @@ const STRINGS = {
   en: {
     age: "Age", under1: "Under 1", ageGroup: "Child’s age. Two kids? Tap both ages",
     filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", type: "Type", distance: "Distance",
-    includeOnline: "Include online classes",
     where: "Where to look", nearMe: "Near me", useMyLocation: "Use my location", locating: "Finding your location…",
     blocked: "Location is blocked. Allow it in your browser settings, or search an area.",
     locFail: "Couldn’t get your location. Search an area instead.",
@@ -93,12 +95,14 @@ const STRINGS = {
     loading: "Loading classes…", loadError: "Could not load classes. Check your connection.",
     notConfirmed: "Not yet confirmed", online: "Online", holidayClub: "Holiday club", suitsBoth: "Suits both", suitsAll: "Suits all",
     dWhen: "When", dPrice: "Price", dWhere: "Where", priceUnknown: "Not listed yet", areaOnly: "exact venue not listed yet",
-    parents: "What parents say", good: "Good", watch: "Watch out",
     noSource: "No official source", website: "Official website", directions: "Directions",
     lighter: "Faded pins: area only, no exact address", nothing: "Nothing matches these filters.", agesNA: "Ages not listed",
     tryWeekend: "Try this weekend", onlineToo: (n) => `${classes(n)} online too`, showWord: "Show", hideWord: "Hide",
-    widenText: (n, r) => (n ? `Only ${classes(n)} within ${r} km.` : `Nothing within ${r} km yet.`),
-    widenCta: (r, extra) => `Show within ${r} km (+${extra})`,
+    widenText: (n, r) => (n ? `Only ${classes(n)} within ${r}.` : `Nothing within ${r} yet.`),
+    widenCta: (r, extra) => `Show within ${r} (+${extra})`,
+    moreOutside: (n, r) => `${n} more within ${r}`, about: "about ",
+    units: { mi: "Miles", km: "Kilometres" }, clearAges: (list) => `Clear ages ${list}`,
+    ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
     and: " & ",
     date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
     hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays", summer: "the summer holidays" },
@@ -182,7 +186,6 @@ const STRINGS = {
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
     filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", type: "Тип", distance: "Расстояние",
-    includeOnline: "Показывать онлайн-занятия",
     where: "Где искать", nearMe: "Рядом со мной", useMyLocation: "Определить моё местоположение", locating: "Определяем местоположение…",
     blocked: "Доступ к геолокации запрещён. Разрешите его в настройках браузера или найдите район.",
     locFail: "Не удалось определить местоположение. Найдите район.",
@@ -194,12 +197,14 @@ const STRINGS = {
     loading: "Загружаем занятия…", loadError: "Не удалось загрузить занятия. Проверьте интернет.",
     notConfirmed: "Пока не подтверждено", online: "Онлайн", holidayClub: "Лагерь на каникулах", suitsBoth: "Подходит обоим", suitsAll: "Подходит всем",
     dWhen: "Когда", dPrice: "Цена", dWhere: "Где", priceUnknown: "Пока не указана", areaOnly: "точный адрес пока не указан",
-    parents: "Что говорят родители", good: "Плюсы", watch: "Минусы",
     noSource: "Нет официального источника", website: "Официальный сайт", directions: "Маршрут",
     lighter: "Бледные метки: только район, без точного адреса", nothing: "По этим фильтрам ничего нет.", agesNA: "Возраст не указан",
     tryWeekend: "Попробовать выходные", onlineToo: (n) => `Ещё онлайн: ${classes(n)}`, showWord: "Показать", hideWord: "Скрыть",
-    widenText: (n, r) => (n ? `В радиусе ${r} км — только ${classes(n)}.` : `В радиусе ${r} км пока ничего нет.`),
-    widenCta: (r, extra) => `Показать в радиусе ${r} км (+${extra})`,
+    widenText: (n, r) => (n ? `В радиусе ${r} — только ${classes(n)}.` : `В радиусе ${r} пока ничего нет.`),
+    widenCta: (r, extra) => `Показать в радиусе ${r} (+${extra})`,
+    moreOutside: (n, r) => `Ещё ${n} в радиусе ${r}`, about: "около ",
+    units: { mi: "Мили", km: "Километры" }, clearAges: (list) => `Сбросить возраст ${list}`,
+    ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
     and: " и ",
     date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
     hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы", summer: "летние каникулы" },
@@ -300,7 +305,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", ages: [], radius: 3, langs: [], date: null, when: [], types: [], cats: [],
+  ui: "en", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [],
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -342,12 +347,15 @@ function loadPrefs() {
     const p = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
     if (Array.isArray(p.ages)) state.ages = p.ages.filter((a) => AGES.includes(a));
     if (Array.isArray(p.langs)) state.langs = p.langs.filter((x) => typeof x === "string");
-    if (RADII.includes(p.radius)) state.radius = p.radius;
+    if (p.units === "mi" || p.units === "km") state.units = p.units;
+    if (Number.isInteger(p.ri) && RADII.km[p.ri] != null) state.ri = p.ri;
+    else if (RADII.km.includes(p.radius)) state.ri = RADII.km.indexOf(p.radius); // saved before miles existed
   } catch (e) { /* storage unavailable */ }
+  setRadius(state.ri);
 }
 function savePrefs() {
   try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ ages: state.ages, langs: state.langs, radius: state.radius }));
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ ages: state.ages, langs: state.langs, ri: state.ri, units: state.units }));
   } catch (e) { /* storage unavailable */ }
 }
 
@@ -564,11 +572,22 @@ function ruForm(n, one, few, many) {
 function classes(n) {
   return isRu() ? `${n} ${ruForm(n, "занятие", "занятия", "занятий")}` : `${n} ${n === 1 ? "class" : "classes"}`;
 }
-function km(v) {
-  const s = v < 10 ? v.toFixed(1) : String(Math.round(v));
-  return isRu() ? `${s.replace(".", ",")} км` : `${s} km`;
+// The chosen distance is an index into RADII, so switching units keeps a similar circle
+function radiusKm(i) { return state.units === "mi" ? RADII.mi[i] * MILE : RADII.km[i]; }
+function setRadius(i) { state.ri = i; state.radius = radiusKm(i); }
+function unitWord(s) {
+  if (state.units === "mi") return isRu() ? `${s} мили` : `${s} mi`;
+  return isRu() ? `${s} км` : `${s} km`;
 }
-function rLabel(r) { return isRu() ? `${r} км` : `${r} km`; }
+function dist(vKm) {
+  const v = state.units === "mi" ? vKm / MILE : vKm;
+  const s = v < 10 ? v.toFixed(1) : String(Math.round(v));
+  return unitWord(isRu() ? s.replace(".", ",") : s);
+}
+function rLabel(i) {
+  const v = RADII[state.units][i];
+  return unitWord(v === 0.5 ? "½" : String(v));
+}
 function ageWord(m) { return m === 6 ? T().under1 : m === 144 ? "12+" : String(m / 12); }
 
 function ageText(l) {
@@ -622,7 +641,7 @@ function langText(l) { return l.l.map((x) => T().lang[x] || x).join(T().and); }
 
 function whereText(l, d) {
   if (l.on) return T().online;
-  return `${l.a} · ${l.ap ? "~" : ""}${km(d)}`;
+  return `${l.a} · ${l.ap ? T().about : ""}${dist(d)}`;
 }
 
 function rangeText(h) {
@@ -655,8 +674,8 @@ function chipHtml(act, v, label, on, zero, aria) {
 
 function renderTop() {
   const t = T(), btn = $("placeBtn");
-  btn.innerHTML = `${ICON.pin}<span class="place-text"><span class="name">${esc(placeName())}</span><span class="km">${t.within(rLabel(state.radius))}</span></span>${ICON.chevron}`;
-  btn.setAttribute("aria-label", `${t.where}: ${placeName()}, ${rLabel(state.radius)}`);
+  btn.innerHTML = `${ICON.pin}<span class="place-text"><span class="name">${esc(placeName())}</span><span class="km">${t.within(rLabel(state.ri))}</span></span>${ICON.chevron}`;
+  btn.setAttribute("aria-label", `${t.where}: ${placeName()}, ${rLabel(state.ri)}`);
   $("addBtn").setAttribute("aria-label", t.addClass);
   $("addBtn").hidden = !sb;
   document.documentElement.lang = state.ui;
@@ -666,6 +685,10 @@ function renderFilters(c) {
   const s = state, t = T(), el = $("filters");
   const ages = AGES.map((a) => chipHtml("age", a, a === 6 ? "<1" : ageWord(a), s.ages.includes(a),
     !finds(c, "ages", (l) => fitsAge(l, a)), a === 6 ? t.under1 : "")).join("");
+  const picked = AGES.filter((a) => s.ages.includes(a)).map((a) => (a === 6 ? "<1" : ageWord(a)));
+  const clearAges = picked.length
+    ? `<button type="button" class="chip clear-ages" data-act="clearAges" aria-label="${esc(t.clearAges(picked.join(", ")))}">${esc(picked.join(", "))}${ICON.close}</button>`
+    : "";
   // Rarely used filters live in the Filters sheet; its badge says how many are on
   const hidden = s.when.length + s.types.length + s.cats.length + (s.showOnline ? 1 : 0);
   const filtersBtn = `<button type="button" class="chip${hidden ? " active" : ""}" data-act="sheet" data-v="filters">${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}</button>`;
@@ -677,7 +700,7 @@ function renderFilters(c) {
 
   // Keep each row's sideways scroll, so tapping "9" doesn't jump the row back to the start
   const keep = [...el.querySelectorAll(".scroller")].map((r) => r.scrollLeft);
-  el.innerHTML = `<div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${ages}</div>
+  el.innerHTML = `<div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${clearAges}${ages}</div>
     <div class="scroller" role="group" aria-label="${esc(t.quick)}">${filtersBtn}${dates}${langs}</div>`;
   el.querySelectorAll(".scroller").forEach((r, n) => { r.scrollLeft = keep[n] || 0; });
 }
@@ -705,9 +728,9 @@ function cardHtml(o, dates, multi) {
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
   if (unconfirmed(l)) tags.push(statusTag(l));
   const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
-  const dist = l.on ? t.online : `${l.ap ? "~" : ""}${km(o.d)}`;
+  const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
   return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
-    <span class="card-top"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${esc(dist)}</span></span>
+    <span class="card-top"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${esc(far)}</span></span>
     <span class="card-title">${esc(l.t)}</span>
     ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
     <span class="tags">${tags.join("")}</span>
@@ -740,6 +763,10 @@ function renderList(c) {
   const multi = s.ages.length >= 2;
   html += c.shown.map((o) => cardHtml(o, dates, multi)).join("");
 
+  if (!w && !s.onlyNew && RADII.km[s.ri + 1] != null) {
+    const more = c.inPerson.filter((o) => o.d > s.radius && o.d <= radiusKm(s.ri + 1) && passes(o.l)).length;
+    if (more) html += `<button type="button" class="online-row" data-act="radius" data-v="${s.ri + 1}"><span>${esc(t.moreOutside(more, rLabel(s.ri + 1)))}</span><span>${t.showWord}</span></button>`;
+  }
   if (c.online.length && !s.types.includes("online")) {
     html += `<button type="button" class="online-row" data-act="online"><span>${esc(t.onlineToo(c.online.length))}</span><span>${s.showOnline ? t.hideWord : t.showWord}</span></button>`;
   }
@@ -759,11 +786,11 @@ function renderList(c) {
 function widenInfo(c) {
   const n = c.nearby.length;
   if (n >= 3 || state.onlyNew) return null;
-  const next = RADII.filter((r) => r > state.radius)
-    .map((r) => ({ r, n: c.inPerson.filter((o) => o.d <= r && passes(o.l)).length }))
+  const next = RADII.km.map((_, i) => i).filter((i) => i > state.ri)
+    .map((i) => ({ i, n: c.inPerson.filter((o) => o.d <= radiusKm(i) && passes(o.l)).length }))
     .find((x) => x.n > n);
   if (!next) return null;
-  return { r: next.r, text: T().widenText(n, state.radius), cta: T().widenCta(next.r, next.n - n) };
+  return { r: next.i, text: T().widenText(n, rLabel(state.ri)), cta: T().widenCta(rLabel(next.i), next.n - n) };
 }
 
 function renderSheet(c) {
@@ -804,14 +831,15 @@ function placeSheet(c) {
   const status = s.placeStatus ? `<p class="status${s.placeWarn ? " warn" : ""}">${esc(s.placeStatus)}</p>` : "";
   const areas = QUICK_AREAS.map((a, n) =>
     chipHtml("area", n, a.name, s.place.kind !== "me" && s.place.kind !== "search" && s.place.name === a.name, false)).join("");
-  const radii = RADII.map((r) => chipHtml("radius", r, rLabel(r), s.radius === r, false)).join("");
+  const radii = RADII.km.map((_, i) => chipHtml("radius", i, rLabel(i), s.ri === i, false)).join("");
+  const units = ["mi", "km"].map((u) => chipHtml("units", u, t.units[u], s.units === u, false)).join("");
   return {
     title: t.where,
     body: `<button type="button" class="row-btn" data-act="nearMe">${ICON.locate}<span>${t.useMyLocation}</span></button>
       <form class="search-form" id="areaForm"><input id="areaInput" type="text" placeholder="${t.searchArea}" autocomplete="off" aria-label="${t.searchArea}" />
       <button type="submit">${t.go}</button></form>${status}
       <div class="sec"><h3>${t.quickAreas}</h3><div class="wrap">${areas}</div></div>
-      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div></div>`,
+      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div><div class="wrap units">${units}</div></div>`,
     foot: `<button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
   };
 }
@@ -837,9 +865,7 @@ function filtersSheet(c) {
     body: `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
       <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
       ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
-      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
-      <button type="button" class="row-btn switch-row" data-act="online" ${pressed(s.showOnline)}>
-        <span>${t.includeOnline}</span><span class="switch${s.showOnline ? " on" : ""}"></span></button>`,
+      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}`,
     foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
       <button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
   };
@@ -907,7 +933,7 @@ const wrap = (chips) => `<div class="wrap">${chips}</div>`;
 function blankAdd() {
   return {
     step: 1, tried: 0, busy: false, error: "", name: "", org: "", link: "", kind: "", cat: "",
-    ageFrom: "", ageTo: "", langs: ["English"], otherLang: "", mode: "inperson", venue: "", address: "",
+    ageMin: "", ageMax: "", langs: ["English"], otherLang: "", mode: "inperson", venue: "", address: "",
     postcode: "", geo: null, days: [], runs: "term", date: "", dateTo: "", timeFrom: "", timeTo: "",
     price: "", priceText: "", note: "", orgOk: false, trueOk: false,
   };
@@ -923,8 +949,8 @@ function addMissing(n) {
   }
   if (n === 2) {
     if (!a.cat) out.push(need.cat);
-    if (a.ageFrom === "" || a.ageTo === "") out.push(need.ages);
-    else if (Number(a.ageTo) < Number(a.ageFrom)) out.push(need.agesOrder);
+    if (a.ageMin === "" || a.ageMax === "") out.push(need.ages);
+    else if (Number(a.ageMax) < Number(a.ageMin)) out.push(need.agesOrder);
     if (!a.langs.length) out.push(need.lang);
     else if (a.langs.includes("Other") && !a.otherLang.trim()) out.push(need.otherLang);
   }
@@ -986,14 +1012,14 @@ function addStep1(a) {
 
 function addStep2(a) {
   const t = T();
-  const from = AGE_FROM.map((v) => [v, v === 0 ? t.birth : String(v)]);
-  const to = AGE_TO.map((v) => [v, v === 99 ? t.noUpper : String(v)]);
+  const from = AGE_FROM.map((v) => [v, v === 0 ? t.birth : t.ageOpt(v)]);
+  const to = AGE_TO.map((v) => [v, v === 999 ? t.noUpper : t.ageOpt(v)]);
   const langs = ["English", "Russian", "Other"].map((x) => chipHtml("fLang", x, x === "Other" ? t.otherLang : t.lang[x], a.langs.includes(x), false)).join("");
   const otherLang = a.langs.includes("Other")
     ? inputHtml("otherLang", a.otherLang, `type="text" maxlength="40" placeholder="${t.otherLangHint}" aria-label="${t.otherLangHint}"`) : "";
   return groupHtml(t.fCat, wrap(ADD_CATS.map((k) => chipHtml("fCat", k, t.addCat[k], a.cat === k, false)).join("")),
     a.cat === "Mixed" ? t.fOtherCat : "")
-    + groupHtml(t.fAges, `<div class="pair">${selectHtml("ageFrom", t.youngest, t.ageFrom, from, a.ageFrom)}${selectHtml("ageTo", t.oldest, t.ageTo, to, a.ageTo)}</div>`)
+    + groupHtml(t.fAges, `<div class="pair">${selectHtml("ageMin", t.youngest, t.ageFrom, from, a.ageMin)}${selectHtml("ageMax", t.oldest, t.ageTo, to, a.ageMax)}</div>`)
     + groupHtml(t.fLangs, wrap(langs) + otherLang);
 }
 
@@ -1041,7 +1067,7 @@ function longDate(iso) {
 // The card as parents will see it, built from what's been typed so far
 function previewHtml(a) {
   const t = T();
-  const l = { mn: Number(a.ageFrom) * 12, mx: a.ageTo === "99" ? null : Number(a.ageTo) * 12, d: formDays(a), st: a.timeFrom, l: formLangs(a) };
+  const l = { mn: Number(a.ageMin), mx: a.ageMax === "999" ? null : Number(a.ageMax), d: formDays(a), st: a.timeFrom, l: formLangs(a) };
   const when = a.kind === "oneoff" && a.date ? `${longDate(a.date)}${a.timeFrom ? ` ${a.timeFrom}` : ""}` : a.kind === "camp" ? t.kind.camp : whenText(l);
   const price = a.price === "free" ? t.price.free : a.price === "paid" ? a.priceText.trim() : "";
   const meta = [when, langText(l), price].filter(Boolean).join(" · ");
@@ -1051,7 +1077,7 @@ function previewHtml(a) {
     <span class="card-top"><span class="dot" style="background:${catColor(a.cat)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${t.fresh}</span></span>
     <span class="card-title">${esc(a.name)}</span>
     ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
-    <span class="tags"><span class="agetag">${esc(a.ageFrom === "" ? t.agesUnknown : ageText(l))}</span><span class="tag warn">${t.notConfirmed}</span>${a.link.trim() ? "" : `<span class="tag">${t.noSource}</span>`}</span>
+    <span class="tags"><span class="agetag">${esc(a.ageMin === "" ? t.agesUnknown : ageText(l))}</span><span class="tag warn">${t.notConfirmed}</span>${a.link.trim() ? "" : `<span class="tag">${t.noSource}</span>`}</span>
   </div>`;
 }
 
@@ -1080,7 +1106,7 @@ function listingFromForm(a) {
     location: online ? null : `SRID=4326;POINT(${a.geo.lng} ${a.geo.lat})`,
     address_source: online ? null : "Community: postcode",
     format: ADD_KINDS[a.kind], category: a.cat,
-    age_min_months: Number(a.ageFrom) * 12, age_max_months: a.ageTo === "99" ? null : Number(a.ageTo) * 12,
+    age_min_months: Number(a.ageMin), age_max_months: a.ageMax === "999" ? null : Number(a.ageMax),
     languages: formLangs(a),
     runs_when: a.kind === "camp" ? "Holidays" : a.kind === "oneoff" ? null : ADD_RUNS[a.runs],
     days_of_week: formDays(a),
@@ -1329,9 +1355,6 @@ function renderDetail(c) {
   if (l.l.length) tags.push(`<span class="tag">${esc(langText(l))}</span>`);
   if (l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
   const where = l.on ? t.online : l.ad || `${l.a} (${t.areaOnly})`;
-  const notes = l.g || l.b ? `<div style="display:flex;flex-direction:column;gap:10px"><b style="font-size:16px">${t.parents}</b>
-      ${l.g ? `<div class="note good">${ICON.plus}<div><b>${t.good}</b><span>${esc(l.g)}</span></div></div>` : ""}
-      ${l.b ? `<div class="note bad">${ICON.minus}<div><b>${t.watch}</b><span>${esc(l.b)}</span></div></div>` : ""}</div>` : "";
   const dir = l.y != null && !l.on ? `https://www.google.com/maps/search/?api=1&query=${l.y},${l.x}` : "";
   const status = (unconfirmed(l) ? statusTag(l) : "")
     + (l.w ? "" : `<span class="tag">${t.noSource}</span>`);
@@ -1356,7 +1379,6 @@ function renderDetail(c) {
           <div><dt>${t.dWhere}</dt><dd>${esc(where)}</dd></div>
         </dl>
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
-        ${notes}
         ${communityHtml(l)}
       </div></div>
       <div class="actions">
@@ -1536,7 +1558,9 @@ function toggle(key, v) { state[key] = flip(state[key], v); }
 
 const ACTIONS = {
   age: (v) => { toggle("ages", Number(v)); savePrefs(); },
-  radius: (v) => { state.radius = Number(v); savePrefs(); },
+  radius: (v) => { setRadius(Number(v)); savePrefs(); },
+  units: (v) => { state.units = v; setRadius(state.ri); savePrefs(); },
+  clearAges: () => { state.ages = []; savePrefs(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
   date: (v) => { state.date = state.date === v ? null : v; },
   when: (v) => toggle("when", v),
@@ -1624,7 +1648,7 @@ const ACTIONS = {
 };
 
 // Only actions that change the results send the list back to the top
-const RESETS_SCROLL = new Set(["age", "radius", "lang", "date", "when", "type", "cat", "online", "clear", "resetFilters", "area", "onlyNew"]);
+const RESETS_SCROLL = new Set(["age", "clearAges", "radius", "units", "lang", "date", "when", "type", "cat", "online", "clear", "resetFilters", "area", "onlyNew"]);
 
 function run(act, v) {
   if (ACTIONS[act](v) === "async") return;
