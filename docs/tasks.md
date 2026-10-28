@@ -35,8 +35,8 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 
 ### Phase 2 – needs Tatjana (short steps at the end of Phase 1)
 - [ ] Run `supabase/migrations/20261028_feedback.sql` in the Supabase SQL editor
-- [ ] `npm run deploy` (runs `npm run check` first) and `git push`
-- [ ] `npm run import:listings -- research/batches/2026-10-28-london-eventfirst.csv` (Baba Yaga show)
+- [x] `npm run deploy` (runs `npm run check` first) and `git push`
+- [x] `npm run import:listings -- research/batches/2026-10-28-london-eventfirst.csv` (Baba Yaga show)
 - [ ] On the phone, compare: the normal app, `?look=stripe`, `?look=tint`, `?look=glass` (can be combined, e.g.
       `?look=stripe,glass`). Tell Claude which to keep; the others get removed
 - [ ] Look at the app on a laptop and a tablet (list on the left, map on the right)
