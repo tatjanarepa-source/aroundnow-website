@@ -155,7 +155,8 @@ tennis, chess, coding, cooking.
 | Polish Saturday school near St Benedict's | Ealing | |
 | Hartbeeps, Toddler Sense, Jo Jingles | Ealing | Franchises |
 | Forest school: Horsenden Hill, Walpole Park, Pitshanger Park | Ealing | |
-| Footy Fun 4 Kids (Mini Kickers, 1–3 years) | Ealing | footyfun4kids.com; drop-in toddler football |
+| Footy Fun 4 Kids (Mini Kickers, 1–3 years) | Ealing | Done 2026-10-28 |
+| Wildcats Combat (Perivale UB6 7NP, Northfields), De Silva Taekwondo (Spring Bridge Rd), Kaishi Karate, Elkai Karate, SKC Karate (W13 9DJ) | Ealing | Martial arts leads; Wildcats pages are sign-up forms without times |
 | Little Kickers Ealing and Uxbridge | Ealing | Franchise, 18 months–8 years |
 | Toddlers & Kids Football at All Saints, Ealing Common | Ealing Common | Saturdays, seen on clubhubuk.co.uk; find the organiser |
 | First Steps Sports Club, We Make Footballers, Ealing United FC | Ealing | Football 2–12 years |
