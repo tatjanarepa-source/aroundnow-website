@@ -1465,8 +1465,12 @@ function renderMap(c) {
   }
 }
 
+// Tablets and laptops: the list sits beside the map instead of over it (see style.css)
+const wide = window.matchMedia("(min-width: 760px)");
+
 // The part of the map you can see: below the top bar, above the resting panel
 function visibleArea() {
+  if (wide.matches) return { paddingTopLeft: [24, 24], paddingBottomRight: [24, 24] };
   const app = $("app"), h = app.clientHeight;
   const panelTop = Math.max(h * 0.45, h - 420); // same as .panel's resting top in style.css
   const below = $("topbar").getBoundingClientRect().bottom - app.getBoundingClientRect().top;
@@ -1683,7 +1687,7 @@ const panel = $("panel");
 let drag = null;
 
 panel.addEventListener("pointerdown", (e) => {
-  if (!e.target.closest(".drag-zone") || e.target.closest("button")) return;
+  if (wide.matches || !e.target.closest(".drag-zone") || e.target.closest("button")) return;
   drag = { y: e.clientY, top: panel.offsetTop, moved: false };
   panel.setPointerCapture(e.pointerId);
   panel.classList.add("dragging");
@@ -1711,9 +1715,12 @@ function endDrag(e) {
 panel.addEventListener("pointerup", endDrag);
 panel.addEventListener("pointercancel", endDrag);
 
+// Turning a tablet or resizing a window between the two layouts
+wide.addEventListener("change", () => { if (map) fitMap(); });
+
 // Scrolling the list while the panel is low opens it fully
 $("list").addEventListener("scroll", (e) => {
-  if (!state.expanded && e.currentTarget.scrollTop > 24) {
+  if (!wide.matches && !state.expanded && e.currentTarget.scrollTop > 24) {
     state.expanded = true;
     renderPanel();
   }

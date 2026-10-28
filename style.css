@@ -646,3 +646,47 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
   .panel, .chip, .switch::after { transition: none; }
   .sheet.enter { animation: none; }
 }
+
+/* --- Tablets and laptops: the list in a side column, the map filling the rest --- */
+
+@media (min-width: 760px) {
+  .app { --side: 380px; max-width: none; box-shadow: none; }
+  .map { left: var(--side); }
+  .leaflet-top.leaflet-right { top: 0; }
+  .topbar { left: 12px; right: auto; width: calc(var(--side) - 24px); }
+  .panel, .panel.expanded {
+    top: calc(80px + env(safe-area-inset-top));
+    right: auto;
+    width: var(--side);
+    border-top: 0;
+    border-right: 1px solid var(--line-soft);
+    border-radius: 0;
+    box-shadow: none;
+    transition: none;
+  }
+  .panel .handle, #panelBtn { display: none; }
+  /* The whole column scrolls, so on short screens the filters move up out of the way */
+  .panel { overflow-y: auto; overscroll-behavior: contain; }
+  .list { flex: none; overflow: visible; }
+  .filters { padding-top: 6px; }
+  /* Rows wrap instead of scrolling sideways: there's room, and a mouse can't swipe */
+  .scroller { flex-wrap: wrap; overflow-x: visible; }
+
+  /* Sheets and class details open as centred windows */
+  .overlay { align-items: center; justify-content: center; }
+  .overlay .backdrop { position: absolute; inset: 0; height: auto !important; min-height: 0; }
+  .sheet, .sheet.tall {
+    position: relative;
+    flex: none;
+    width: min(560px, 92vw);
+    max-height: 86vh;
+    border: 1px solid var(--line-soft);
+    border-radius: 28px;
+    padding-bottom: 0;
+  }
+  .sheet.tall { height: 86vh; }
+}
+
+@media (min-width: 1100px) {
+  .app { --side: 420px; }
+}
