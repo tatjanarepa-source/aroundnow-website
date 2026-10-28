@@ -107,6 +107,8 @@ their booking platform.
 ### Event sites
 - **Ticket Tailor** (tickettailor.com): used by small charities, e.g. Ealing 135
   (`tickettailor.com/events/ealing135`): stay & plays, forest school. Organiser pages list all upcoming dates.
+- **EventFirst** (eventfirst.co.uk): tickets for Russian- and Ukrainian-language events in London. Mostly adult concerts;
+  children's New Year shows appear from October (e.g. Baba Yaga's Secret Plan, 29 Nov 2026, E1). Check /events/ in Oct–Dec.
 - **Eventbrite** (eventbrite.co.uk): its own search pages need a real browser and mostly show promoted adult
   events. Best route: Google `site:eventbrite.co.uk <area> toddler OR baby OR kids OR family`. Thin for Ealing kids
   (Oct 2026). Otherwise search "<area> kids", "<area> baby", "<area> toddler" and
