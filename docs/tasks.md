@@ -15,27 +15,32 @@ Decisions: remove the spreadsheet "good / watch out" comments; miles by default 
 comments later; laptop/tablet layout = big map with the list in a side panel.
 
 ### Phase 1 – Claude works alone (all local, tested in the browser, one deploy at the end)
-- [ ] Distance: "about 1.1 km" instead of "~1.1 km" (the "~" looked like a minus sign)
-- [ ] Miles / km switch next to the location, miles by default; distance choices ½, 2, 3, 6 miles (1, 3, 5, 10 km)
-- [ ] Remove the "include online" toggle at the bottom (keep the Online filter)
-- [ ] Remove the random "good / watch out" comments from cards and details
-- [ ] Hidden age chips: show the selected ages next to "Age" with a Clear button; scroll the first selected into view
-- [ ] "Add a class" form: ages in months as well as years (e.g. 3, 6, 18 months), since many baby classes start
+- [x] Distance: "about 1.1 km" instead of "~1.1 km" (the "~" looked like a minus sign)
+- [x] Miles / km switch next to the location, miles by default; distance choices ½, 2, 3, 6 miles (1, 3, 5, 10 km)
+- [x] Remove the "include online" toggle at the bottom (keep the Online filter)
+- [x] Remove the random "good / watch out" comments from cards and details
+- [x] Hidden age chips: the selected ages show as a chip at the start of the age row; tap it to clear them
+      (closes the "Hidden age chips" item below)
+- [x] "Add a class" form: ages in months as well as years (e.g. 3, 6, 18 months), since many baby classes start
       at "6 weeks", "4 months" or "18 months". Today the form only offers whole years
-- [ ] "N more just outside your circle" hint, with a button to widen the distance
-- [ ] Laptop and tablet layout: map on the right, filters and list in a left side panel
-- [ ] Tester feedback button ("Something not right? Send to developer"): sends filters, rough area, screen size,
+- [x] "N more just outside your circle" hint, with a button to widen the distance
+- [x] Laptop and tablet layout: map on the right, filters and list in a left side panel
+- [x] Tester feedback button ("Something not right? Send to developer"): sends filters, rough area, screen size,
       app version and a typed question, after asking. Code and SQL file ready; needs Tatjana's SQL run (Phase 2)
-- [ ] Pre-deploy check: automated test that loads the app, sees listings and tries the main filters;
+- [x] Pre-deploy check: automated test that loads the app, sees listings and tries the main filters;
       `npm run deploy` stops if it fails
-- [ ] Design options (not built into the app yet): colour-coded cards (stripe vs tint) and a see-through panel over
+- [x] Design options (not built into the app yet): colour-coded cards (stripe vs tint) and a see-through panel over
       the map, as a clickable mock-up to choose from
-- [ ] Research: add eventfirst.co.uk (Russian/Ukrainian children's events) as a source; check its West London events
+- [x] Research: add eventfirst.co.uk (Russian/Ukrainian children's events) as a source; check its West London events
 
 ### Phase 2 – needs Tatjana (short steps at the end of Phase 1)
-- [ ] Run the feedback-table SQL in Supabase
-- [ ] Look at the app on phone, laptop and tablet; pick the card colour and panel options
-- [ ] `npm run deploy` and `git push`
+- [ ] Run `supabase/migrations/20261028_feedback.sql` in the Supabase SQL editor
+- [ ] `npm run deploy` (runs `npm run check` first) and `git push`
+- [ ] `npm run import:listings -- research/batches/2026-10-28-london-eventfirst.csv` (Baba Yaga show)
+- [ ] On the phone, compare: the normal app, `?look=stripe`, `?look=tint`, `?look=glass` (can be combined, e.g.
+      `?look=stripe,glass`). Tell Claude which to keep; the others get removed
+- [ ] Look at the app on a laptop and a tablet (list on the left, map on the right)
+- [ ] Try "Something not right? Tell us" at the end of the list; read messages with `npm run feedback`
 
 ### Phase 3 – next (needs accounts or decisions)
 - [ ] Email service for sign-in emails to real users (e.g. Resend, free tier): Tatjana signs up, Claude connects it
