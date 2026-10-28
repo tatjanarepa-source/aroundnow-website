@@ -37,8 +37,12 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
 
 - Use the organisation's **own website** (or the council's) as the source. Directories
   (Hoop, Happity, Netmums) are fine for *finding* leads, but confirm on the provider's site.
-- **No Facebook, Instagram or WhatsApp scraping.** Leads from there go in `log.md` as
-  "lead, not checked" for a person to look at.
+- **Facebook and Instagram pages count as the organiser's own site** (user's decision, 2026-10-28): many small
+  groups (e.g. Tippitoes) only post there. In a local session, read the group's **public page** in Chrome the way
+  a parent would: its About/intro, pinned posts and recent posts (last 12 months for freshness). Note the post date
+  in `NeedsInfo` and use the page URL as `Website`. Not allowed: bulk or automated scraping, private or
+  members-only groups, WhatsApp, and personal profiles of private individuals. The cloud run can't read these
+  pages, so such jobs are "run locally".
 - **Church services for children count** (e.g. toddler services followed by stay & play). Say it's a
   service in `Description`/`NeedsInfo` so parents know.
 - **Organisations only.** No private individuals (a tutor working from home, a childminder).
@@ -152,7 +156,7 @@ tennis, chess, coding, cooking.
 | Ealing Gymnastics, Twisters | Ealing | Done 2026-10-28 |
 | YMCA South Ealing (25 St Mary's Road W5 5RE), Club des Sports, The Little Gym Chiswick, Aurora Gymnastics | Ealing / Chiswick | Gymnastics leads; YMCA also has a community café with a play area |
 | QPR in the Community Trust, Fulham FC Foundation | West London | Club community trusts, like Brentford's |
-| Tippitoes, Lammas Park Play Centre (Elers Rd W13 9QD) | Ealing | Drop-in toddler stay and play with soft play circuit, Mon–Fri 9:15–10:45 (under 4s) per directories; only Facebook/Instagram, reopened 2 Sep 2026. Needs a parent to confirm |
+| Tippitoes, Lammas Park Play Centre (Elers Rd W13 9QD) | Ealing | Done 2026-10-28 from instagram.com/tippitoes_ealing (timetable posts and highlights) |
 | Ealing Council play centres (Acton Park, Dormers Wells, Pitzhanger, Islip Manor, Lammas Park…) | Ealing | ealing.gov.uk play centres page: 0–12, term time Mon–Fri 16:00–18:15, Sat 13:00–17:15. Page undated and lists Northolt Park (moved), so check it's current |
 | Hanwell POP (Dickens Yard), KIDZ#1, YMCA South Ealing | Ealing | Soft play leads |
 | Everyone Active Ealing centres | Ealing | Done 2026-10-27: pools at Acton, Dormers Wells, Northolt (soft play at Northolt). Gurnell closed for redevelopment. Reynolds and Elthorne (no pools) not checked |

@@ -12,7 +12,6 @@ Ideas and problems to come back to. Newest first. Tick when done.
 ## Open
 
 - [ ] **Classes to research next** (parents' tips and leads, full list in `research/sources.md` → Known leads):
-  - Tippitoes at Lammas Park play centre: only on Facebook/Instagram; could you confirm the days and times next time you're there?
   - Ealing Council play centres (free, 0–12): council page is undated, check they're still open
   - YMCA South Ealing: gymnastics (no current times) and a café with a play area
   - Everyone Active Reynolds and Elthorne (no pools; other kids' activities?)
