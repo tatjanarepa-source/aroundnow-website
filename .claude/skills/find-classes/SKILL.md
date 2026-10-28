@@ -30,7 +30,7 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
   the row; list it under "Leads not checked" with the date you found.
 - Fill the columns like this:
   - `Format`: Group class | After-school class | Workshop / event | Holiday camp | Preschool / nursery | Weekend school | Online course
-  - `Category`: Languages | Sports / Dance | Performing arts | Arts / Crafts | Chess | STEM / Thinking | Childcare / Preschool | Outdoor / Nature | Soft play | Life skills | Mixed | Events / Parties
+  - `Category`: Languages | Sports / Dance | Performing arts | Arts / Crafts | Chess | STEM / Thinking | Childcare / Preschool | Outdoor / Nature | Soft play | Museums | Life skills | Mixed | Events / Parties
   - `RunsWhen`: Term time | Year-round | Holidays. `HolidayClub`: Yes | No
   - `DaysOfWeek`: `Mon, Sat`. `TimeOfDay`: Morning | Afternoon | Evening. `StartTime`/`EndTime`: `09:30`
   - One-off events and dated camps: `EventDate` / `EventEndDate` as `2026-10-31` (only upcoming ones).
