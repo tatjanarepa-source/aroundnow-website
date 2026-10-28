@@ -114,6 +114,8 @@ their booking platform.
 - The council's Family Information Service / Local Offer directory.
 
 ### Franchises (one "find a class" page covers a whole region)
+Class finders often need a date of birth or postcode: enter a made-up child age and a public postcode (search only, never book).
+Water Babies: region page lists pools; times per pool via the finder. Jo Jingles: browse by region (no Ealing franchise, Oct 2026).
 Bach to Baby (family concerts), Baby Ballet, Tumble Tots, Water Babies, Puddle Ducks, Monkey Music, Hartbeeps, Toddler Sense,
 Baby Sensory, Jo Jingles, Little Kickers, Mini Professionals, Stagecoach, Perform, Razzamataz,
 Kumon, Explore Learning, Crafty Kids, Rugbytots, Footy Pups, Diddi Dance.
