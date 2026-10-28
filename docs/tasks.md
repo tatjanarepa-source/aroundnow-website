@@ -34,7 +34,7 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] Research: add eventfirst.co.uk (Russian/Ukrainian children's events) as a source; check its West London events
 
 ### Phase 2 – needs Tatjana (short steps at the end of Phase 1)
-- [ ] Run `supabase/migrations/20261028_feedback.sql` in the Supabase SQL editor
+- [x] Run `supabase/migrations/20261028_feedback.sql` in the Supabase SQL editor
 - [x] `npm run deploy` (runs `npm run check` first) and `git push`
 - [x] `npm run import:listings -- research/batches/2026-10-28-london-eventfirst.csv` (Baba Yaga show)
 - [ ] On the phone, compare: the normal app, `?look=stripe`, `?look=tint`, `?look=glass` (can be combined, e.g.
