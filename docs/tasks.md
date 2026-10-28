@@ -39,7 +39,7 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] `npm run import:listings -- research/batches/2026-10-28-london-eventfirst.csv` (Baba Yaga show)
 - [x] On the phone, compared design options (stripe, tint, see-through panel, whole-card colours). Tatjana liked
       none of them: all removed 28 Oct (v20), the app looks as it did before
-- [ ] Look at the app on a laptop and a tablet (list on the left, map on the right)
+- [ ] Look at the app on a laptop (list on the left, map on the right). No tablet to test on
 - [ ] Try "Something not right? Tell us" at the end of the list; read messages with `npm run feedback`
 
 ### Phase 3 – next (needs accounts or decisions)
@@ -58,7 +58,9 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] Make copying the whole database harder (28 Oct, v22): the app asks for one area at a time (20 km) through
       `listings_near`; the listings table and the old `search_listings` are closed to the public key
 - [ ] Next step if needed: limit how often one visitor can ask (someone determined could still go area by area)
-- [ ] Affiliate links: Ticketmaster and Eventbrite pay a commission for ticket sales? Check their programmes; Tatjana signs up
+- [x] Affiliate links checked (28 Oct). Ticketmaster UK: programme on Impact (impact.com), roughly 0.6–1% of the ticket
+      price, needs approval. Eventbrite: no open programme for sites like ours; only per-event links an organiser sends.
+      No live listing links to either today, so not worth it yet. Revisit if we add Ticketmaster family shows or pantos
 - [ ] More research without Tatjana: bigger or more frequent nightly runs (the cloud run already works down
       `research/log.md` each night; many sites block the cloud and need Chrome on this computer)
 
