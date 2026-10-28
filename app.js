@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v20";
+const APP_VERSION = "v21";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -58,15 +58,44 @@ const SCHOOL_HOLIDAYS = [
 ];
 const DATES = ["today", "tomorrow", "weekend"];
 
-const CATEGORIES = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "Chess", "STEM / Thinking",
+const CATEGORIES = ["Languages", "Swimming", "Gymnastics", "Dance", "Football", "Martial arts", "Tennis", "Horse riding",
+  "Sports / Dance", "Performing arts", "Arts / Crafts", "Chess", "STEM / Thinking",
   "Childcare / Preschool", "Outdoor / Nature", "Soft play", "Museums", "Life skills", "Mixed", "Events / Parties"];
+// The database keeps one "Sports / Dance" activity; the app splits it by sport, using the subjects and title.
+// Multi-sport camps and anything not matched stay "Sports / Dance" (shown as "Other sports").
+const DANCE = /dance|ballet|\btap\b|jazz|contemporary|zumba/i;
+const SPORTS = [
+  ["Sports / Dance", /multi/i], ["Swimming", /swim/i], ["Gymnastics", /gymnast|trampolin|tumbl/i],
+  ["Dance", DANCE], ["Football", /football|soccer/i],
+  ["Martial arts", /karate|judo|jiu|jitsu|taekwondo|martial|kickbox|boxing|combat|kung fu/i],
+  ["Tennis", /tennis/i], ["Horse riding", /horse|pony|riding/i],
+];
+function sportOf(r) {
+  const text = `${(r.subjects || []).join(" ")} ${r.title || ""}`;
+  return (SPORTS.find(([, re]) => re.test(text)) || ["Sports / Dance"])[0];
+}
 // One colour per activity, for the map pins and the dot on each card
+const SPORT_COLOR = "#6ee7a8";
 const CAT_COLORS = {
-  "Languages": "#7cc7ff", "Sports / Dance": "#6ee7a8", "Performing arts": "#c9a2ff", "Arts / Crafts": "#ff9bc9",
+  "Languages": "#7cc7ff", "Sports / Dance": SPORT_COLOR, "Performing arts": "#c9a2ff", "Arts / Crafts": "#ff9bc9",
   "Chess": "#a5b4fc", "STEM / Thinking": "#67e8f9", "Childcare / Preschool": "#ffe27a", "Outdoor / Nature": "#5eead4",
   "Soft play": "#fb923c", "Museums": "#d6b98c", "Life skills": "#fca5a5", "Mixed": "#ffb86b", "Events / Parties": "#ff9bc9",
+  ...Object.fromEntries(SPORTS.map(([k]) => [k, SPORT_COLOR])),
 };
 const catColor = (c) => CAT_COLORS[c] || "#a3adc2";
+// Dance cards name the styles, e.g. "Dance: Ballet, Tap" (subjects are in English, so only in English)
+function catLabel(l) {
+  const t = T(), name = t.cat[l.c] || l.c;
+  const styles = l.c === "Dance" && !isRu() ? l.sj.filter((x) => x !== "Dance" && DANCE.test(x)) : [];
+  return styles.length ? `${name}: ${styles.join(", ")}` : name;
+}
+
+// Price filter: "Free" means the class itself is free; anything with a £ price or "paid" counts as paid.
+// Listings with no price yet only show when no price is chosen.
+const PRICES = {
+  free: (l) => /^free\b/i.test(l.p),
+  paid: (l) => !/^free\b/i.test(l.p) && /£|\bpaid\b/i.test(l.p),
+};
 
 // "Add a class" form choices, mapped onto the stored fields.
 // "Something else" is stored as Mixed, which the database holds back for an admin to check.
@@ -112,7 +141,10 @@ const STRINGS = {
     noDays: (n) => `${n === 1 ? "1 more class nearby doesn’t" : `${n} more classes nearby don’t`} list their days. Check their websites.`,
     w: { weekends: "Weekends", afterschool: "After school", mornings: "Weekday mornings", holidays: "School holidays" },
     ty: { weekendschool: "Weekend schools", weekly: "Weekly classes", camps: "Holiday camps", nursery: "Nursery", events: "Events", online: "Online" },
-    cat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre", "Arts / Crafts": "Arts & crafts",
+    pr: { free: "Free", paid: "Paid" },
+    cat: { "Languages": "Languages", "Swimming": "Swimming", "Gymnastics": "Gymnastics", "Dance": "Dance", "Football": "Football",
+      "Martial arts": "Martial arts", "Tennis": "Tennis", "Horse riding": "Horse riding",
+      "Sports / Dance": "Other sports", "Performing arts": "Music & theatre", "Arts / Crafts": "Arts & crafts",
       "Chess": "Chess", "STEM / Thinking": "Science & thinking", "Childcare / Preschool": "Nursery", "Outdoor / Nature": "Outdoors",
       "Soft play": "Soft play", "Museums": "Museums", "Life skills": "Life skills", "Mixed": "Clubs", "Events / Parties": "Events & parties" },
     lang: { Russian: "Russian", English: "English" },
@@ -221,7 +253,10 @@ const STRINGS = {
     noDays: (n) => `Ещё ${n} ${ruForm(n, "занятие рядом не указывает", "занятия рядом не указывают", "занятий рядом не указывают")} дни. Проверьте на их сайтах.`,
     w: { weekends: "Выходные", afterschool: "После школы", mornings: "Будни, утро", holidays: "Каникулы" },
     ty: { weekendschool: "Школы выходного дня", weekly: "Кружки и секции", camps: "Лагеря", nursery: "Детский сад", events: "Мероприятия", online: "Онлайн" },
-    cat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр", "Arts / Crafts": "Творчество",
+    pr: { free: "Бесплатно", paid: "Платно" },
+    cat: { "Languages": "Языки", "Swimming": "Плавание", "Gymnastics": "Гимнастика", "Dance": "Танцы", "Football": "Футбол",
+      "Martial arts": "Единоборства", "Tennis": "Теннис", "Horse riding": "Верховая езда",
+      "Sports / Dance": "Другой спорт", "Performing arts": "Музыка и театр", "Arts / Crafts": "Творчество",
       "Chess": "Шахматы", "STEM / Thinking": "Наука и мышление", "Childcare / Preschool": "Детский сад", "Outdoor / Nature": "На природе",
       "Soft play": "Игровые комнаты", "Museums": "Музеи", "Life skills": "Навыки для жизни", "Mixed": "Кружки", "Events / Parties": "Праздники и события" },
     lang: { Russian: "Русский", English: "Английский" },
@@ -314,7 +349,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [],
+  ui: "en", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [],
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -403,7 +438,8 @@ function normalize(r) {
     i: r.id, t: r.title, a: online ? "Online" : r.location_area || "", y: pt ? pt.y : null, x: pt ? pt.x : null,
     ap: (r.address_source || "").startsWith("Approximate") ? 1 : 0, on: online ? 1 : 0,
     mn: r.age_min_months, mx: r.age_max_months, l: langs, d: r.days_of_week || [], tm: r.time_of_day || [],
-    st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "", c: r.category || "", r: r.runs_when || "",
+    st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "",
+    c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", sj: r.subjects || [], r: r.runs_when || "",
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
     g: r.pros || "", b: r.cons || "", w: r.website || "", k: r.status === "Check" ? 1 : 0,
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
@@ -414,7 +450,7 @@ function normalize(r) {
 
 async function loadListings() {
   const cols = ["id", "title", "website", "delivery_mode", "location_area", "address", "postcode", "location", "address_source",
-    "format", "category", "age_min_months", "age_max_months", "languages", "runs_when", "holiday_club", "days_of_week",
+    "format", "category", "subjects", "age_min_months", "age_max_months", "languages", "runs_when", "holiday_club", "days_of_week",
     "time_of_day", "start_time", "end_time", "schedule_text", "price_text", "description", "pros", "cons", "status",
     "created_at", "last_confirmed_at", "created_by", "source", "event_date", "event_end_date"].join(",");
   try {
@@ -543,6 +579,7 @@ function passes(l, skip) {
   if (skip !== "when" && s.when.length && !s.when.some((w) => WHEN[w](l))) return false;
   if (skip !== "types" && s.types.length && !s.types.some((t) => TYPES[t](l))) return false;
   if (skip !== "cats" && s.cats.length && !s.cats.includes(l.c)) return false;
+  if (skip !== "prices" && s.prices.length && !s.prices.some((p) => PRICES[p](l))) return false;
   return true;
 }
 
@@ -698,7 +735,7 @@ function renderFilters(c) {
   const ages = AGES.map((a) => chipHtml("age", a, a === 6 ? "<1" : ageWord(a), s.ages.includes(a),
     !finds(c, "ages", (l) => fitsAge(l, a)), a === 6 ? t.under1 : "")).join("");
   // Rarely used filters live in the Filters sheet; its badge says how many are on
-  const hidden = s.when.length + s.types.length + s.cats.length + (s.showOnline ? 1 : 0);
+  const hidden = s.when.length + s.types.length + s.cats.length + s.prices.length + (s.showOnline ? 1 : 0);
   const filtersBtn = `<button type="button" class="chip${hidden ? " active" : ""}" data-act="sheet" data-v="filters">${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}</button>`;
   const dates = DATES.map((k) => {
     const ds = datesFor(k);
@@ -735,7 +772,7 @@ function cardHtml(o, dates, multi) {
   }
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
   if (unconfirmed(l)) tags.push(statusTag(l));
-  const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
+  const where = [catLabel(l), l.on ? "" : l.a].filter(Boolean).join(" · ");
   const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
   return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
     <span class="card-top"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${esc(far)}</span></span>
@@ -870,10 +907,12 @@ function filtersSheet(c) {
   const cats = CATEGORIES.filter((k) => counts[k] || s.cats.includes(k))
     .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
   const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
+  const prices = Object.keys(PRICES).map((k) => chipHtml("price", k, t.pr[k], s.prices.includes(k), !finds(c, "prices", PRICES[k]))).join("");
   return {
     title: t.filters,
     body: `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
       <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
+      <div class="sec"><h3>${t.dPrice}</h3><div class="wrap">${prices}</div></div>
       ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
       ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}`,
     foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
@@ -892,7 +931,7 @@ function fbContext(c) {
     area: { name: placeName(), lat: round(s.place.lat), lng: round(s.place.lng) },
     distance: rLabel(s.ri),
     ages: s.ages.map((a) => (a === 6 ? "<1" : ageWord(a))),
-    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, onlyNew: s.onlyNew },
+    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, prices: s.prices, onlyNew: s.onlyNew },
     shown: c.shown.length,
     open: s.detail || null,
   };
@@ -1432,7 +1471,7 @@ function renderDetail(c) {
   el.innerHTML = `<button type="button" class="backdrop" style="flex:none;height:64px" data-act="closeDetail" aria-label="${t.close}"></button>
     <div class="sheet tall${again ? "" : " enter"}" role="dialog" aria-label="${esc(l.t)}">
       <div class="sheet-head">
-        <span class="card-top" style="flex:1;min-width:0"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(t.cat[l.c] || l.c)}</span></span>
+        <span class="card-top" style="flex:1;min-width:0"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(catLabel(l))}</span></span>
         <button type="button" class="chip sq" data-act="closeDetail" aria-label="${t.close}">${ICON.close}</button>
       </div>
       <div class="sheet-body" style="padding:0"><div class="detail-body">
@@ -1639,14 +1678,15 @@ const ACTIONS = {
   when: (v) => toggle("when", v),
   type: (v) => toggle("types", v),
   cat: (v) => toggle("cats", v),
+  price: (v) => toggle("prices", v),
   online: () => { state.showOnline = !state.showOnline; },
   clear: () => {
-    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], showOnline: false });
+    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], showOnline: false });
     savePrefs();
   },
   // Everything except age, which is about the child rather than this search
   resetFilters: () => {
-    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], showOnline: false });
+    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], showOnline: false });
     savePrefs();
   },
   sheet: (v) => { state.sheet = v; state.placeStatus = ""; },
@@ -1726,7 +1766,7 @@ const ACTIONS = {
 };
 
 // Only actions that change the results send the list back to the top
-const RESETS_SCROLL = new Set(["age", "radius", "units", "lang", "date", "when", "type", "cat", "online", "clear", "resetFilters", "area", "onlyNew"]);
+const RESETS_SCROLL = new Set(["age", "radius", "units", "lang", "date", "when", "type", "cat", "price", "online", "clear", "resetFilters", "area", "onlyNew"]);
 
 function run(act, v) {
   if (ACTIONS[act](v) === "async") return;

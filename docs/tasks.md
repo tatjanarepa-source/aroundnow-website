@@ -49,6 +49,17 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [ ] Add a class from a photo of a poster (AI reads it and fills in the form): needs an AI API key and a small server part
 - [ ] Staging copy of the site to try changes before they go live
 
+### Ideas from Tatjana (28 Oct)
+- [x] Price filter in the Filters sheet: Free / Paid (v21). Free = price starts with "Free"; listings with no price
+      only show when no price is chosen
+- [x] Split "Sports / Dance" into Swimming, Gymnastics, Dance, Football, Martial arts, Tennis, Horse riding and Other
+      sports (v21). Done in the app from Subjects and title; the database still says "Sports / Dance". Dance cards
+      name the style ("Dance: Ballet, Tap")
+- [ ] Make copying the whole database harder (today the app's public key can download every listing in one request)
+- [ ] Affiliate links: Ticketmaster and Eventbrite pay a commission for ticket sales? Check their programmes; Tatjana signs up
+- [ ] More research without Tatjana: bigger or more frequent nightly runs (the cloud run already works down
+      `research/log.md` each night; many sites block the cloud and need Chrome on this computer)
+
 ### Later
 - [ ] Parent tips/comments for signed-in users, with report button and moderation
 - [ ] Ratings (once there are enough users)
