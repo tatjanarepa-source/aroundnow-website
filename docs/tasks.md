@@ -9,6 +9,30 @@ Ideas and problems to come back to. Newest first. Tick when done.
 2. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## To test on 29 Oct (everything from 28 Oct, live as v23)
+
+Close and reopen the app (or reload on the laptop) first, so it has the latest version.
+
+- [ ] Feedback on a class: open a class → "Something wrong with this class? Tell us" → pick e.g. "Wrong activity" → Send →
+      "Thank you!" shows
+- [ ] Filters → "A filter not working? Tell us" at the bottom
+- [ ] In the form, the "Include my search…" tick box is visible, with area, ages and filters listed under it
+- [ ] `npm run feedback`: the message shows the class and filters; the "open it" link opens the same search
+- [ ] Price: Filters → Price → Free, then Paid; the list and map change
+- [ ] Sports: Filters → Activity has Swimming, Gymnastics, Dance, Football, Martial arts, Tennis, Horse riding,
+      Other sports; dance cards say the style ("Dance: Ballet, Tap")
+- [ ] Area by area: search Camden or Richmond, classes there show; back to Ealing shows Ealing's again
+- [ ] Original design: solid panel, plain cards, no "2, 3" chip in front of Age
+- [ ] Baba Yaga New Year show is in the list
+- [ ] Distances say "about 1.1 km"; miles/km switch in the place sheet; ½, 2, 3, 6 miles
+- [ ] No "include online" switch at the bottom (Online is still in Filters)
+- [ ] No "good / watch out" comments on cards
+- [ ] Add a class: ages in months (e.g. 6, 18 months)
+- [ ] Small distance → "N more within …" at the end of the list, with a button that widens it
+- [ ] Laptop: list on the left, map on the right
+- [ ] Look at 2 open class reports (`npm run feedback`): Centrum Gymnastics "details are wrong" (27 Oct);
+      A Little Me Time nursery "not for kids" (28 Oct, probably Tatjana's test)
+
 ## App plan (agreed 28 Oct 2026)
 
 Decisions: remove the spreadsheet "good / watch out" comments; miles by default (km as an option); ratings and open
