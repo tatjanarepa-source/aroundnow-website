@@ -21,6 +21,8 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [ ] Remove the random "good / watch out" comments from cards and details
 - [ ] "+ Add a class" labelled button, plus a card at the end of the list ("Know a class that's missing?")
 - [ ] Hidden age chips: show the selected ages next to "Age" with a Clear button; scroll the first selected into view
+- [ ] "Add a class" form: ages in months as well as years (e.g. 3, 6, 18 months), since many baby classes start
+      at "6 weeks", "4 months" or "18 months". Today the form only offers whole years
 - [ ] "N more just outside your circle" hint, with a button to widen the distance
 - [ ] Laptop and tablet layout: map on the right, filters and list in a left side panel
 - [ ] Tester feedback button ("Something not right? Send to developer"): sends filters, rough area, screen size,
