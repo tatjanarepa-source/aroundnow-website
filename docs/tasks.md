@@ -2,12 +2,51 @@
 
 Ideas and problems to come back to. Newest first. Tick when done.
 
-## Tomorrow morning (28 Oct 2026)
+## Every morning
 
 1. Ask Claude "what did the night run find?" → review the new batch files, then import the good ones
    (`npm run import:listings -- research/batches/<file>.csv`) and `git pull` first.
 2. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
+
+## App plan (agreed 28 Oct 2026)
+
+Decisions: remove the spreadsheet "good / watch out" comments; miles by default (km as an option); ratings and open
+comments later; laptop/tablet layout = big map with the list in a side panel.
+
+### Phase 1 – Claude works alone (all local, tested in the browser, one deploy at the end)
+- [ ] Distance: "about 1.1 km" instead of "~1.1 km" (the "~" looked like a minus sign)
+- [ ] Miles / km switch next to the location, miles by default; distance choices ½, 2, 3, 6 miles (1, 3, 5, 10 km)
+- [ ] Remove the "include online" toggle at the bottom (keep the Online filter)
+- [ ] Remove the random "good / watch out" comments from cards and details
+- [ ] "+ Add a class" labelled button, plus a card at the end of the list ("Know a class that's missing?")
+- [ ] Hidden age chips: show the selected ages next to "Age" with a Clear button; scroll the first selected into view
+- [ ] "N more just outside your circle" hint, with a button to widen the distance
+- [ ] Laptop and tablet layout: map on the right, filters and list in a left side panel
+- [ ] Tester feedback button ("Something not right? Send to developer"): sends filters, rough area, screen size,
+      app version and a typed question, after asking. Code and SQL file ready; needs Tatjana's SQL run (Phase 2)
+- [ ] Pre-deploy check: automated test that loads the app, sees listings and tries the main filters;
+      `npm run deploy` stops if it fails
+- [ ] Design options (not built into the app yet): colour-coded cards (stripe vs tint) and a see-through panel over
+      the map, as a clickable mock-up to choose from
+- [ ] Research: add eventfirst.co.uk (Russian/Ukrainian children's events) as a source; check its West London events
+
+### Phase 2 – needs Tatjana (short steps at the end of Phase 1)
+- [ ] Run the feedback-table SQL in Supabase
+- [ ] Look at the app on phone, laptop and tablet; pick the card colour and panel options
+- [ ] `npm run deploy` and `git push`
+
+### Phase 3 – next (needs accounts or decisions)
+- [ ] Email service for sign-in emails to real users (e.g. Resend, free tier): Tatjana signs up, Claude connects it
+- [ ] Password sign-in with "forgot password", and/or Google sign-in
+- [ ] "About / How it works" page
+- [ ] Add a class from a photo of a poster (AI reads it and fills in the form): needs an AI API key and a small server part
+- [ ] Staging copy of the site to try changes before they go live
+
+### Later
+- [ ] Parent tips/comments for signed-in users, with report button and moderation
+- [ ] Ratings (once there are enough users)
+- [ ] Bigger database plan (backups, more traffic)
 
 ## Open
 
