@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v21";
+const APP_VERSION = "v22";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -406,18 +406,6 @@ function savePrefs() {
 
 // ---- Data ----
 
-// PostgREST returns PostGIS points as hex EWKB: byte order, type (+SRID flag), [SRID], x, y
-function parsePoint(loc) {
-  if (!loc) return null;
-  if (typeof loc === "object" && Array.isArray(loc.coordinates)) return { x: loc.coordinates[0], y: loc.coordinates[1] };
-  if (typeof loc !== "string" || loc.length < 42) return null;
-  const bytes = new Uint8Array(loc.match(/../g).map((h) => parseInt(h, 16)));
-  const view = new DataView(bytes.buffer);
-  const le = bytes[0] === 1;
-  const offset = view.getUint32(1, le) & 0x20000000 ? 9 : 5;
-  return { x: view.getFloat64(offset, le), y: view.getFloat64(offset + 8, le) };
-}
-
 function shortPrice(p) {
   if (!p) return "";
   if (/^free\b/i.test(p)) return isRu() ? "Бесплатно" : "Free";
@@ -427,7 +415,7 @@ function shortPrice(p) {
 }
 
 function normalize(r) {
-  const pt = parsePoint(r.location);
+  const pt = r.lat != null && r.lng != null ? { x: r.lng, y: r.lat } : null;
   const online = r.delivery_mode === "Online";
   if (!online && !pt) return null; // nowhere to show it yet
   let langs = r.languages || [];
@@ -441,26 +429,38 @@ function normalize(r) {
     st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "",
     c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", sj: r.subjects || [], r: r.runs_when || "",
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
-    g: r.pros || "", b: r.cons || "", w: r.website || "", k: r.status === "Check" ? 1 : 0,
+    w: r.website || "", k: r.status === "Check" ? 1 : 0,
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
     ca: r.created_at || "", lc: r.last_confirmed_at || "", cb: r.created_by || "", src: r.source || "",
     ed: r.event_date || "", ee: r.event_end_date || "",
   };
 }
 
+// The database only answers for one area at a time (classes within 20 km, plus online ones), so the whole list
+// can't be copied in one request. Moving more than RELOAD_KM away loads the new area.
+const RELOAD_KM = 8;
+let loadedFor = null;
+let accessToken = null; // when signed in, so the app can tell which classes you added
+function maybeReload() {
+  if (loadedFor && distKm(state.place, { x: loadedFor.lng, y: loadedFor.lat }) > RELOAD_KM) loadListings();
+}
+
 async function loadListings() {
-  const cols = ["id", "title", "website", "delivery_mode", "location_area", "address", "postcode", "location", "address_source",
-    "format", "category", "subjects", "age_min_months", "age_max_months", "languages", "runs_when", "holiday_club", "days_of_week",
-    "time_of_day", "start_time", "end_time", "schedule_text", "price_text", "description", "pros", "cons", "status",
-    "created_at", "last_confirmed_at", "created_by", "source", "event_date", "event_end_date"].join(",");
+  const at = loadedFor = { lat: state.place.lat, lng: state.place.lng };
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=${cols}&status=in.(Active,Check)`, {
-      headers: { apikey: SUPABASE_KEY },
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/listings_near`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+      body: JSON.stringify({ p_lat: at.lat, p_lng: at.lng }),
     });
     if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
-    state.items = (await res.json()).map(normalize).filter((l) => l && !expired(l));
+    const rows = await res.json();
+    if (at !== loadedFor) return; // a newer area was asked for meanwhile
+    state.items = rows.map(normalize).filter((l) => l && !expired(l));
     state.error = false;
   } catch (e) {
+    if (at !== loadedFor) return;
     console.warn("Load error", e);
     state.error = true;
   }
@@ -1594,6 +1594,7 @@ function fitMap() {
 }
 
 function render({ keepScroll = false } = {}) {
+  maybeReload();
   const c = compute();
   renderTop();
   renderFilters(c);
@@ -1854,9 +1855,10 @@ if (sb) {
   sb.auth.onAuthStateChange((event, session) => {
     const was = state.user && state.user.id;
     state.user = session ? session.user : null;
+    accessToken = session ? session.access_token : null;
     // supabase-js asks not to call it again from inside this callback, so follow up a moment later
     setTimeout(async () => {
-      if ((state.user && state.user.id) !== was) await loadMine();
+      if ((state.user && state.user.id) !== was) { await loadMine(); loadListings(); }
       if (event === "SIGNED_IN") afterSignedIn();
       render({ keepScroll: true });
     }, 0);

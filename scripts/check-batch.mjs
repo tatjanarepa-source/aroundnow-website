@@ -105,12 +105,37 @@ if (toGeocode.length) {
 
 // 3. Duplicates: live listings, plus every other batch in the same folder
 const others = [];
-const live = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=id,title,provider_name,postcode,website`, {
-  headers: { apikey: SUPABASE_KEY },
-});
-if (live.ok) {
-  for (const l of await live.json()) others.push({ id: l.id, where: "live", title: l.title, provider: l.provider_name, postcode: l.postcode, website: l.website });
-} else console.warn(`Could not load live listings (${live.status}); duplicate check covers batch files only.`);
+// The public key can't read the whole table (supabase/migrations/20261028_2_lock_listings.sql). With the secret key
+// in .env we compare against every live listing; without it (e.g. a cloud run), against those near the batch's pins.
+try { process.loadEnvFile(".env"); } catch { /* no .env here */ }
+const secret = process.env.SUPABASE_SECRET_KEY;
+const liveRows = [];
+if (secret) {
+  const live = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=id,title,provider_name,postcode,website`, {
+    headers: { apikey: secret, Authorization: `Bearer ${secret}` },
+  });
+  if (live.ok) liveRows.push(...await live.json());
+  else console.warn(`Could not load live listings (${live.status}); duplicate check covers batch files only.`);
+} else {
+  const spots = new Set(rows.filter((r) => r.Lat && r.Lng).map((r) => `${Number(r.Lat).toFixed(1)},${Number(r.Lng).toFixed(1)}`));
+  for (const spot of spots) {
+    const [lat, lng] = spot.split(",").map(Number);
+    const live = await fetch(`${SUPABASE_URL}/rest/v1/rpc/listings_near`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_lat: lat, p_lng: lng }),
+    });
+    if (live.ok) liveRows.push(...await live.json());
+    else console.warn(`Could not load live listings near ${spot} (${live.status}).`);
+  }
+  if (!spots.size) console.warn("No pins in this batch and no secret key; duplicate check covers batch files only.");
+}
+const seen = new Set();
+for (const l of liveRows) {
+  if (seen.has(l.id)) continue;
+  seen.add(l.id);
+  others.push({ id: l.id, where: "live", title: l.title, provider: l.provider_name, postcode: l.postcode, website: l.website });
+}
 for (const f of readdirSync(dirname(path)).filter((f) => f.endsWith(".csv") && f !== basename(path))) {
   for (const r of parseCsv(readFileSync(join(dirname(path), f), "utf8"))) {
     others.push({ id: r.RecordID, where: f, title: r.Title, provider: r.ProviderName, postcode: r.Postcode, website: r.Website });

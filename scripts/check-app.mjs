@@ -42,13 +42,16 @@ else fail(`APP_VERSION (${appVersion}) in app.js and CACHE_NAME (${cacheName}) i
 // 4. The live database answers the exact question the app asks
 const url = (app.match(/const SUPABASE_URL = "([^"]+)"/) || [])[1];
 const key = (app.match(/const SUPABASE_KEY = "([^"]+)"/) || [])[1];
-const cols = (app.match(/const cols = \[([\s\S]*?)\]\.join/) || [])[1];
-if (!url || !key || !cols) {
-  fail("couldn't find SUPABASE_URL, SUPABASE_KEY or the listing columns in app.js");
+const home = app.match(/const DEFAULT_PLACE = \{ lat: ([\d.-]+), lng: ([\d.-]+)/);
+if (!url || !key || !home) {
+  fail("couldn't find SUPABASE_URL, SUPABASE_KEY or DEFAULT_PLACE in app.js");
 } else {
-  const select = cols.replace(/["\s]/g, "");
   try {
-    const res = await fetch(`${url}/rest/v1/listings?select=${select}&status=in.(Active,Check)`, { headers: { apikey: key } });
+    const res = await fetch(`${url}/rest/v1/rpc/listings_near`, {
+      method: "POST",
+      headers: { apikey: key, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_lat: Number(home[1]), p_lng: Number(home[2]) }),
+    });
     if (!res.ok) {
       fail(`the database refused the app's listings query (${res.status}): ${(await res.text()).slice(0, 300)}\n` +
         "       Usually a migration in supabase/migrations hasn't been run yet.");
@@ -60,6 +63,11 @@ if (!url || !key || !cols) {
       const unknown = [...new Set(rows.map((r) => r.category))].filter((c) => c && !known.has(c));
       unknown.length ? fail(`activities in the data that the app doesn't know: ${unknown.join(", ")}`) : ok("every activity in the data is known to the app");
     }
+    // 6. The whole listings table can't be downloaded with the public key (supabase/migrations/20261028_2_lock_listings.sql)
+    const open = await fetch(`${url}/rest/v1/listings?select=id&limit=1`, { headers: { apikey: key } });
+    if (open.ok && (await open.json()).length) {
+      console.log("  note the listings table is still open to the public: run 20261028_2_lock_listings.sql after deploying");
+    } else ok("the listings table can't be downloaded with the public key");
   } catch (e) {
     fail(`couldn't reach the database: ${e.message}`);
   }
