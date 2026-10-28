@@ -3,10 +3,11 @@
   "private": true,
   "scripts": {
     "dev": "python -m http.server 8532",
-    "deploy": "node scripts/build.mjs && npx wrangler deploy",
+    "deploy": "node scripts/check-app.mjs && node scripts/build.mjs && npx wrangler deploy",
     "import:listings": "node --env-file=.env scripts/import-listings.mjs",
     "build": "node scripts/build.mjs",
     "check:batch": "node scripts/check-batch.mjs",
-    "feedback": "node --env-file=.env scripts/feedback.mjs"
+    "feedback": "node --env-file=.env scripts/feedback.mjs",
+    "check": "node scripts/check-app.mjs"
   }
 }
