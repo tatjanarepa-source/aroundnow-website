@@ -12,9 +12,9 @@ Ideas and problems to come back to. Newest first. Tick when done.
 ## Open
 
 - [ ] **Classes to research next** (parents' tips and leads, full list in `research/sources.md` → Known leads):
-  - Tippitoes at Lammas Park play centre: only on Facebook/Instagram, needs a parent to confirm times
+  - Tippitoes at Lammas Park play centre: only on Facebook/Instagram; could you confirm the days and times next time you're there?
   - Ealing Council play centres (free, 0–12): council page is undated, check they're still open
-  - Soft play: Hanwell POP, KIDZ#1, YMCA South Ealing
+  - YMCA South Ealing: gymnastics (no current times) and a café with a play area
   - Everyone Active Reynolds and Elthorne (no pools; other kids' activities?)
   - Brentford FC Boogie Bees dance (no sessions this term); Ealing SEND multi-sports at Greenford Sports Centre (8–16, day not read)
   - Riding schools and city farms: Stag Lodge, Barnfield, Littlebourne, Deen City Farm (in the nightly queue)

@@ -19,7 +19,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] Ealing: franchises. Done locally 2026-10-28: Water Babies (4 pools), Jo Jingles (none in Ealing). Left: Hartbeeps (site 403 to the cloud), Baby Sensory, Sing and Sign, Monkey Music, Tumble Tots, Little Kickers **(run locally)**
 - [x] Ealing: gymnastics and swimming. Done locally 2026-10-28 (Everyone Active pools, Ealing Gymnastics, Twisters). YMCA South Ealing gymnastics still a lead
 - [ ] Chiswick and Ealing: private swim schools. Done locally 2026-10-28: First Swim, Sevenus, Gliders. Comfort Aquatics added 2026-10-28 (pin at the middle of Corfton Road, user's OK). Left: Swim-Life Brentford, Angel Swim Shepherds Bush, Puddle Ducks, London Baby Swim, First Swim Twickenham **(run locally)**
-- [ ] Ealing: soft play (Tippitoes, council play centres, Hanwell POP, KIDZ#1, YMCA South Ealing)
+- [x] Ealing: soft play. Done locally 2026-10-28 (Oxygen Acton). Tippitoes and council play centres stay as leads (see below)
 - [ ] Ealing: art, music and drama
 - [ ] Ealing: ballet and dance
 - [ ] Ealing: sport (football, tennis, martial arts) and chess
@@ -37,6 +37,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-28 | Ealing: soft play (local, Chrome) | `2026-10-28-ealing-soft-play.csv` | 2 | Oxygen Activeplay Acton W3 0AF: soft play for 0–5s (£7.95) and Toddler Play (whole park, walking to 5, term-time weekdays 9:30–12:30, weekends 9:00–10:00). KIDZ#1 (Dickens Yard): probably closed (blog lists it as 2021–24, not on Google Maps). Hanwell POP is a parents' guide site, not a venue. Tippitoes: Facebook/Instagram only, not added. Council play centres: no evidence newer than the undated council page |
 | 2026-10-28 | Water Babies and Jo Jingles (local, Chrome) | `2026-10-28-ealing-water-babies.csv` | 4 | Water Babies London North West pool pages list the Ealing pools (Castlebar W13, Nuffield Ealing W5, Horsenden Primary and Mandeville in Greenford). Times only via the class finder: enter the date of birth in the side panel (native date field: set it with form_input), then each pool's "View classes" keeps the age. Times read for a 1-year-old. No prices on the site. Jo Jingles: region list for London & South East has no Ealing franchise (nearest Watford, Romford) |
 | 2026-10-28 | Comfort Aquatics (local) | `2026-10-28-ealing-comfort-aquatics.csv` | 2 | Parent and baby (Fri mornings, 3 months–3 years) and small-group lessons at a pool on Corfton Road W5. The pool's address is not published; pin at the middle of the road (AddressSource starts with "Approximate", so the app shows a lighter pin), as the user agreed |
 | 2026-10-28 | Ealing gymnastics (local, Chrome) | `2026-10-28-ealing-gymnastics.csv` | 8 | Ealing Gymnastics at St Benedict's (5–15, Wed/Thu evenings and weekend mornings, £14 a lesson). Twisters Sept 2026 timetables: Acton Baptist Church (toddler gym Mon/Fri, after-school Tue/Thu), St John's W13 (toddler gym and Gymkids Mon–Wed, after-school gym Tue/Wed, ballet Mon/Thu, baby ballet Fri), Elthorne Sports Centre (Mon after school). £88–£98 per 11-week term. YMCA South Ealing: gymnastics mentioned on its site but no times (Facebook times from 2024) |
@@ -60,6 +61,8 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 ## Leads not checked
 
 Things a person should look at (Facebook-only groups, pages that need a login, unclear venues).
+
+- Soft play (2026-10-28): Tippitoes, Lammas Park Play Centre W13 9QD (drop-in toddler play, weekday mornings per directories; Facebook/Instagram only, needs a parent to confirm). Ealing Council play centres (0–12, free?): undated council page, nothing newer found. KIDZ#1 Dickens Yard: probably closed. Hobbledown Heath (Hounslow): big indoor play and farm, check under Hounslow. Hanwell POP (poplocal.co.uk/hanwell) is a useful parents' guide for more leads.
 
 - Finnegan's World nursery (41 Broadway, West Ealing): weekday nursery for ages 2–5 "opening soon" (2026); add it when it opens.
 - Cafés and soft plays turning into nurseries is a pattern: when a soft play page says "nursery", check whether weekday play still runs.
