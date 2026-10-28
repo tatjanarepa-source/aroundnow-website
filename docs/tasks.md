@@ -40,7 +40,9 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] On the phone, compared design options (stripe, tint, see-through panel, whole-card colours). Tatjana liked
       none of them: all removed 28 Oct (v20), the app looks as it did before
 - [ ] Look at the app on a laptop (list on the left, map on the right). No tablet to test on
-- [ ] Try "Something not right? Tell us" at the end of the list; read messages with `npm run feedback`
+- [x] Feedback works (test #1, 28 Oct). v23: "Something wrong with this class? Tell us" on every class (with quick
+      choices), "A filter not working? Tell us" in Filters, every filter sent with the message; `npm run feedback` prints
+      it all plus an "open it" link that opens the app with the same search, and also lists open class reports
 
 ### Phase 3 – next (needs accounts or decisions)
 - [ ] Email service for sign-in emails to real users (e.g. Resend, free tier): Tatjana signs up, Claude connects it

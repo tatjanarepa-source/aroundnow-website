@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v22";
+const APP_VERSION = "v23";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -217,6 +217,10 @@ const STRINGS = {
     knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
     pickReason: "Pick what’s wrong first.", andList: " and ", here: (n) => `${classes(n)} here`,
     fbLink: "Something not right? Tell us", fbTitle: "Tell us",
+    fbClassLink: "Something wrong with this class? Tell us", fbFilterLink: "A filter not working? Tell us",
+    fbAbout: (title) => `About: ${title}`, fbWhat: "What’s wrong?",
+    prob: { category: "Wrong activity", age: "Wrong age", when: "Wrong day or time", price: "Wrong price",
+      place: "Wrong place", gone: "Doesn’t run any more", other: "Something else" },
     fbIntro: "Something missing, wrong or confusing? Your message goes straight to the people building AroundNow.",
     fbMsg: "What happened?", fbMsgHint: "e.g. I picked age 3 but saw a class for 8–12s",
     fbContact: "Your email", fbContactHint: "If you’d like a reply",
@@ -914,27 +918,66 @@ function filtersSheet(c) {
       <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
       <div class="sec"><h3>${t.dPrice}</h3><div class="wrap">${prices}</div></div>
       ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
-      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}`,
+      ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
+      <button type="button" class="link-btn feedback-link" data-act="feedback">${t.fbFilterLink}</button>`,
     foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
       <button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
   };
 }
 
-// What "include my search" sends with feedback: enough to see what the tester saw, and nothing personal.
-// The area is rounded to about 1 km.
+// What "include my search" sends with feedback: every filter, so the developer can open the same search
+// (`replay`, see applyReplay), plus what was on screen. Nothing personal: "Near me" is rounded to about 1 km.
 function fbContext(c) {
-  const s = state, round = (v) => Math.round(v * 100) / 100;
+  const s = state, f = s.fb || {}, round = (v) => Math.round(v * 100) / 100;
+  const me = s.place.kind === "me";
+  const now = new Date();
+  const l = f.listing && s.items.find((x) => x.i === f.listing);
   return {
     app: APP_VERSION,
+    sent: now.toString().slice(0, 21), // the tester's own day and time: Today / Tomorrow / weekend depend on it
     screen: `${window.innerWidth}×${window.innerHeight}${wide.matches ? " (wide layout)" : ""}`,
     browser: navigator.userAgent,
-    area: { name: placeName(), lat: round(s.place.lat), lng: round(s.place.lng) },
+    area: { name: placeName(), lat: me ? round(s.place.lat) : s.place.lat, lng: me ? round(s.place.lng) : s.place.lng },
     distance: rLabel(s.ri),
     ages: s.ages.map((a) => (a === 6 ? "<1" : ageWord(a))),
-    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, prices: s.prices, onlyNew: s.onlyNew },
+    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, prices: s.prices,
+      online: s.showOnline, onlyNew: s.onlyNew },
     shown: c.shown.length,
-    open: s.detail || null,
+    shownIds: c.shown.slice(0, 50).map((o) => o.l.i),
+    listing: l ? { id: l.i, title: l.t, activity: l.c, subjects: l.sj, ages: ageText(l), price: l.p } : f.listing || null,
+    problem: f.problem || null,
+    replay: {
+      place: { lat: me ? round(s.place.lat) : s.place.lat, lng: me ? round(s.place.lng) : s.place.lng, name: placeName(), kind: s.place.kind },
+      ri: s.ri, units: s.units, ui: s.ui, ages: s.ages, langs: s.langs, date: s.date, when: s.when, types: s.types,
+      cats: s.cats, prices: s.prices, showOnline: s.showOnline, onlyNew: s.onlyNew, detail: f.listing || null,
+    },
   };
+}
+
+// Opening the app with #replay=… (from `npm run feedback`) sets the same search a tester had
+function applyReplay() {
+  const m = location.hash.match(/^#replay=(.+)$/);
+  if (!m) return false;
+  try {
+    const r = JSON.parse(decodeURIComponent(escape(atob(m[1].replace(/-/g, "+").replace(/_/g, "/")))));
+    const list = (v) => (Array.isArray(v) ? v : []);
+    if (r.place && Number.isFinite(r.place.lat) && Number.isFinite(r.place.lng)) {
+      state.place = { lat: r.place.lat, lng: r.place.lng, name: r.place.name || "Replay", kind: "search" };
+    }
+    if (r.units === "mi" || r.units === "km") state.units = r.units;
+    if (Number.isInteger(r.ri) && RADII.km[r.ri] != null) state.ri = r.ri;
+    setRadius(state.ri);
+    if (STRINGS[r.ui]) state.ui = r.ui;
+    Object.assign(state, {
+      ages: list(r.ages).filter((a) => AGES.includes(a)), langs: list(r.langs), date: DATES.includes(r.date) ? r.date : null,
+      when: list(r.when), types: list(r.types), cats: list(r.cats), prices: list(r.prices),
+      showOnline: !!r.showOnline, onlyNew: !!r.onlyNew, detail: r.detail || null,
+    });
+    return true;
+  } catch (e) {
+    console.warn("Replay link not understood", e);
+    return false;
+  }
 }
 
 function feedbackSheet(c) {
@@ -946,17 +989,24 @@ function feedbackSheet(c) {
       foot: `<button type="button" class="primary" data-act="closeSheet">${t.done}</button>`,
     };
   }
-  const ctx = fbContext(c);
-  const shared = [ctx.area.name, ctx.distance, ctx.ages.length ? `${t.age} ${ctx.ages.join(", ")}` : "",
+  const ctx = fbContext(c), s = state;
+  const on = [s.date ? t.date[s.date] : "", ...s.when.map((w) => t.w[w]), ...s.types.map((k) => t.ty[k]),
+    ...s.prices.map((k) => t.pr[k]), ...s.cats.map((k) => t.cat[k] || k), ...s.langs.map((x) => t.lang[x] || x)];
+  const shared = [ctx.area.name, ctx.distance, ctx.ages.length ? `${t.age} ${ctx.ages.join(", ")}` : "", ...on,
     `${ctx.shown} ${t.fbShown}`, ctx.screen, ctx.app].filter(Boolean).join(" · ");
   const msg = f.error ? `<p class="form-msg" role="alert">${esc(f.error)}</p>` : "";
+  const about = ctx.listing && ctx.listing.title
+    ? `<p class="lead"><b>${esc(t.fbAbout(ctx.listing.title))}</b></p>
+      ${groupHtml(t.fbWhat, wrap(Object.keys(t.prob).map((k) => chipHtml("fbProblem", k, t.prob[k], f.problem === k, false)).join("")))}`
+    : `<p class="lead">${t.fbIntro}</p>`;
   return {
     title: t.fbTitle,
-    body: `<p class="lead">${t.fbIntro}</p>
+    body: `${about}
       ${fieldHtml(t.fbMsg, `<textarea class="input" data-field="fb.msg" rows="4" maxlength="2000" placeholder="${t.fbMsgHint}">${esc(f.msg)}</textarea>`)}
-      ${fieldHtml(t.fbContact, inputHtml("fb.contact", f.contact, `type="email" maxlength="200" autocomplete="email" placeholder="${t.fbContactHint}"`), "", true)}
       <label class="tick"><input type="checkbox" data-field="fb.share"${f.share ? " checked" : ""}><span>${t.fbShare}<br><span class="help">${esc(shared)}</span></span></label>
-      ${msg}`,
+      ${fieldHtml(t.fbContact, inputHtml("fb.contact", f.contact, `type="email" maxlength="200" autocomplete="email" placeholder="${t.fbContactHint}"`), "", true)}`,
+    // Above the scrolling part, so a problem shows even on a short laptop screen
+    top: msg,
     foot: `<button type="button" class="text-btn" data-act="closeSheet">${t.cancel}</button>
       <button type="button" class="primary" data-act="sendFeedback"${f.busy ? " disabled" : ""}>${f.busy ? t.sending : t.fbSend}</button>`,
   };
@@ -964,11 +1014,11 @@ function feedbackSheet(c) {
 
 async function sendFeedback() {
   const f = state.fb, t = T();
-  if (!f.msg.trim()) { f.error = t.fbEmpty; render({ keepScroll: true }); return; }
+  if (!f.msg.trim() && !f.problem) { f.error = t.fbEmpty; render({ keepScroll: true }); return; }
   f.busy = true;
   f.error = "";
   render({ keepScroll: true });
-  const row = { message: f.msg.trim(), contact: f.contact.trim() || null, context: f.share ? fbContext(compute()) : null };
+  const row = { message: f.msg.trim() || t.prob[f.problem], contact: f.contact.trim() || null, context: f.share ? fbContext(compute()) : null };
   const { error } = sb ? await sb.from("feedback").insert(row) : { error: { message: "offline" } };
   f.busy = false;
   if (error) {
@@ -1286,7 +1336,7 @@ function communityHtml(l) {
       <button type="button" class="primary" data-act="confirm" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${ICON.check}<span>${t.yesReal}</span></button>
       <button type="button" class="secondary" data-act="report" data-v="${esc(l.i)}">${t.wrong}</button></div>`;
   }
-  return `${err}<button type="button" class="link-btn report-link" data-act="report" data-v="${esc(l.i)}">${t.reportLink}</button>`;
+  return err;
 }
 
 async function confirmListing(id) {
@@ -1489,6 +1539,7 @@ function renderDetail(c) {
         </dl>
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${communityHtml(l)}
+        <button type="button" class="link-btn report-link" data-act="feedback" data-v="${esc(l.i)}">${t.fbClassLink}</button>
       </div></div>
       <div class="actions">
         ${l.w ? `<a class="primary" href="${esc(l.w)}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}"><span>${t.website}</span>${ICON.external}</a>` : ""}
@@ -1620,8 +1671,9 @@ function useMyLocation({ quiet = false } = {}) {
     (pos) => {
       state.place = { lat: pos.coords.latitude, lng: pos.coords.longitude, name: t.nearMe, kind: "me" };
       state.placeStatus = "";
-      state.sheet = null;
-      render();
+      // Only the "Where" sheet asked for this; anything else open (e.g. a half-typed message) stays
+      if (state.sheet === "place") state.sheet = null;
+      render({ keepScroll: state.sheet != null });
     },
     (err) => {
       console.warn("Location error", err);
@@ -1694,6 +1746,8 @@ const ACTIONS = {
   // Closing the add form keeps what was typed, in case it was a mis-tap
   closeSheet: () => {
     if (state.sheet === "signin") state.afterSignIn = null;
+    // Back to the class the message was about
+    if (state.sheet === "feedback" && state.fb && state.fb.listing) state.detail = state.fb.listing;
     state.sheet = null;
   },
   open: (v) => { state.detail = v; state.box = null; },
@@ -1744,10 +1798,14 @@ const ACTIONS = {
   reason: (v) => { Object.assign(state.box, { reason: v, error: "" }); },
   cancelReport: () => { state.box = null; },
   sendReport: (v) => { sendReport(v); return "async"; },
-  feedback: () => {
-    state.fb = { msg: "", contact: (state.user && state.user.email) || "", share: true, busy: false, error: "", sent: false };
+  // From a class's details (v = its id) the message is about that class; the details close so the form shows
+  feedback: (v) => {
+    state.fb = { msg: "", contact: (state.user && state.user.email) || "", share: true, busy: false, error: "", sent: false,
+      listing: v || null, problem: "" };
+    if (v) state.detail = null;
     state.sheet = "feedback";
   },
+  fbProblem: (v) => { Object.assign(state.fb, { problem: state.fb.problem === v ? "" : v, error: "" }); },
   sendFeedback: () => { sendFeedback(); return "async"; },
   // Opens the class, so the thank-you (or any problem) shows where it happened
   askYes: (v) => {
@@ -1871,6 +1929,7 @@ if (sb) {
 }
 
 loadPrefs();
+const replaying = applyReplay(); // a tester's search from `npm run feedback`; not saved as this phone's choices
 render();
 loadListings();
-useMyLocation({ quiet: true });
+if (!replaying) useMyLocation({ quiet: true });
