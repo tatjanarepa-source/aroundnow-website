@@ -147,8 +147,8 @@ tennis, chess, coding, cooking.
 | Little Kickers Ealing and Uxbridge | Ealing | Franchise, 18 months–8 years |
 | Toddlers & Kids Football at All Saints, Ealing Common | Ealing Common | Saturdays, seen on clubhubuk.co.uk; find the organiser |
 | First Steps Sports Club, We Make Footballers, Ealing United FC | Ealing | Football 2–12 years |
-| Twisters gymnastics and dance | West Ealing / Acton | twisters.org.uk; preschool gym at St John's W13, Acton Baptist Church |
-| Ealing Gymnastics, YMCA South Ealing, Club des Sports, The Little Gym Chiswick | Ealing / Chiswick | Gymnastics |
+| Ealing Gymnastics, Twisters | Ealing | Done 2026-10-28 |
+| YMCA South Ealing (25 St Mary's Road W5 5RE), Club des Sports, The Little Gym Chiswick, Aurora Gymnastics | Ealing / Chiswick | Gymnastics leads; YMCA also has a community café with a play area |
 | QPR in the Community Trust, Fulham FC Foundation | West London | Club community trusts, like Brentford's |
 | Tippitoes, Lammas Park Play Centre (Elers Rd W13 9QD) | Ealing | Drop-in toddler stay and play with soft play circuit, Mon–Fri 9:15–10:45 (under 4s) per directories; only Facebook/Instagram, reopened 2 Sep 2026. Needs a parent to confirm |
 | Ealing Council play centres (Acton Park, Dormers Wells, Pitzhanger, Islip Manor, Lammas Park…) | Ealing | ealing.gov.uk play centres page: 0–12, term time Mon–Fri 16:00–18:15, Sat 13:00–17:15. Page undated and lists Northolt Park (moved), so check it's current |
@@ -156,4 +156,6 @@ tennis, chess, coding, cooking.
 | Everyone Active Ealing centres | Ealing | Done 2026-10-27: pools at Acton, Dormers Wells, Northolt (soft play at Northolt). Gurnell closed for redevelopment. Reynolds and Elthorne (no pools) not checked |
 | Heston Pools & Fitness (Lampton) | Hounslow | Soft play and gymnastics, like Brentford Fountain |
 | Stag Lodge Stables (Richmond Park), Barnfield Riding School, Littlebourne Equestrian (Uxbridge), Deen City Farm (Merton) | West / South-west London | Riding schools and farms to check |
+| Comfort Aquatics | Ealing (Corfton Road W5), Hounslow (Oaklands School TW3) | Parent and baby Fri mornings at Corfton Road; exact pool address not published |
+| Swim-Life (Brentford), Angel Swim (Shepherds Bush), Puddle Ducks, London Baby Swim, Swim With Cheryl | West London | Swim school leads |
 | First Swim (parents say "1st swim") | Chiswick, Twickenham | Done 2026-10-27 (Chiswick). Twickenham pool, 92 Queens Road TW1 4ET, not added. Look for other private swim schools (they hire school and hotel pools) |
