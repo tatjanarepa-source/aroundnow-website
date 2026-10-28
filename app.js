@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v17";
+const APP_VERSION = "v18";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -103,8 +103,7 @@ const STRINGS = {
     widenText: (n, r) => (n ? `Only ${classes(n)} within ${r}.` : `Nothing within ${r} yet.`),
     widenCta: (r, extra) => `Show within ${r} (+${extra})`,
     moreOutside: (n, r) => `${n} more within ${r}`, about: "about ",
-    units: { mi: "Miles", km: "Kilometres" }, clearAges: (list) => `Clear ages ${list}`,
-    ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
+    units: { mi: "Miles", km: "Kilometres" },    ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
     and: " & ",
     date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
     hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays", summer: "the summer holidays" },
@@ -212,8 +211,7 @@ const STRINGS = {
     widenText: (n, r) => (n ? `В радиусе ${r} — только ${classes(n)}.` : `В радиусе ${r} пока ничего нет.`),
     widenCta: (r, extra) => `Показать в радиусе ${r} (+${extra})`,
     moreOutside: (n, r) => `Ещё ${n} в радиусе ${r}`, about: "около ",
-    units: { mi: "Мили", km: "Километры" }, clearAges: (list) => `Сбросить возраст ${list}`,
-    ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
+    units: { mi: "Мили", km: "Километры" },    ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
     and: " и ",
     date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
     hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы", summer: "летние каникулы" },
@@ -697,10 +695,6 @@ function renderFilters(c) {
   const s = state, t = T(), el = $("filters");
   const ages = AGES.map((a) => chipHtml("age", a, a === 6 ? "<1" : ageWord(a), s.ages.includes(a),
     !finds(c, "ages", (l) => fitsAge(l, a)), a === 6 ? t.under1 : "")).join("");
-  const picked = AGES.filter((a) => s.ages.includes(a)).map((a) => (a === 6 ? "<1" : ageWord(a)));
-  const clearAges = picked.length
-    ? `<button type="button" class="chip clear-ages" data-act="clearAges" aria-label="${esc(t.clearAges(picked.join(", ")))}">${esc(picked.join(", "))}${ICON.close}</button>`
-    : "";
   // Rarely used filters live in the Filters sheet; its badge says how many are on
   const hidden = s.when.length + s.types.length + s.cats.length + (s.showOnline ? 1 : 0);
   const filtersBtn = `<button type="button" class="chip${hidden ? " active" : ""}" data-act="sheet" data-v="filters">${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}</button>`;
@@ -712,7 +706,7 @@ function renderFilters(c) {
 
   // Keep each row's sideways scroll, so tapping "9" doesn't jump the row back to the start
   const keep = [...el.querySelectorAll(".scroller")].map((r) => r.scrollLeft);
-  el.innerHTML = `<div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${clearAges}${ages}</div>
+  el.innerHTML = `<div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${ages}</div>
     <div class="scroller" role="group" aria-label="${esc(t.quick)}">${filtersBtn}${dates}${langs}</div>`;
   el.querySelectorAll(".scroller").forEach((r, n) => { r.scrollLeft = keep[n] || 0; });
 }
@@ -1638,7 +1632,6 @@ const ACTIONS = {
   age: (v) => { toggle("ages", Number(v)); savePrefs(); },
   radius: (v) => { setRadius(Number(v)); savePrefs(); },
   units: (v) => { state.units = v; setRadius(state.ri); savePrefs(); },
-  clearAges: () => { state.ages = []; savePrefs(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
   date: (v) => { state.date = state.date === v ? null : v; },
   when: (v) => toggle("when", v),
@@ -1731,7 +1724,7 @@ const ACTIONS = {
 };
 
 // Only actions that change the results send the list back to the top
-const RESETS_SCROLL = new Set(["age", "clearAges", "radius", "units", "lang", "date", "when", "type", "cat", "online", "clear", "resetFilters", "area", "onlyNew"]);
+const RESETS_SCROLL = new Set(["age", "radius", "units", "lang", "date", "when", "type", "cat", "online", "clear", "resetFilters", "area", "onlyNew"]);
 
 function run(act, v) {
   if (ACTIONS[act](v) === "async") return;

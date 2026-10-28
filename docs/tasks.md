@@ -19,8 +19,8 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] Miles / km switch next to the location, miles by default; distance choices ½, 2, 3, 6 miles (1, 3, 5, 10 km)
 - [x] Remove the "include online" toggle at the bottom (keep the Online filter)
 - [x] Remove the random "good / watch out" comments from cards and details
-- [x] Hidden age chips: the selected ages show as a chip at the start of the age row; tap it to clear them
-      (closes the "Hidden age chips" item below)
+- [x] ~~Hidden age chips: the selected ages show as a chip at the start of the age row~~ Removed 28 Oct (Tatjana
+      didn't like it); the "Hidden age chips" problem below is open again
 - [x] "Add a class" form: ages in months as well as years (e.g. 3, 6, 18 months), since many baby classes start
       at "6 weeks", "4 months" or "18 months". Today the form only offers whole years
 - [x] "N more just outside your circle" hint, with a button to widen the distance
