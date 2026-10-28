@@ -55,10 +55,9 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] Split "Sports / Dance" into Swimming, Gymnastics, Dance, Football, Martial arts, Tennis, Horse riding and Other
       sports (v21). Done in the app from Subjects and title; the database still says "Sports / Dance". Dance cards
       name the style ("Dance: Ballet, Tap")
-- [ ] Make copying the whole database harder (today the app's public key can download every listing in one request).
-      v22 asks only for one area at a time (20 km). To finish: run `supabase/migrations/20261028_1_listings_near.sql`,
-      `npm run deploy`, then run `supabase/migrations/20261028_2_lock_listings.sql`. Someone determined could still ask
-      area by area; a later step could limit how often one visitor asks
+- [x] Make copying the whole database harder (28 Oct, v22): the app asks for one area at a time (20 km) through
+      `listings_near`; the listings table and the old `search_listings` are closed to the public key
+- [ ] Next step if needed: limit how often one visitor can ask (someone determined could still go area by area)
 - [ ] Affiliate links: Ticketmaster and Eventbrite pay a commission for ticket sales? Check their programmes; Tatjana signs up
 - [ ] More research without Tatjana: bigger or more frequent nightly runs (the cloud run already works down
       `research/log.md` each night; many sites block the cloud and need Chrome on this computer)
