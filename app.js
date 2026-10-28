@@ -741,7 +741,7 @@ function cardHtml(o, dates, multi) {
   if (unconfirmed(l)) tags.push(statusTag(l));
   const where = [t.cat[l.c] || l.c, l.on ? "" : l.a].filter(Boolean).join(" · ");
   const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
-  return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
+  return `<button type="button" class="card" style="--cat:${catColor(l.c)}" data-act="open" data-v="${esc(l.i)}">
     <span class="card-top"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(where)}</span><span class="card-km">${esc(far)}</span></span>
     <span class="card-title">${esc(l.t)}</span>
     ${meta ? `<span class="card-meta">${esc(meta)}</span>` : ""}
@@ -1834,6 +1834,8 @@ if (sb) {
 }
 
 loadPrefs();
+// Design options to compare before choosing one (docs/tasks.md): ?look=stripe, tint, glass, or combined with commas
+document.documentElement.dataset.look = (new URLSearchParams(location.search).get("look") || "").replace(/,/g, " ");
 render();
 loadListings();
 useMyLocation({ quiet: true });

@@ -691,3 +691,20 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 @media (min-width: 1100px) {
   .app { --side: 420px; }
 }
+
+/* --- Design options to choose from (?look=...), see docs/tasks.md. Remove the ones not chosen. --- */
+
+/* Activity colour as a stripe down the card's left edge */
+[data-look~="stripe"] .card { border-left: 5px solid var(--cat); padding-left: 12px; }
+/* Activity colour as a soft tint across the card */
+[data-look~="tint"] .card {
+  border-color: color-mix(in srgb, var(--cat) 35%, var(--line-soft));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--cat) 28%, var(--card)), var(--card) 75%);
+}
+/* See-through panel: the map shows faintly behind the filters and list */
+[data-look~="glass"] .panel {
+  background: rgba(20, 27, 45, 0.5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+[data-look~="glass"] .card { background: rgba(26, 34, 56, 0.7); }
