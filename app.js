@@ -1,5 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
+// Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
+const APP_VERSION = "v17";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -182,6 +184,13 @@ const STRINGS = {
     nudge: (n) => (n === 1 ? "1 new class near you isn’t confirmed yet." : `${n} new classes near you aren’t confirmed yet.`),
     knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
     pickReason: "Pick what’s wrong first.", andList: " and ", here: (n) => `${classes(n)} here`,
+    fbLink: "Something not right? Tell us", fbTitle: "Tell us",
+    fbIntro: "Something missing, wrong or confusing? Your message goes straight to the people building AroundNow.",
+    fbMsg: "What happened?", fbMsgHint: "e.g. I picked age 3 but saw a class for 8–12s",
+    fbContact: "Your email", fbContactHint: "If you’d like a reply",
+    fbShare: "Include my search, so you can see what I saw:", fbShown: "shown",
+    fbSend: "Send", fbEmpty: "Write a few words first.",
+    fbThanks: "Thank you!", fbThanksText: "We’ve got your message and will look at it.",
   },
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
@@ -313,6 +322,7 @@ const state = {
   user: null, google: false, mine: { confirmed: {}, reported: {} },
   auth: null, afterSignIn: null, add: null, box: null, onlyNew: false,
   group: null, // classes behind a tapped map bubble
+  fb: null, // the feedback form while it's open
 };
 
 let map, markersLayer, pinsLayer;
@@ -594,7 +604,9 @@ function ageText(l) {
   const ru = isRu();
   const f = (m) => {
     if (m === 0) return "0";
-    if (m < 12) return ru ? `${m} мес.` : `${m} mo`;
+    // "Up to 11 years 11 months" reads as "up to 11", not "11.9"
+    if (m >= 24 && m % 12 === 11) return String(Math.floor(m / 12));
+    if (m < 12 || (m < 24 && m % 12)) return ru ? `${m} мес.` : `${m} mo`;
     const y = m / 12;
     if (Number.isInteger(y)) return String(y);
     if (m % 12 === 6) return ru ? `${Math.floor(y)},5` : `${Math.floor(y)}½`;
@@ -775,6 +787,7 @@ function renderList(c) {
     if (n) html += `<p class="muted-row">${esc(t.noDays(n))}</p>`;
   }
   if (c.nearby.some((o) => o.l.ap)) html += `<p class="muted-row">${t.lighter}</p>`;
+  html += `<button type="button" class="link-btn feedback-link" data-act="feedback">${t.fbLink}</button>`;
   if (!c.shown.length && !w) {
     const weekend = s.date && s.date !== "weekend"
       ? `<button type="button" class="chip" data-act="date" data-v="weekend">${t.tryWeekend}</button>` : "";
@@ -804,7 +817,8 @@ function renderSheet(c) {
   const scrollTop = again && el.dataset.step === step && oldBody ? oldBody.scrollTop : 0;
   const typed = again && $("areaInput") ? $("areaInput").value : "";
   const p = s.sheet === "place" ? placeSheet(c) : s.sheet === "filters" ? filtersSheet(c)
-    : s.sheet === "signin" ? signInSheet() : s.sheet === "group" ? groupSheet(c) : addSheet();
+    : s.sheet === "signin" ? signInSheet() : s.sheet === "group" ? groupSheet(c)
+    : s.sheet === "feedback" ? feedbackSheet(c) : addSheet();
 
   el.innerHTML = `<button type="button" class="backdrop"${p.tall ? ' style="flex:none;height:64px"' : ""} data-act="closeSheet" aria-label="${t.close}"></button>
     <div class="sheet${p.tall ? " tall" : ""}${again ? "" : " enter"}" role="dialog" aria-label="${esc(p.title)}">
@@ -869,6 +883,66 @@ function filtersSheet(c) {
     foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
       <button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
   };
+}
+
+// What "include my search" sends with feedback: enough to see what the tester saw, and nothing personal.
+// The area is rounded to about 1 km.
+function fbContext(c) {
+  const s = state, round = (v) => Math.round(v * 100) / 100;
+  return {
+    app: APP_VERSION,
+    screen: `${window.innerWidth}×${window.innerHeight}${wide.matches ? " (wide layout)" : ""}`,
+    browser: navigator.userAgent,
+    area: { name: placeName(), lat: round(s.place.lat), lng: round(s.place.lng) },
+    distance: rLabel(s.ri),
+    ages: s.ages.map((a) => (a === 6 ? "<1" : ageWord(a))),
+    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, onlyNew: s.onlyNew },
+    shown: c.shown.length,
+    open: s.detail || null,
+  };
+}
+
+function feedbackSheet(c) {
+  const t = T(), f = state.fb;
+  if (f.sent) {
+    return {
+      title: t.fbThanks,
+      body: `<p class="lead">${t.fbThanksText}</p>`,
+      foot: `<button type="button" class="primary" data-act="closeSheet">${t.done}</button>`,
+    };
+  }
+  const ctx = fbContext(c);
+  const shared = [ctx.area.name, ctx.distance, ctx.ages.length ? `${t.age} ${ctx.ages.join(", ")}` : "",
+    `${ctx.shown} ${t.fbShown}`, ctx.screen, ctx.app].filter(Boolean).join(" · ");
+  const msg = f.error ? `<p class="form-msg" role="alert">${esc(f.error)}</p>` : "";
+  return {
+    title: t.fbTitle,
+    body: `<p class="lead">${t.fbIntro}</p>
+      ${fieldHtml(t.fbMsg, `<textarea class="input" data-field="fb.msg" rows="4" maxlength="2000" placeholder="${t.fbMsgHint}">${esc(f.msg)}</textarea>`)}
+      ${fieldHtml(t.fbContact, inputHtml("fb.contact", f.contact, `type="email" maxlength="200" autocomplete="email" placeholder="${t.fbContactHint}"`), "", true)}
+      <label class="tick"><input type="checkbox" data-field="fb.share"${f.share ? " checked" : ""}><span>${t.fbShare}<br><span class="help">${esc(shared)}</span></span></label>
+      ${msg}`,
+    foot: `<button type="button" class="text-btn" data-act="closeSheet">${t.cancel}</button>
+      <button type="button" class="primary" data-act="sendFeedback"${f.busy ? " disabled" : ""}>${f.busy ? t.sending : t.fbSend}</button>`,
+  };
+}
+
+async function sendFeedback() {
+  const f = state.fb, t = T();
+  if (!f.msg.trim()) { f.error = t.fbEmpty; render({ keepScroll: true }); return; }
+  f.busy = true;
+  f.error = "";
+  render({ keepScroll: true });
+  const row = { message: f.msg.trim(), contact: f.contact.trim() || null, context: f.share ? fbContext(compute()) : null };
+  const { error } = sb ? await sb.from("feedback").insert(row) : { error: { message: "offline" } };
+  f.busy = false;
+  if (error) {
+    console.warn("Feedback failed", error);
+    f.error = t.failed(error.message);
+  } else {
+    f.sent = true;
+  }
+  render({ keepScroll: true });
 }
 
 // Classes behind one map bubble that share an address
@@ -1634,6 +1708,11 @@ const ACTIONS = {
   reason: (v) => { Object.assign(state.box, { reason: v, error: "" }); },
   cancelReport: () => { state.box = null; },
   sendReport: (v) => { sendReport(v); return "async"; },
+  feedback: () => {
+    state.fb = { msg: "", contact: (state.user && state.user.email) || "", share: true, busy: false, error: "", sent: false };
+    state.sheet = "feedback";
+  },
+  sendFeedback: () => { sendFeedback(); return "async"; },
   // Opens the class, so the thank-you (or any problem) shows where it happened
   askYes: (v) => {
     markAsked(v);
@@ -1673,6 +1752,7 @@ function onField(e) {
   const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
   if (f.startsWith("auth.")) { if (state.auth) state.auth[f.slice(5)] = value; return; }
   if (f.startsWith("box.")) { if (state.box) state.box[f.slice(4)] = value; return; }
+  if (f.startsWith("fb.")) { if (state.fb) state.fb[f.slice(3)] = value; return; }
   if (!state.add) return;
   state.add[f] = value;
   if (f === "postcode") state.add.geo = null;

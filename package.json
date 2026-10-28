@@ -6,6 +6,7 @@
     "deploy": "node scripts/build.mjs && npx wrangler deploy",
     "import:listings": "node --env-file=.env scripts/import-listings.mjs",
     "build": "node scripts/build.mjs",
-    "check:batch": "node scripts/check-batch.mjs"
+    "check:batch": "node scripts/check-batch.mjs",
+    "feedback": "node --env-file=.env scripts/feedback.mjs"
   }
 }
