@@ -82,7 +82,13 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
 - **Riding schools and city farms**: besides riding lessons (usually 5+), many run toddler pony sessions, stay and play,
   forest school and holiday pony days. Check the "early years" or "experiences" pages, not just lessons.
   Search Google `riding school <area> children` and `city farm <area>`. Ealing Riding School done 2026-10-27.
-- **Museums, galleries and theatres**: family workshops and holiday activities.
+- **Museums, galleries and theatres** (category `Museums` for a museum visit or its own family sessions): opening days,
+  child prices, play rooms and early-years sessions (e.g. Gunnersbury's Little Flamingos, Pitzhanger Mini Makers). One-off
+  sessions with listed dates become dated events, one row per date.
+- **Circuses**: touring big tops (e.g. Circus Berlin on Ealing Common, Oct 2026) publish dates and times per town: dated event,
+  category `Performing arts`. Google `circus <area> <month year>`.
+- **Shopping centres**: What's On pages list Santa's grottos, half-term rides and carousels and free family events (dated).
+- **Seasonal**: Christmas (grottos, pantomimes, Russian ёлка / New Year shows, e.g. Gemstones) — search in late October and November.
 
 ### Football club community trusts
 Professional clubs' charities run toddler football, gymnastics, dance, holiday camps and after-school clubs, often

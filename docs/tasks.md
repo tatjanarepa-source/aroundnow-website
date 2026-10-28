@@ -11,6 +11,10 @@ Ideas and problems to come back to. Newest first. Tick when done.
 
 ## Open
 
+- [ ] **"Brentford Fountain isn't on the map"** (28 Oct): it is live (soft play, family swim, lessons, gymnastics, 4 cards in one
+  map bubble). Likely causes on the phone: the 3 km circle around "Near me" doesn't reach Brentford; a When filter
+  (Today/Weekend) hides listings without days (family swim, lessons); an age or activity filter; or an old app version
+  (close and reopen). Maybe: show "N more just outside your circle" so it's obvious.
 - [ ] **Classes to research next** (parents' tips and leads, full list in `research/sources.md` → Known leads):
   - Ealing Council play centres (free, 0–12): council page is undated, check they're still open
   - YMCA South Ealing: gymnastics (no current times) and a café with a play area

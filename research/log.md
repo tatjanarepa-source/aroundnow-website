@@ -15,6 +15,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [x] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times) **(run locally: council sites block the cloud run)**. Done locally 2026-10-27; repeat every 2–3 months (libraries.ealing.gov.uk/events/category/kids)
 - [x] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**. Done locally 2026-10-27 from the October timetables; **monthly re-check** (new PDFs each month at ealingfamiliesdirectory.org.uk/childrens-centre-timetables)
+- [ ] Ealing: holiday clubs and camps for Christmas, February half-term and Easter (multi-sport, Supercamps, football clubs, leisure centres, churches, Brentford FC CST camps). Dated camps get EventDate/EventEndDate; `HolidayClub` = Yes
 - [ ] Ealing: Eventbrite, browse in Chrome (monthly: Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past 3 months) **(run locally: Eventbrite search needs a real browser)**. Last done 2026-10-27
 - [ ] Ealing: franchises. Done locally 2026-10-28: Water Babies (4 pools), Jo Jingles (none in Ealing). Left: Hartbeeps (site 403 to the cloud), Baby Sensory, Sing and Sign, Monkey Music, Tumble Tots, Little Kickers **(run locally)**
 - [x] Ealing: gymnastics and swimming. Done locally 2026-10-28 (Everyone Active pools, Ealing Gymnastics, Twisters). YMCA South Ealing gymnastics still a lead
@@ -23,9 +24,9 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] Ealing: art, music and drama
 - [ ] Ealing: ballet and dance
 - [ ] Ealing: sport (football, tennis, martial arts) and chess
-- [ ] Ealing: parks, forest school, museums
+- [ ] Ealing: parks, forest school and more museums (Musical Museum Brentford, Boston Manor House, Pitzhanger Wonder Room, Kew Gardens' children's garden)
+- [ ] West London: Christmas events (Santa's grottos in other shopping centres and garden centres, pantomimes, Christmas shows and parties, Russian/Polish New Year parties). Run in November
 - [ ] West London: riding schools and city farms (toddler pony sessions, lessons, pony days): Stag Lodge, Barnfield, Littlebourne, Deen City Farm
-- [ ] Ealing: holiday camps
 - [ ] London: Russian-speaking classes and schools (all boroughs)
 - [ ] London: French and other language nurseries and Saturday schools
 - [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md)
@@ -37,6 +38,8 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-28 | Museums and circus (user's list, local) | `2026-10-28-ealing-museums-circus.csv` | 10 | London Museum of Water & Steam (under 5s free; Splash Zone closed from 26 Oct for works), Gunnersbury Park Museum (free, Tue–Sun) and its Little Flamingos under-5s sessions on 9 Nov, 7 Dec, 18 Dec (£3), Pitzhanger Mini Makers dated sessions (30 Oct messy play replaces live E05; 13 Nov, 27 Nov circus play, 11 Dec), Circus Berlin on Ealing Common until 1 Nov. New category Museums |
+| 2026-10-28 | Christmas and seasonal (user's list, local) | `2026-10-28-ealing-christmas.csv` | 4 | Santa's Grotto at Ealing Broadway (14 Nov – 24 Dec, £7.50, quiet sessions), half-term rides/carousel in Ealing Broadway Town Square (24 Oct – 1 Nov), Gemstones Russian New Year shows on Sun 13 Dec (1–3 yrs 10:30, 4–10 yrs 15:30, £33 child). "twoplustwocafe" on Instagram is an unrelated takeaway; the Ealing Two Plus Two café is now A Little Me Time (already listed) |
 | 2026-10-28 | Ealing: soft play (local, Chrome) | `2026-10-28-ealing-soft-play.csv` | 4 | Oxygen Activeplay Acton W3 0AF: soft play for 0–5s (£7.95) and Toddler Play (whole park, walking to 5, term-time weekdays 9:30–12:30, weekends 9:00–10:00). KIDZ#1 (Dickens Yard): probably closed (blog lists it as 2021–24, not on Google Maps). Hanwell POP is a parents' guide site, not a venue. Tippitoes added from its Instagram (new rule: public Facebook/Instagram pages count as the organiser's site): timetable from 2 Nov 2026, under-4s and under-12-months sessions. Council play centres: no evidence newer than the undated council page |
 | 2026-10-28 | Water Babies and Jo Jingles (local, Chrome) | `2026-10-28-ealing-water-babies.csv` | 4 | Water Babies London North West pool pages list the Ealing pools (Castlebar W13, Nuffield Ealing W5, Horsenden Primary and Mandeville in Greenford). Times only via the class finder: enter the date of birth in the side panel (native date field: set it with form_input), then each pool's "View classes" keeps the age. Times read for a 1-year-old. No prices on the site. Jo Jingles: region list for London & South East has no Ealing franchise (nearest Watford, Romford) |
 | 2026-10-28 | Comfort Aquatics (local) | `2026-10-28-ealing-comfort-aquatics.csv` | 2 | Parent and baby (Fri mornings, 3 months–3 years) and small-group lessons at a pool on Corfton Road W5. The pool's address is not published; pin at the middle of the road (AddressSource starts with "Approximate", so the app shows a lighter pin), as the user agreed |
