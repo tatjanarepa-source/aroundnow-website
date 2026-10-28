@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v18";
+const APP_VERSION = "v19";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1827,7 +1827,7 @@ if (sb) {
 }
 
 loadPrefs();
-// Design options to compare before choosing one (docs/tasks.md): ?look=stripe, tint, glass, or combined with commas
+// Design options to compare before choosing one (docs/tasks.md): ?look=fill or ?look=deep
 document.documentElement.dataset.look = (new URLSearchParams(location.search).get("look") || "").replace(/,/g, " ");
 render();
 loadListings();

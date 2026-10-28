@@ -37,8 +37,10 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [x] Run `supabase/migrations/20261028_feedback.sql` in the Supabase SQL editor
 - [x] `npm run deploy` (runs `npm run check` first) and `git push`
 - [x] `npm run import:listings -- research/batches/2026-10-28-london-eventfirst.csv` (Baba Yaga show)
-- [ ] On the phone, compare: the normal app, `?look=stripe`, `?look=tint`, `?look=glass` (can be combined, e.g.
-      `?look=stripe,glass`). Tell Claude which to keep; the others get removed
+- [x] On the phone, compare: the normal app, `?look=stripe`, `?look=tint`, `?look=glass`. Tatjana chose glass
+      (now the normal look, made more see-through); stripe and tint removed. She wants the whole card coloured
+- [ ] On the phone, compare whole-card colours: `?look=fill` (bright colour, dark writing) and `?look=deep`
+      (darker shade, light writing). Tell Claude which to keep
 - [ ] Look at the app on a laptop and a tablet (list on the left, map on the right)
 - [ ] Try "Something not right? Tell us" at the end of the list; read messages with `npm run feedback`
 

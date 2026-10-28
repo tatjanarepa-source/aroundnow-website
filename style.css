@@ -228,7 +228,10 @@ svg.i {
   flex-direction: column;
   border-top: 1px solid var(--line-soft);
   border-radius: 28px 28px 0 0;
-  background: var(--surface);
+  /* See-through: the map shows faintly behind the filters and list */
+  background: rgba(20, 27, 45, 0.35);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.45);
   transition: top 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -285,6 +288,7 @@ svg.i {
   background: var(--card);
   text-align: left;
 }
+.panel .card { background: rgba(26, 34, 56, 0.55); }
 .card-top { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 700; }
 .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
 .card-cat { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -691,17 +695,19 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 
 /* --- Design options to choose from (?look=...), see docs/tasks.md. Remove the ones not chosen. --- */
 
-/* Activity colour as a stripe down the card's left edge */
-[data-look~="stripe"] .card { border-left: 5px solid var(--cat); padding-left: 12px; }
-/* Activity colour as a soft tint across the card */
-[data-look~="tint"] .card {
-  border-color: color-mix(in srgb, var(--cat) 35%, var(--line-soft));
-  background: linear-gradient(135deg, color-mix(in srgb, var(--cat) 28%, var(--card)), var(--card) 75%);
+/* Whole card in the activity's bright colour, with dark writing */
+[data-look~="fill"] .card[style*="--cat"] {
+  border-color: transparent;
+  background: var(--cat);
+  color: var(--accent-ink);
 }
-/* See-through panel: the map shows faintly behind the filters and list */
-[data-look~="glass"] .panel {
-  background: rgba(20, 27, 45, 0.5);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+[data-look~="fill"] .card[style*="--cat"] :is(.card-top, .card-meta) { color: rgba(13, 19, 34, 0.75); }
+[data-look~="fill"] .card[style*="--cat"] .card-km { color: var(--accent-ink); }
+[data-look~="fill"] .card[style*="--cat"] .dot { display: none; }
+[data-look~="fill"] .card[style*="--cat"] .agetag { background: var(--accent-ink); color: var(--accent); }
+[data-look~="fill"] .card[style*="--cat"] .tag { background: rgba(13, 19, 34, 0.12); color: var(--accent-ink); }
+/* Whole card in a darker shade of the activity's colour, with light writing */
+[data-look~="deep"] .card[style*="--cat"] {
+  border-color: color-mix(in srgb, var(--cat) 45%, transparent);
+  background: color-mix(in srgb, var(--cat) 32%, rgba(26, 34, 56, 0.8));
 }
-[data-look~="glass"] .card { background: rgba(26, 34, 56, 0.7); }
