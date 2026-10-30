@@ -30,7 +30,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] London: Russian-speaking classes and schools (all boroughs) **(run locally: 2026-10-30 cloud try; znayka-academy.com schedule page not reachable/404, artopolis.academy not allowed in cloud network, russiancentre.co.uk and the Cathedral school page give no children's times)**
 - [ ] London: French and other language nurseries and Saturday schools **(run locally: 2026-10-30 cloud try found only directory snippets; school sites not found by the search tool, polskamacierz.com is the Irish society)**
 - [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md) **(run locally: needs a browser)**
-- [ ] Hounslow: leisure centres (Lampton: Heston, Isleworth, Hanworth, Feltham), soft play, churches
+- [x] Hounslow: leisure centres (Lampton: Heston, Isleworth, Hanworth, Feltham), soft play, churches. Lampton done 2026-10-30 (cloud); Hobbledown Heath, other soft play and churches left
 - [ ] Hammersmith & Fulham: follow "Any council area" in sources.md
 - [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md
 
@@ -38,6 +38,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-30 | Hounslow: Lampton Leisure (cloud) | `2026-10-30-hounslow-lampton-leisure.csv` | 5 | Heston Pools and Fitness (TW5 0LW): soft play (under 12s, £4.20 pay as you go from 1 Apr 2026, hours not published), recreational gymnastics (20 months–10 yrs, Heston or Brentford Fountain), swim school; swim school rows for Hanworth Air Park (TW13 5EG) and Isleworth (TW7 7EU). Swim and gym timetables are in the Lampton app or an embedded widget, so days, times and monthly prices are empty. Duplicate warnings are the Brentford/Chiswick rows (other centres). Notice: Heston wet-side changing rooms closed from 9 Nov for 4–6 weeks. Isleworth/Hanworth family swim not read |
 | 2026-10-29 | West London riding and farms (cloud) | `2026-10-29-west-london-riding-farms.csv` | 5 | Stag Lodge Pony Park (3–6), Pony Squad (Sat) and Pony Week (prices page dated Jan 2023, home page updated Aug 2026; I used Stag Lodge 2 as the lesson address); Deen City Farm pony rides (2–7, £3) and holiday Young Farmer / Own a Pony days (8+, Tue–Fri 10–16). Dates only in booking systems |
 | 2026-10-29 | West London Christmas (cloud) | `2026-10-29-west-london-christmas.csv` | 3 | Cinderella panto at The Exchange Twickenham (7–27 Dec, 3+, child from £16) and Lyric Hammersmith (14 Nov–3 Jan, 6+, from £10; standard times not read), Santa's Winter Garden at Fulham Palace (20 Nov–23 Dec, child £38–£67; times not published on the pages read) |
 | 2026-10-29 | Parks and museums (cloud) | `2026-10-29-brentford-ealing-museums.csv` | 3 | Boston Manor House (free, Tue–Sun 12–17, TW8 9JX; no children's sessions on its What's on page, only the park playground), Pitzhanger Wonder Room (Wed–Sun 10–17, admission price not read), PlayWorks free outdoor play 28–30 Oct. Duplicate warnings are other Pitzhanger Mini Makers rows (different sessions) |
