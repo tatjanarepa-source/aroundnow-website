@@ -29,7 +29,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] West London: riding schools and city farms (toddler pony sessions, lessons, pony days): Stag Lodge, Barnfield, Littlebourne, Deen City Farm. Done 2026-10-29 from the cloud (Stag Lodge, Deen City Farm); Barnfield (Kingston KT2 5LL, from age 2, 020 8546 3616) and Littlebourne not read, see leads
 - [ ] London: Russian-speaking classes and schools (all boroughs)
 - [ ] London: French and other language nurseries and Saturday schools
-- [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md)
+- [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md) **(run locally: needs a browser)**
 - [ ] Hounslow: leisure centres (Lampton: Heston, Isleworth, Hanworth, Feltham), soft play, churches
 - [ ] Hammersmith & Fulham: follow "Any council area" in sources.md
 - [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md
