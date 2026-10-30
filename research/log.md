@@ -18,7 +18,7 @@ later from parents adding classes. Lines marked **(run locally)** need Chrome; t
 - [ ] Ealing: Christmas camps recheck in late November (Ealing Cricket Club at Ada Lovelace, Brentford FC CST multi-sport at Gunnersbury, Ealing Trailfinders) **(run locally)**
 - [ ] Ealing: February half-term and Easter 2027 camps (SuperCamps, St Benedict's, Mother Nature Science St Mark's W7, Ealing Cricket Club, Brentford CST, Let's Leap). In January **(run locally)**
 - [ ] Ealing: Eventbrite, monthly (Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past month). Next late November **(run locally)**
-- [ ] West London: Christmas events, mid-November (Chiswick House, Richmond Theatre, grottos in shopping and garden centres, Russian/Polish New Year parties). Started 2026-10-29: Lyric and Exchange pantos, Fulham Palace grotto
+- [ ] West London: Christmas events, not before 15 November (Chiswick House, Richmond Theatre, grottos in shopping and garden centres, Russian/Polish New Year parties). Started 2026-10-29: Lyric and Exchange pantos, Fulham Palace grotto
 
 ### London basic layer: the cloud run can do these
 
