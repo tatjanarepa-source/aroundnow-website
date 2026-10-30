@@ -7,6 +7,17 @@ description: Research kids' classes on the web for AroundNow, one area × one so
 
 One run = one line of the queue, up to ~10 classes, saved as you go.
 
+**Keep going without asking (Tatjana's rule, 30 Oct 2026).** In a local session, when one job is done, go
+straight on to the next one you can do. Never stop to ask: make the safest choice (leave a field empty, leave a
+doubtful row out), carry on, and write the question in `research/questions.md` under "Open". Tell Tatjana the
+questions at the end.
+
+**When the browser stalls**, don't fight it: after 2 failed tries on a page (screenshot freezes, a page that won't
+load, text that can't be read), skip it and add a line under "Retry later" in `research/log.md` (what, the URL,
+what failed). Go back to those at the end of the session; if they fail again, leave them for next time. Read
+pages as text first (`get_page_text`, or `document.body.innerText` with the JavaScript tool); use screenshots
+only for widgets and images, at reduced scale.
+
 ## 1. Pick the job
 - If the user named an area and source type (e.g. "find classes: Ealing, gymnastics"), do that.
 - Otherwise take the **first unticked line** in `research/log.md`.

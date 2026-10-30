@@ -75,6 +75,10 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 | 2026-10-27 | Ealing: churches, sweep 2 | `2026-10-27-ealing-churches-sweep2.csv` | 6 | Haven Green Playtime; St Barnabas Noisy Mass + stay & play; St Peter's Pebbles; Ealing 135 (Northfields weekly stay & play, Greenford 11 Nov, forest school 21 Nov). Checked on A Church Near You 15685–15700: Christ the Saviour, St Barnabas, St John's, St Matthew, St Peter's, St Martin's West Acton, All Saints South Acton, Ascension Hanger Hill, All Hallows Greenford, St Gabriel North Acton, Holy Cross Greenford: no weekday groups listed. Also Ealing Green Church (coffee morning only), Ealing Abbey, Methodists |
 | 2026-10-27 | Ealing: churches, church halls and pubs | `2026-10-27-ealing-churches-pubs.csv` | 7 | 5 church toddler groups (incl. Mini Saints, All Saints, added from a parent's tip), Perform drama ×2 at St Paul's hall. Drapers Arms and Little Lounge dropped (evidence from 2025). No other Ealing pub found with kids' activities |
 
+## Retry later
+
+Pages the browser couldn't read in a local run (froze, didn't load). Try again at the end of the session or next time.
+
 ## Leads not checked
 - Christmas camps (2026-10-30, local): Let's Leap provisional Christmas list has no Ealing venue (16 schools elsewhere, 14–18 Dec). Ealing Cricket Club Christmas camp at Ada Lovelace School W5 2JX "to be confirmed" (early drop-off 8:30–10 £5; Feb half-term 16–19 Feb 10–16 shown). Brentford CST: no multi-sport Christmas camp on Pebble yet (only the SEND one). Ealing Trailfinders (W13 0DD) ClassForKids shows no camps now. Mad Science Ealing = after-school clubs (Manorside, St Gregory's, St John's, Drayton Green, North Ealing). Camp Beaumont Ealing (St Augustine's) page 404. TeachMajor holiday camps at Elthorne Park High W7 2AH not checked. Mother Nature Science St Mark's W7 runs Feb half-term to Easter 2027.
 
