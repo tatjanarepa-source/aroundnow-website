@@ -42,6 +42,14 @@ public: the database only allows reading visible listings.
   Scheduler runs it nightly at 23:30 ("AroundNow nightly backup", log in
   `backup.log` there). `npm run feedback` warns if the last one is over 2 days old
 
+- `worker/` — the small server part (Cloudflare Worker; only `/api/*` runs it).
+  `POST /api/read-poster` reads a photo of a poster with Claude Haiku 5.5 and
+  returns the "Add a class" fields (`worker/poster.js`). Needs the secret
+  `ANTHROPIC_API_KEY` (`npx wrangler secret put ANTHROPIC_API_KEY`; `.dev.vars`
+  locally) and `supabase/migrations/20261030_poster_reads.sql` (daily limits).
+  `npm run dev:worker` runs site + server locally; `npm run try-poster -- a.jpg`
+  tries the reading on a photo
+
 ### Adding and checking classes
 
 Signed-in parents add classes with the "+" button (a 4-step form); everyone

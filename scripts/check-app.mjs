@@ -13,7 +13,7 @@ const ok = (msg) => console.log(`  ok  ${msg}`);
 const fail = (msg) => { problems.push(msg); console.log(`  FAIL ${msg}`); };
 
 // 1. The scripts parse
-for (const f of ["app.js", "sw.js"]) {
+for (const f of ["app.js", "sw.js", "worker/index.js", "worker/poster.js"]) {
   const r = spawnSync(process.execPath, ["--check", f], { encoding: "utf8" });
   r.status === 0 ? ok(`${f} has no syntax errors`) : fail(`${f} has a syntax error:\n${r.stderr}`);
 }

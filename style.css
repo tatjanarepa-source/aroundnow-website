@@ -615,6 +615,10 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 /* "Is it one of these?" cards in the add form */
 .sheet-body .community p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
 .share-row .secondary { flex: 1; padding: 0 12px; }
+/* "Fill in from a photo" at the top of the add form */
+.photo-fill .secondary { cursor: pointer; }
+.photo-fill .secondary.busy { opacity: 0.7; cursor: default; }
+.help.ok { margin: 0; color: var(--accent); font-weight: 700; }
 .report-link { align-self: flex-start; color: var(--muted); }
 
 .ask {

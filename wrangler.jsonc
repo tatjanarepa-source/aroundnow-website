@@ -1,8 +1,18 @@
-// Cloudflare hosting for the static site. `npm run deploy` builds dist/ (public files only) and uploads it.
+// Cloudflare hosting. `npm run deploy` builds dist/ (public files only) and uploads it with the small server part in
+// worker/ (only /api/* runs it; every other request is the static site, served as it is).
 {
   "name": "aroundnow-website",
   "compatibility_date": "2026-10-19",
+  "main": "worker/index.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  // Public values (the same as in app.js). The Anthropic key is a secret, never here:
+  //   npx wrangler secret put ANTHROPIC_API_KEY   (and in .dev.vars for `npx wrangler dev`)
+  "vars": {
+    "SUPABASE_URL": "https://dftaitxrrbihsmkinezq.supabase.co",
+    "SUPABASE_KEY": "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA"
   }
 }

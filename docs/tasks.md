@@ -10,6 +10,23 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## Fill in a class from a photo (built 30 Oct, v25, not deployed yet)
+
+The + form starts with "Fill in from a photo": a parent takes or picks a photo of a poster, flyer or screenshot,
+Claude Haiku 5.5 reads it on our server (`worker/`), the form fills in, and the parent checks every step before adding.
+Costs well under 1p a photo. Limits: signed-in parents only, 10 photos each a day, 200 a day for everyone together.
+
+To go live, in this order (Tatjana):
+- [ ] console.anthropic.com: create an account, add £5–10 of credit, set a monthly spend limit (e.g. £10)
+      (Settings → Limits), create an API key
+- [ ] Put the key on the server: `! npx wrangler secret put ANTHROPIC_API_KEY` and paste it when asked
+- [ ] Also put it in a file `.dev.vars` in the project folder as `ANTHROPIC_API_KEY=…` (for trying it on this
+      laptop; never uploaded to GitHub)
+- [ ] Run `supabase/migrations/20261030_poster_reads.sql` in the Supabase SQL editor
+- [ ] Claude tries a few real poster photos: `npm run try-poster -- photo.jpg` (shows what it read and the cost)
+- [ ] `npm run deploy` and `git push`
+- [ ] On the phone: + → Fill in from a photo → a real poster → check each step → Add to map
+
 ## Database backups (nightly since 30 Oct)
 
 Supabase's Free plan keeps no backups at all, so we make our own.
@@ -111,7 +128,7 @@ comments later; laptop/tablet layout = big map with the list in a side panel.
 - [ ] Email service for sign-in emails to real users (e.g. Resend, free tier): Tatjana signs up, Claude connects it
 - [ ] Password sign-in with "forgot password", and/or Google sign-in
 - [ ] "About / How it works" page
-- [ ] Add a class from a photo of a poster (AI reads it and fills in the form): needs an AI API key and a small server part
+- [x] Add a class from a photo of a poster: built 30 Oct (v25), see "Fill in a class from a photo" above
 - [ ] Staging copy of the site to try changes before they go live
 
 ### Ideas from Tatjana (28 Oct)

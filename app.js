@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v24";
+const APP_VERSION = "v25";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -214,6 +214,13 @@ const STRINGS = {
     pendingDupText: "It looks a lot like a class that’s already on the map, so we’ll check it isn’t listed twice before it appears.",
     share: "Share", shareTitle: "Share this class", whatsapp: "WhatsApp", copyLink: "Copy link", copied: "Copied",
     foundOn: "Found on AroundNow", sharedPlace: "Shared class",
+    photoBtn: "Fill in from a photo", photoReading: "Reading the photo…",
+    photoHelp: "Take or choose a photo of a poster, flyer or screenshot. We fill in what we can; you check every step.",
+    photoDone: "Filled in from the photo. Please check each step before adding.",
+    photoErr: { signin: "Please sign in again, then try the photo.", user_limit: "You’ve used today’s 10 photos. Fill it in by hand, or try tomorrow.",
+      global_limit: "Photo reading is busy today. Please fill it in by hand.", not_a_class: "That doesn’t look like a children’s class or event. Try another photo.",
+      unreadable: "We couldn’t read that photo. Try a sharper one, or fill it in by hand.", too_big: "That photo is too big. Try a screenshot of it.",
+      busy: "Photo reading is busy. Try again in a minute.", failed: "That didn’t work. Try again, or fill it in by hand." },
     youAdded: "You added this. When another parent confirms it, it shows as confirmed.",
     youConfirmed: "You confirmed this. Thank you!",
     youReported: "Thanks, we’ve noted it. If another parent reports it too, it’s hidden until we’ve checked it.",
@@ -338,6 +345,13 @@ const STRINGS = {
     pendingDupText: "Оно очень похоже на занятие, которое уже есть на карте, поэтому мы проверим, что это не повтор, прежде чем его показать.",
     share: "Поделиться", shareTitle: "Поделиться занятием", whatsapp: "WhatsApp", copyLink: "Скопировать ссылку", copied: "Скопировано",
     foundOn: "Нашли на AroundNow", sharedPlace: "Занятие по ссылке",
+    photoBtn: "Заполнить по фото", photoReading: "Читаем фото…",
+    photoHelp: "Сфотографируйте или выберите фото афиши, листовки или скриншот. Мы заполним что сможем, а вы проверите каждый шаг.",
+    photoDone: "Заполнено по фото. Проверьте каждый шаг, прежде чем добавить.",
+    photoErr: { signin: "Войдите снова и попробуйте ещё раз.", user_limit: "Сегодня вы уже отправили 10 фото. Заполните вручную или попробуйте завтра.",
+      global_limit: "Сегодня чтение фото перегружено. Пожалуйста, заполните вручную.", not_a_class: "Похоже, это не детское занятие или событие. Попробуйте другое фото.",
+      unreadable: "Не получилось прочитать фото. Попробуйте более чёткое или заполните вручную.", too_big: "Фото слишком большое. Попробуйте скриншот.",
+      busy: "Чтение фото сейчас занято. Попробуйте через минуту.", failed: "Не получилось. Попробуйте ещё раз или заполните вручную." },
     youAdded: "Вы добавили это занятие. Когда другой родитель подтвердит его, пометка исчезнет.",
     youConfirmed: "Вы подтвердили это занятие. Спасибо!",
     youReported: "Спасибо, мы учли. Если ещё кто-то пожалуется, занятие скроем до проверки.",
@@ -364,6 +378,7 @@ const ICON = {
   tick: '<svg class="i" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   check: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   mail: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>',
+  camera: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
   share: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>',
 };
 
@@ -1121,7 +1136,105 @@ function blankAdd() {
     postcode: "", geo: null, days: [], runs: "term", date: "", dateTo: "", timeFrom: "", timeTo: "",
     price: "", priceText: "", note: "", orgOk: false, trueOk: false,
     dupes: null, dupesOk: false, // classes already on the map that look like this one; dupesOk once the parent said "mine is different"
+    photo: "", photoMsg: "", // filling in from a photo: "reading", "done" or "error"
   };
+}
+
+// ---- Filling in the form from a photo of a poster (read by Claude on our server: worker/index.js) ----
+
+// Phones take 12-megapixel photos; Claude reads up to about 1568 pixels on the long side, so send no more than that
+async function photoToBase64(file) {
+  const img = await createImageBitmap(file);
+  const scale = Math.min(1, 1568 / Math.max(img.width, img.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(img.width * scale);
+  canvas.height = Math.round(img.height * scale);
+  canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+  const blob = await new Promise((done) => canvas.toBlob(done, "image/jpeg", 0.85));
+  const url = await new Promise((done, fail) => {
+    const reader = new FileReader();
+    reader.onload = () => done(reader.result);
+    reader.onerror = fail;
+    reader.readAsDataURL(blob);
+  });
+  return url.slice(url.indexOf(",") + 1);
+}
+
+// The closest option the form's age lists have: "from" rounds down, "to" rounds up
+function ageOption(list, months, up) {
+  if (months == null || !Number.isFinite(months)) return "";
+  const fits = list.filter((v) => v !== 999 && (up ? v >= months : v <= months));
+  if (!fits.length) return "";
+  return String(up ? Math.min(...fits) : Math.max(...fits));
+}
+
+// Copies what the photo showed into the form; anything it didn't show stays as the parent left it
+function applyPoster(a, f) {
+  const set = (key, v) => { if (v) a[key] = v; };
+  set("name", f.name.slice(0, 120));
+  set("org", f.org.slice(0, 120));
+  set("link", f.website.slice(0, 300));
+  if (ADD_KINDS[f.kind]) a.kind = f.kind;
+  if (ADD_CATS.includes(f.category)) a.cat = f.category;
+  set("ageMin", ageOption(AGE_FROM, f.age_min_months, false));
+  set("ageMax", ageOption(AGE_TO, f.age_max_months, true));
+  if (f.languages.length) {
+    const known = f.languages.filter((x) => x === "English" || x === "Russian");
+    const other = f.languages.find((x) => x !== "English" && x !== "Russian");
+    a.langs = other ? known.concat(["Other"]) : known;
+    if (other) a.otherLang = other.slice(0, 40);
+  }
+  a.mode = f.online ? "online" : "inperson";
+  set("venue", f.venue.slice(0, 80));
+  set("address", f.address.slice(0, 120));
+  set("postcode", f.postcode.toUpperCase().slice(0, 9));
+  const days = DAY_ORDER.filter((d) => f.days.includes(d));
+  if (days.length) a.days = days;
+  if (ADD_RUNS[f.runs]) a.runs = f.runs;
+  const date = (v) => (/^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "");
+  const time = (v) => (/^\d{2}:\d{2}$/.test(v) ? v : "");
+  set("date", date(f.date));
+  set("dateTo", date(f.date_to));
+  set("timeFrom", time(f.time_from));
+  set("timeTo", time(f.time_to));
+  if (f.price !== "unsure") a.price = f.price;
+  if (f.price === "paid") set("priceText", f.price_text.slice(0, 80));
+  set("note", f.note.slice(0, 1000));
+  a.geo = null; // the postcode may have changed
+  a.dupesOk = false;
+}
+
+async function readPhoto(file) {
+  const a = state.add, t = T();
+  Object.assign(a, { photo: "reading", photoMsg: "" });
+  render({ keepScroll: true });
+  try {
+    const image = await photoToBase64(file).catch(() => { throw new Error("unreadable"); });
+    const res = await fetch("/api/read-poster", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+      body: JSON.stringify({ image, type: "image/jpeg" }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.fields) throw new Error(out.error || "failed");
+    if (state.add !== a) return; // the form was closed meanwhile
+    applyPoster(a, out.fields);
+    Object.assign(a, { photo: "done", photoMsg: t.photoDone, step: 1, tried: 0, error: "" });
+  } catch (e) {
+    console.warn("Photo not read", e);
+    if (state.add !== a) return;
+    Object.assign(a, { photo: "error", photoMsg: t.photoErr[e.message] || t.photoErr.failed });
+  }
+  render({ keepScroll: true });
+}
+
+function photoHtml(a) {
+  const t = T(), reading = a.photo === "reading";
+  const msg = a.photo === "error" ? `<p class="form-msg" role="alert">${esc(a.photoMsg)}</p>`
+    : a.photo === "done" ? `<p class="help ok">${esc(a.photoMsg)}</p>` : `<span class="help">${t.photoHelp}</span>`;
+  return `<div class="field photo-fill">
+    <label class="secondary${reading ? " busy" : ""}">${ICON.camera}<span>${reading ? t.photoReading : t.photoBtn}</span>
+      <input type="file" accept="image/*" data-photo hidden${reading ? " disabled" : ""}></label>${msg}</div>`;
 }
 
 // Words that say nothing about which class it is
@@ -1251,7 +1364,7 @@ function addSheet() {
 
 function addStep1(a) {
   const t = T();
-  return fieldHtml(t.fName, inputHtml("name", a.name, `type="text" maxlength="120" placeholder="${t.fNameHint}"`))
+  return photoHtml(a) + fieldHtml(t.fName, inputHtml("name", a.name, `type="text" maxlength="120" placeholder="${t.fNameHint}"`))
     + fieldHtml(t.fOrg, inputHtml("org", a.org, `type="text" maxlength="120" placeholder="${t.fOrgHint}"`), t.fOrgHelp)
     + fieldHtml(t.fLink, inputHtml("link", a.link, `type="url" inputmode="url" maxlength="300" placeholder="${t.fLinkHint}"`), t.fLinkHelp, true)
     + groupHtml(t.fKind, wrap(Object.keys(ADD_KINDS).map((k) => chipHtml("fKind", k, t.kind[k], a.kind === k, false)).join("")));
@@ -2049,6 +2162,13 @@ function onField(e) {
 }
 document.addEventListener("input", onField);
 document.addEventListener("change", onField);
+// A photo picked for "Fill in from a photo"
+document.addEventListener("change", (e) => {
+  if (!e.target.matches || !e.target.matches("input[data-photo]") || !state.add) return;
+  const file = e.target.files && e.target.files[0];
+  e.target.value = ""; // the same photo can be picked again
+  if (file) readPhoto(file);
+});
 
 // Drag the panel's handle or header up for the full list, down for the map; a tap toggles
 const panel = $("panel");

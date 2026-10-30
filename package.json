@@ -9,6 +9,12 @@
     "check:batch": "node scripts/check-batch.mjs",
     "feedback": "node --env-file=.env scripts/feedback.mjs",
     "check": "node scripts/check-app.mjs",
-    "backup": "node --env-file=.env scripts/backup.mjs"
+    "backup": "node --env-file=.env scripts/backup.mjs",
+    "try-poster": "node scripts/try-poster.mjs",
+    "dev:worker": "node scripts/build.mjs && npx wrangler dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "zod": "^4.6.7"
   }
 }
