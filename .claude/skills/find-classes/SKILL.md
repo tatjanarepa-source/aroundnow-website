@@ -26,6 +26,14 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
   the area, then open each one's events or what's-on page. Keyword searches miss groups with their own
   names. For **providers** (franchises, activities): search, then confirm on their site.
 - Confirm every class on the provider's own site (or the council's). Quote, don't guess.
+- **Be as precise as possible: always get days, times and prices.** When a timetable sits in an
+  embedded widget, an app, a class finder or a collapsed panel, don't leave the fields empty: in a
+  local session open it in Chrome (expand the panel, switch to the week view, screenshot each day if
+  the widget is in a frame that can't be read). In a cloud run, add the row with what you have and put
+  "times in a widget: read locally in Chrome" in `NeedsInfo` and under "Leads not checked". Only if
+  the times are behind a login (never log in or sign up) say so in `NeedsInfo`, e.g. "times only in
+  the member app; ask the centre".
+- Don't use prices from a page more than 12 months old: leave `PriceText` empty instead.
 - Apply the **freshness rule** in `sources.md`: if the newest evidence is over 12 months old, don't add
   the row; list it under "Leads not checked" with the date you found.
 - Fill the columns like this:
