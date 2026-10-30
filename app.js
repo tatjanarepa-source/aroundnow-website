@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v25";
+const APP_VERSION = "v26";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1233,8 +1233,7 @@ function photoHtml(a) {
   const msg = a.photo === "error" ? `<p class="form-msg" role="alert">${esc(a.photoMsg)}</p>`
     : a.photo === "done" ? `<p class="help ok">${esc(a.photoMsg)}</p>` : `<span class="help">${t.photoHelp}</span>`;
   return `<div class="field photo-fill">
-    <label class="secondary${reading ? " busy" : ""}">${ICON.camera}<span>${reading ? t.photoReading : t.photoBtn}</span>
-      <input type="file" accept="image/*" data-photo hidden${reading ? " disabled" : ""}></label>${msg}</div>`;
+    <button type="button" class="secondary${reading ? " busy" : ""}" data-act="photo"${reading ? " disabled" : ""}>${ICON.camera}<span>${reading ? t.photoReading : t.photoBtn}</span></button>${msg}</div>`;
 }
 
 // Words that say nothing about which class it is
@@ -2081,6 +2080,7 @@ const ACTIONS = {
   addBack: () => { Object.assign(state.add, { step: state.add.step - 1, tried: 0, error: "" }); },
   addAgain: () => { state.add = blankAdd(); },
   // It's already on the map: confirming it does more good than a second copy
+  photo: () => { photoInput.click(); return "async"; },
   addSame: (v) => {
     const l = state.add.dupes.find((x) => x.i === v);
     state.add = null;
@@ -2162,12 +2162,14 @@ function onField(e) {
 }
 document.addEventListener("input", onField);
 document.addEventListener("change", onField);
-// A photo picked for "Fill in from a photo"
-document.addEventListener("change", (e) => {
-  if (!e.target.matches || !e.target.matches("input[data-photo]") || !state.add) return;
-  const file = e.target.files && e.target.files[0];
-  e.target.value = ""; // the same photo can be picked again
-  if (file) readPhoto(file);
+// "Fill in from a photo" uses one file picker that is never redrawn: the form redraws while the camera or
+// gallery is open (sign-in refreshes when the page comes back), and a redrawn picker loses the photo
+const photoInput = Object.assign(document.createElement("input"), { type: "file", accept: "image/*", hidden: true });
+document.body.append(photoInput);
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files && photoInput.files[0];
+  photoInput.value = ""; // the same photo can be picked again
+  if (file && state.add) readPhoto(file);
 });
 
 // Drag the panel's handle or header up for the full list, down for the map; a tap toggles
