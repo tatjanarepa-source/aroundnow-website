@@ -507,6 +507,8 @@ svg.i {
 .muted { color: var(--muted); font-size: 14px; }
 
 .actions { flex: none; display: flex; gap: 10px; padding: 12px 20px 20px; border-top: 1px solid var(--line-soft); }
+/* Small phones: "Official website" and "Directions" share the row without running off the edge */
+.actions .primary, .actions .secondary { min-width: 0; padding: 0 14px; }
 
 /* --- Adding a class, signing in, confirming --- */
 
@@ -610,6 +612,9 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 }
 .community b { font-size: 17px; }
 .detail-body .community p { color: var(--muted); font-size: 14px; line-height: 1.45; }
+/* "Is it one of these?" cards in the add form */
+.sheet-body .community p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+.share-row .secondary { flex: 1; padding: 0 12px; }
 .report-link { align-self: flex-start; color: var(--muted); }
 
 .ask {

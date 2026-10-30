@@ -69,3 +69,23 @@ try {
 } catch (e) {
   console.warn(`Could not read class reports: ${e.message}`);
 }
+
+// Classes parents added that look like one already listed: held back as Pending until you decide.
+// In Supabase → listings: status 'Check' if it's a different class, 'Removed' if it's a copy.
+try {
+  const held = await get("listings?select=id,title,provider_name,postcode,duplicate_of,created_at&status=eq.Pending&duplicate_of=not.is.null&order=created_at");
+  if (held.length) {
+    const ids = [...new Set(held.map((l) => l.duplicate_of))];
+    const twins = Object.fromEntries((await get(`listings?select=id,title,provider_name&id=in.(${ids.map(encodeURIComponent).join(",")})`))
+      .map((l) => [l.id, l]));
+    console.log(`\n--- ${held.length} new class(es) held back as possible duplicates ---`);
+    for (const l of held) {
+      const o = twins[l.duplicate_of] || {};
+      console.log(`${new Date(l.created_at).toLocaleString("en-GB")} · ${l.title} · ${l.provider_name} · ${l.postcode || "online"} (${l.id})`);
+      console.log(`  looks like: ${o.title || "?"} · ${o.provider_name || "?"} (${l.duplicate_of})`);
+    }
+  }
+} catch (e) {
+  // Before supabase/migrations/20261030_duplicates.sql has been run there's no duplicate_of column
+  if (!/duplicate_of/.test(e.message)) console.warn(`Could not read possible duplicates: ${e.message}`);
+}

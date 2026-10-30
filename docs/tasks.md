@@ -9,6 +9,23 @@ Ideas and problems to come back to. Newest first. Tick when done.
 2. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## Duplicates and sharing (built 30 Oct, v24, not deployed yet)
+
+To go live, in this order:
+- [ ] Run `supabase/migrations/20261030_duplicates.sql` in the Supabase SQL editor
+- [ ] `npm run deploy` and `git push`
+
+Then test on the phone:
+- [ ] Open a class → share icon (top right, next to ×) → the phone's share menu → send to yourself on WhatsApp;
+      the link opens the app on that class, with the map around it
+- [ ] Add a class with the same name and postcode as one on the map → "Is it one of these?" →
+      "Yes, that's it" confirms the existing class; "No, mine is different" carries on to the last step
+- [ ] Add the same class twice → the second time says "You’ve already added this class."
+- [ ] "Something's wrong" on a class has "It’s listed twice"
+- [ ] `npm run feedback` lists new classes held back as possible duplicates (with the class they look like)
+
+Later: merge tool (keep one, move its confirmations, hide the other); WhatsApp link previews with the class name.
+
 ## To test on 29 Oct (everything from 28 Oct, live as v23)
 
 Close and reopen the app (or reload on the laptop) first, so it has the latest version.

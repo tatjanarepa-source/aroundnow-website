@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v23";
+const APP_VERSION = "v24";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -106,7 +106,7 @@ const ADD_RUNS = { term: "Term time", year: "Year-round", hols: "Holidays" };
 // Add form ages, in months: baby classes start at weeks or months, older ones go by years
 const AGE_FROM = [0, 3, 6, 9, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 168, 192];
 const AGE_TO = [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 168, 192, 216, 999]; // 999 = no upper age
-const REASONS = ["gone", "wrong", "private", "notkids", "spam"];
+const REASONS = ["gone", "wrong", "duplicate", "private", "notkids", "spam"];
 const DAY_MS = 864e5;
 
 // App text. Only English is offered for now; the Russian set is kept for when
@@ -205,8 +205,15 @@ const STRINGS = {
     knowItText: "If you’ve been, or know it runs, confirm it. One confirmation from another parent is enough.",
     yesReal: "Yes, it’s real", wrong: "Something’s wrong", reportLink: "Something wrong with this listing?",
     whatsWrong: "What’s wrong?", reportNote: "Anything to add? (optional)", sendReport: "Send report", cancel: "Cancel",
-    reason: { gone: "It doesn’t run any more", wrong: "Details are wrong", private: "Run by a private individual",
-      notkids: "Not for children", spam: "Spam or fake" },
+    reason: { gone: "It doesn’t run any more", wrong: "Details are wrong", duplicate: "It’s listed twice",
+      private: "Run by a private individual", notkids: "Not for children", spam: "Spam or fake" },
+    dupNote: "Which one is the copy? (optional)",
+    dupTitle: "Is it one of these?",
+    dupText: "These are already on the map near that postcode. If yours is one of them, confirm it instead of adding it again.",
+    dupSame: "Yes, that’s it", dupDifferent: "No, mine is different",
+    pendingDupText: "It looks a lot like a class that’s already on the map, so we’ll check it isn’t listed twice before it appears.",
+    share: "Share", shareTitle: "Share this class", whatsapp: "WhatsApp", copyLink: "Copy link", copied: "Copied",
+    foundOn: "Found on AroundNow", sharedPlace: "Shared class",
     youAdded: "You added this. When another parent confirms it, it shows as confirmed.",
     youConfirmed: "You confirmed this. Thank you!",
     youReported: "Thanks, we’ve noted it. If another parent reports it too, it’s hidden until we’ve checked it.",
@@ -322,8 +329,15 @@ const STRINGS = {
     knowItText: "Если вы были там или знаете, что оно проходит, подтвердите. Достаточно одного подтверждения другого родителя.",
     yesReal: "Да, всё так", wrong: "Что-то не так", reportLink: "Что-то не так с этим занятием?",
     whatsWrong: "Что не так?", reportNote: "Что-нибудь добавить? (необязательно)", sendReport: "Отправить", cancel: "Отмена",
-    reason: { gone: "Больше не проходит", wrong: "Неверные данные", private: "Проводит частное лицо",
-      notkids: "Не для детей", spam: "Спам или обман" },
+    reason: { gone: "Больше не проходит", wrong: "Неверные данные", duplicate: "Добавлено дважды",
+      private: "Проводит частное лицо", notkids: "Не для детей", spam: "Спам или обман" },
+    dupNote: "Какое из них лишнее? (необязательно)",
+    dupTitle: "Это одно из этих?",
+    dupText: "Эти занятия уже есть на карте рядом с этим индексом. Если ваше среди них, подтвердите его, а не добавляйте снова.",
+    dupSame: "Да, это оно", dupDifferent: "Нет, моё другое",
+    pendingDupText: "Оно очень похоже на занятие, которое уже есть на карте, поэтому мы проверим, что это не повтор, прежде чем его показать.",
+    share: "Поделиться", shareTitle: "Поделиться занятием", whatsapp: "WhatsApp", copyLink: "Скопировать ссылку", copied: "Скопировано",
+    foundOn: "Нашли на AroundNow", sharedPlace: "Занятие по ссылке",
     youAdded: "Вы добавили это занятие. Когда другой родитель подтвердит его, пометка исчезнет.",
     youConfirmed: "Вы подтвердили это занятие. Спасибо!",
     youReported: "Спасибо, мы учли. Если ещё кто-то пожалуется, занятие скроем до проверки.",
@@ -350,6 +364,7 @@ const ICON = {
   tick: '<svg class="i" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   check: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   mail: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>',
+  share: '<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>',
 };
 
 const state = {
@@ -362,6 +377,7 @@ const state = {
   auth: null, afterSignIn: null, add: null, box: null, onlyNew: false,
   group: null, // classes behind a tapped map bubble
   fb: null, // the feedback form while it's open
+  shareBox: null, // WhatsApp and copy-link buttons, on phones and browsers without a share menu
 };
 
 let map, markersLayer, pinsLayer;
@@ -427,7 +443,7 @@ function normalize(r) {
     langs = [...new Set(langs.filter((x) => x !== "Bilingual").concat(["Russian", "English"]))];
   }
   return {
-    i: r.id, t: r.title, a: online ? "Online" : r.location_area || "", y: pt ? pt.y : null, x: pt ? pt.x : null,
+    i: r.id, t: r.title, pv: r.provider_name || "", a: online ? "Online" : r.location_area || "", y: pt ? pt.y : null, x: pt ? pt.x : null,
     ap: (r.address_source || "").startsWith("Approximate") ? 1 : 0, on: online ? 1 : 0,
     mn: r.age_min_months, mx: r.age_max_months, l: langs, d: r.days_of_week || [], tm: r.time_of_day || [],
     st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "",
@@ -449,20 +465,29 @@ function maybeReload() {
   if (loadedFor && distKm(state.place, { x: loadedFor.lng, y: loadedFor.lat }) > RELOAD_KM) loadListings();
 }
 
+async function fetchNear(lat, lng) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/listings_near`, {
+    method: "POST",
+    headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+    body: JSON.stringify({ p_lat: lat, p_lng: lng }),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return (await res.json()).map(normalize).filter((l) => l && !expired(l));
+}
+
 async function loadListings() {
   const at = loadedFor = { lat: state.place.lat, lng: state.place.lng };
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/listings_near`, {
-      method: "POST",
-      headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
-      body: JSON.stringify({ p_lat: at.lat, p_lng: at.lng }),
-    });
-    if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
-    const rows = await res.json();
+    const items = await fetchNear(at.lat, at.lng);
     if (at !== loadedFor) return; // a newer area was asked for meanwhile
-    state.items = rows.map(normalize).filter((l) => l && !expired(l));
+    state.items = items;
     state.error = false;
+    // A shared link is named after the class's area once it's loaded
+    if (state.place.kind === "share") {
+      const l = items.find((x) => x.i === state.detail);
+      state.place.name = (l && l.a) || T().sharedPlace;
+    }
   } catch (e) {
     if (at !== loadedFor) return;
     console.warn("Load error", e);
@@ -1095,6 +1120,68 @@ function blankAdd() {
     ageMin: "", ageMax: "", langs: ["English"], otherLang: "", mode: "inperson", venue: "", address: "",
     postcode: "", geo: null, days: [], runs: "term", date: "", dateTo: "", timeFrom: "", timeTo: "",
     price: "", priceText: "", note: "", orgOk: false, trueOk: false,
+    dupes: null, dupesOk: false, // classes already on the map that look like this one; dupesOk once the parent said "mine is different"
+  };
+}
+
+// Words that say nothing about which class it is
+const COMMON_WORDS = new Set(["class", "classes", "club", "clubs", "kids", "children", "session", "sessions", "group",
+  "groups", "with", "and", "for", "the", "london"]);
+function nameWords(s) {
+  return new Set((s || "").toLowerCase().replace(/[^a-z0-9а-яё ]/g, " ").split(/\s+/)
+    .filter((w) => w.length > 2 && !COMMON_WORDS.has(w)));
+}
+// Sites many organisers share don't say it's the same class; on social sites the page name does
+const SHARED_SITES = ["eventbrite.co.uk", "eventbrite.com", "happity.co.uk", "tickettailor.com", "buytickets.at",
+  "google.com", "docs.google.com", "forms.gle", "goo.gl", "maps.app.goo.gl"];
+const SOCIAL_SITES = ["instagram.com", "facebook.com", "m.facebook.com", "linktr.ee", "tiktok.com"];
+function siteKey(u) {
+  let url;
+  try { url = new URL(/^https?:\/\//i.test(u || "") ? u : `https://${u}`); } catch (e) { return ""; }
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+  if (!u || !host.includes(".") || SHARED_SITES.includes(host)) return "";
+  if (!SOCIAL_SITES.includes(host)) return host;
+  const page = url.pathname.split("/")[1];
+  return page ? `${host}/${page.toLowerCase()}` : "";
+}
+
+// Classes on the map that look like the one being added: close to its postcode with a word of the name in common,
+// or the same website. Asked for around the new class's postcode, which may be outside the area on screen.
+// Place names ("Chiswick Chess", "New Chiswick Pool") don't count as a word in common.
+async function findDupes(a) {
+  const online = a.mode === "online";
+  let near = state.items;
+  if (!online) near = await fetchNear(a.geo.lat, a.geo.lng).catch(() => state.items);
+  const words = nameWords(`${a.name} ${a.org}`), site = siteKey(a.link.trim());
+  const here = online ? null : { lat: a.geo.lat, lng: a.geo.lng };
+  const places = nameWords(online ? "" : a.geo.area);
+  const found = [];
+  for (const l of near) {
+    if (!!l.on !== online) continue;
+    const skip = new Set([...places, ...nameWords(l.a)]);
+    const common = [...nameWords(`${l.t} ${l.pv}`)].filter((w) => words.has(w) && !skip.has(w)).length;
+    const sameSite = !!site && siteKey(l.w) === site;
+    const close = !online && l.y != null && distKm(here, l) <= 0.3;
+    const looksSame = online ? sameSite || common >= 2 : (close && (common >= 1 || sameSite)) || (sameSite && common >= 2);
+    if (looksSame) found.push({ l, score: common + (sameSite ? 2 : 0) + (close ? 1 : 0) });
+  }
+  return found.sort((p, q) => q.score - p.score).slice(0, 5).map((o) => o.l);
+}
+
+function dupesSheet(a) {
+  const t = T();
+  const cards = a.dupes.map((l) => `<div class="community">
+      <b>${esc(l.t)}</b>
+      <p>${esc([l.pv, l.on ? t.online : l.ad].filter(Boolean).join(" · "))}</p>
+      <p>${esc([whenText(l) || l.s, ageText(l)].filter(Boolean).join(" · "))}</p>
+      <button type="button" class="secondary" data-act="addSame" data-v="${esc(l.i)}">${ICON.check}<span>${t.dupSame}</span></button>
+    </div>`).join("");
+  return {
+    title: t.addClass, tall: true, stack: true,
+    top: `<div class="steps"><span>${esc(t.dupTitle)}</span></div>`,
+    body: `<p class="lead">${t.dupText}</p>${cards}`,
+    foot: `<div class="foot-row"><button type="button" class="text-btn" data-act="addDupBack">${t.back}</button>
+      <button type="button" class="primary" data-act="addDifferent">${t.dupDifferent}</button></div>`,
   };
 }
 
@@ -1138,12 +1225,13 @@ function addSheet() {
       body: `<div class="done">
         <span class="done-mark">${ICON.tick}</span>
         <h3>${a.pending ? t.pendingTitle : t.doneTitle}</h3>
-        <p class="lead">${a.pending ? t.pendingText : t.doneText}</p>
+        <p class="lead">${a.dupOf ? t.pendingDupText : a.pending ? t.pendingText : t.doneText}</p>
         <button type="button" class="primary" data-act="addSeeIt">${a.pending ? t.done : t.seeIt}</button>
         <button type="button" class="secondary" data-act="addAgain">${t.addAnother}</button>
       </div>`,
     };
   }
+  if (n === 3 && a.dupes && a.dupes.length && !a.dupesOk) return dupesSheet(a);
   const miss = addMissing(n);
   const steps = [null, addStep1, addStep2, addStep3, addStep4];
   const who = state.user
@@ -1299,6 +1387,14 @@ async function addNext() {
     a.busy = false;
     if (!a.geo) { a.error = t.postcodeNotFound; render({ keepScroll: true }); return; }
   }
+  // Before the last step: is it already on the map?
+  if (n === 3 && !a.dupesOk) {
+    a.busy = true;
+    render({ keepScroll: true });
+    a.dupes = await findDupes(a);
+    a.busy = false;
+    if (a.dupes.length) { render(); return; }
+  }
   if (n < 4) { a.step = n + 1; render({ keepScroll: true }); return; }
 
   a.busy = true;
@@ -1311,7 +1407,9 @@ async function addNext() {
     render({ keepScroll: true });
     return;
   }
-  Object.assign(a, { step: "done", newId: data.id, pending: data.status === "Pending" });
+  // The database holds back "Something else" and anything that looks like a class already listed
+  const pending = data.status === "Pending";
+  Object.assign(a, { step: "done", newId: data.id, pending, dupOf: pending && a.cat !== "Mixed" });
   await loadListings();
 }
 
@@ -1327,7 +1425,7 @@ function communityHtml(l) {
   if (b && b.mode === "report") {
     const reasons = REASONS.map((r) => chipHtml("reason", r, t.reason[r], b.reason === r, false)).join("");
     return `<div class="community"><b>${t.whatsWrong}</b>${wrap(reasons)}
-      <textarea class="input" data-field="box.note" rows="2" maxlength="500" placeholder="${t.reportNote}" aria-label="${t.reportNote}">${esc(b.note || "")}</textarea>
+      <textarea class="input" data-field="box.note" rows="2" maxlength="500" placeholder="${b.reason === "duplicate" ? t.dupNote : t.reportNote}" aria-label="${t.reportNote}">${esc(b.note || "")}</textarea>
       ${err}<div class="foot-row"><button type="button" class="text-btn" data-act="cancelReport">${t.cancel}</button>
       <button type="button" class="primary" data-act="sendReport" data-v="${esc(l.i)}"${b.busy ? " disabled" : ""}>${t.sendReport}</button></div></div>`;
   }
@@ -1371,6 +1469,86 @@ async function sendReport(id) {
   state.box = null;
   state.mine.reported[id] = true;
   await loadListings();
+}
+
+// ---- Sharing a class ----
+// The link carries the class's place as well as its id (#c=ID@lat,lng). Opening it loads that area the usual way,
+// so the database still never answers "give me class X" for any id someone guesses.
+
+function shareUrl(l) {
+  const at = l.y != null ? `@${l.y.toFixed(3)},${l.x.toFixed(3)}` : "";
+  return `${location.origin}${location.pathname}#c=${encodeURIComponent(l.i)}${at}`;
+}
+
+function shareText(l) {
+  const t = T();
+  const where = l.on ? t.online : l.a;
+  const ages = l.mn == null && l.mx == null ? "" : ageText(l);
+  return [l.t, [whenText(l), ages, where].filter(Boolean).join(" · "), t.foundOn].join("\n");
+}
+
+async function shareListing(id) {
+  const l = state.items.find((x) => x.i === id);
+  if (!l) return;
+  // Phones (and most laptops) have their own share menu, with WhatsApp, Messages, email and the rest
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: l.t, text: shareText(l), url: shareUrl(l) });
+      return;
+    } catch (e) {
+      if (e.name === "AbortError") return; // closed the menu
+    }
+  }
+  state.shareBox = { id, copied: false };
+  render({ keepScroll: true });
+}
+
+async function copyShareLink(id) {
+  const l = state.items.find((x) => x.i === id);
+  if (!l || !state.shareBox) return;
+  try {
+    await navigator.clipboard.writeText(`${shareText(l)}\n${shareUrl(l)}`);
+    state.shareBox.copied = true;
+  } catch (e) {
+    // Clipboard blocked: the link is in the box, ready to select by hand
+    state.shareBox.manual = true;
+  }
+  render({ keepScroll: true });
+}
+
+function shareBoxHtml(l) {
+  const t = T(), b = state.shareBox;
+  if (!b || b.id !== l.i) return "";
+  const msg = `${shareText(l)}\n${shareUrl(l)}`;
+  return `<div class="community"><b>${t.shareTitle}</b>
+    <div class="foot-row share-row">
+      <a class="secondary" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noreferrer">${t.whatsapp}</a>
+      <button type="button" class="secondary" data-act="copyLink" data-v="${esc(l.i)}">${b.copied ? `${ICON.check}<span>${t.copied}</span>` : t.copyLink}</button>
+    </div>
+    ${b.manual ? `<input class="input" readonly value="${esc(shareUrl(l))}" aria-label="${t.copyLink}">` : ""}</div>`;
+}
+
+// Opening a shared link shows that class, on the map around it
+function applyShared() {
+  const m = location.hash.match(/^#c=([^@]+)(?:@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?))?$/);
+  if (!m) return false;
+  const lat = Number(m[2]), lng = Number(m[3]);
+  if (m[2] && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+    state.place = { lat, lng, name: T().sharedPlace, kind: "share" };
+  }
+  state.detail = decodeURIComponent(m[1]);
+  // Reloading the page later starts from the phone's usual place, not the shared class
+  history.replaceState(null, "", location.pathname + location.search);
+  return true;
+}
+
+// Shows a class that may be outside the area loaded now. Returns true if the caller needs to load its area.
+function showListing(l) {
+  state.detail = l.i;
+  state.box = null;
+  if (state.items.some((x) => x.i === l.i) || l.y == null) return false;
+  state.place = { lat: l.y, lng: l.x, name: l.a || placeName(), kind: "area" };
+  return true;
 }
 
 // Someone who looked up the way there or the website is the best person to ask, a bit later, whether it was right.
@@ -1522,6 +1700,7 @@ function renderDetail(c) {
     <div class="sheet tall${again ? "" : " enter"}" role="dialog" aria-label="${esc(l.t)}">
       <div class="sheet-head">
         <span class="card-top" style="flex:1;min-width:0"><span class="dot" style="background:${catColor(l.c)}"></span><span class="card-cat">${esc(catLabel(l))}</span></span>
+        <button type="button" class="chip sq" data-act="share" data-v="${esc(l.i)}" aria-label="${t.share}" title="${t.share}">${ICON.share}</button>
         <button type="button" class="chip sq" data-act="closeDetail" aria-label="${t.close}">${ICON.close}</button>
       </div>
       <div class="sheet-body" style="padding:0"><div class="detail-body">
@@ -1538,6 +1717,7 @@ function renderDetail(c) {
           <div><dt>${t.dWhere}</dt><dd>${esc(where)}</dd></div>
         </dl>
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
+        ${shareBoxHtml(l)}
         ${communityHtml(l)}
         <button type="button" class="link-btn report-link" data-act="feedback" data-v="${esc(l.i)}">${t.fbClassLink}</button>
       </div></div>
@@ -1750,8 +1930,10 @@ const ACTIONS = {
     if (state.sheet === "feedback" && state.fb && state.fb.listing) state.detail = state.fb.listing;
     state.sheet = null;
   },
-  open: (v) => { state.detail = v; state.box = null; },
-  closeDetail: () => { state.detail = null; state.box = null; },
+  open: (v) => { state.detail = v; state.box = null; state.shareBox = null; },
+  closeDetail: () => { state.detail = null; state.box = null; state.shareBox = null; },
+  share: (v) => { shareListing(v); return "async"; },
+  copyLink: (v) => { copyShareLink(v); return "async"; },
   panel: () => { state.expanded = !state.expanded; },
   nearMe: () => { useMyLocation(); return "async"; },
   area: (v) => {
@@ -1778,13 +1960,24 @@ const ACTIONS = {
   fKind: (v) => { state.add.kind = v; },
   fCat: (v) => { state.add.cat = v; },
   fLang: (v) => { state.add.langs = flip(state.add.langs, v); },
-  fMode: (v) => { state.add.mode = v; },
+  fMode: (v) => { state.add.mode = v; state.add.dupesOk = false; },
   fDay: (v) => { state.add.days = flip(state.add.days, v); },
   fRuns: (v) => { state.add.runs = v; },
   fPrice: (v) => { state.add.price = v; },
   addNext: () => { addNext(); return "async"; },
   addBack: () => { Object.assign(state.add, { step: state.add.step - 1, tried: 0, error: "" }); },
   addAgain: () => { state.add = blankAdd(); },
+  // It's already on the map: confirming it does more good than a second copy
+  addSame: (v) => {
+    const l = state.add.dupes.find((x) => x.i === v);
+    state.add = null;
+    state.sheet = null;
+    const moved = showListing(l);
+    if (!mineAdded(l) && !state.mine.confirmed[l.i]) { confirmListing(l.i); return "async"; } // reloads the area too
+    if (moved) loadListings();
+  },
+  addDifferent: () => { Object.assign(state.add, { dupesOk: true, step: 4, tried: 0, error: "" }); },
+  addDupBack: () => { state.add.dupes = null; },
   addSeeIt: () => {
     const { newId, pending } = state.add;
     state.add = null;
@@ -1850,6 +2043,7 @@ function onField(e) {
   if (!state.add) return;
   state.add[f] = value;
   if (f === "postcode") state.add.geo = null;
+  if (["name", "org", "link", "postcode"].includes(f)) state.add.dupesOk = false; // look again with the new details
   const next = $("addNext");
   if (next) next.classList.toggle("wait", addMissing(state.add.step).length > 0);
 }
@@ -1930,6 +2124,7 @@ if (sb) {
 
 loadPrefs();
 const replaying = applyReplay(); // a tester's search from `npm run feedback`; not saved as this phone's choices
+const shared = applyShared(); // a class someone sent
 render();
 loadListings();
-if (!replaying) useMyLocation({ quiet: true });
+if (!replaying && !shared) useMyLocation({ quiet: true });
