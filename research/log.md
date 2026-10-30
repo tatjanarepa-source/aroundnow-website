@@ -7,7 +7,43 @@ ticks the line and adds a row to "Done". Keep batches small (up to ~10 classes).
 
 About once a month (or when the app shows several "Needs re-checking"), do a **re-check run** first (see the skill).
 
-Ealing first, then the rest of London borough by borough, then England (franchise finders only).
+**Plan (30 Oct 2026):** Ealing is done. Next is a *basic layer* for the whole of London, gathered by type of source
+rather than borough by borough (one class finder or operator covers many boroughs at once), nearest boroughs first:
+Hammersmith & Fulham, Hounslow, Brent, Harrow, Hillingdon, Richmond, Kensington & Chelsea, then the rest. Depth comes
+later from parents adding classes. Lines marked **(run locally)** need Chrome; the nightly cloud run does the others.
+
+### Repeating and dated
+
+- [ ] Ealing: children's centres, November timetables (new PDFs each month at ealingfamiliesdirectory.org.uk) **(run locally)**. Early November
+- [ ] Ealing: Christmas camps recheck in late November (Ealing Cricket Club at Ada Lovelace, Brentford FC CST multi-sport at Gunnersbury, Ealing Trailfinders) **(run locally)**
+- [ ] Ealing: February half-term and Easter 2027 camps (SuperCamps, St Benedict's, Mother Nature Science St Mark's W7, Ealing Cricket Club, Brentford CST, Let's Leap). In January **(run locally)**
+- [ ] Ealing: Eventbrite, monthly (Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past month). Next late November **(run locally)**
+- [ ] West London: Christmas events, mid-November (Chiswick House, Richmond Theatre, grottos in shopping and garden centres, Russian/Polish New Year parties). Started 2026-10-29: Lyric and Exchange pantos, Fulham Palace grotto
+
+### London basic layer: the cloud run can do these
+
+- [ ] London museums with regular under-5s and family sessions (Natural History Museum, Science Museum, V&A, V&A Young, Horniman, London Transport Museum, Museum of London Docklands, National Gallery, British Museum, National Maritime Museum, Discover Children's Story Centre). One row per regular session, plus dated half-term and Christmas events
+- [ ] London city farms and adventure playgrounds (Kentish Town, Mudchute, Vauxhall, Hackney, Freightliners, Spitalfields, Surrey Docks, Woodlands; council adventure playgrounds). Opening days and toddler sessions
+- [ ] Leisure operators, price pages first: which London boroughs each runs, and the pay-as-you-go prices for family swim, swim lessons and soft play. Better (GLL), Everyone Active, Fusion Lifestyle, Places Leisure, 1Life, Lampton (done). Write the centre list per borough into sources.md for the timetable runs below
+- [ ] Hammersmith & Fulham: leisure centres (Janet Adegoke, Fulham Pools, Hammersmith Fitness) and soft play. Lillie Road done 2026-10-30
+- [ ] Hounslow: Hobbledown Heath, other soft play and churches
+- [ ] Brent, Harrow, Hillingdon: museums, farms, soft play and anything the council sites show to the cloud
+
+### London basic layer: in Chrome **(run locally)**
+
+- [ ] Leisure-centre timetables, borough by borough from the sources.md list (family swim, parent and toddler swim, soft play): West London first **(run locally)**
+- [ ] Franchise class finders across West London (W, NW10, TW, UB postcodes): Water Babies, Baby Sensory, Toddler Sense, Monkey Music, Hartbeeps, Sing and Sign, Jo Jingles, Musical Bumps, Diddi Dance, babyballet **(run locally)**
+- [ ] Franchise class finders, sport and swimming, across West London: Little Kickers, Puddle Ducks, Turtle Tots, Tumble Tots, Rugbytots, Mini Kickers **(run locally)**
+- [ ] Same two franchise jobs for North, South and East London, one area per run **(run locally)**
+- [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md) **(run locally: needs a browser)**
+- [ ] Hammersmith & Fulham: follow "Any council area" in sources.md (started 2026-10-30 from the cloud: Lillie Road soft play done; lbhf.gov.uk pages come back empty to the cloud, so children's centres, libraries and play centres **(run locally: needs a browser)**; leisure centres left: Janet Adegoke, Fulham Pools, Hammersmith Fitness)
+- [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md **(run locally: 2026-10-30 cloud try at Richmond only found Happity listings; waystoplaytoday.co.uk not allowed in the cloud network; Better Pools on the Park pages show no recurring kids sessions, only junior swim £3.20 non-member / £3.00 members (age 4–12) and under-4s free)**
+- [ ] Kensington & Chelsea, Westminster, Camden, Islington: follow "Any council area" in sources.md **(run locally)**
+- [ ] The other London boroughs, four per run: follow "Any council area" in sources.md **(run locally)**
+- [ ] London: Russian-speaking classes and schools (all boroughs) **(run locally: 2026-10-30 cloud try; znayka-academy.com schedule page not reachable/404, artopolis.academy not allowed in cloud network, russiancentre.co.uk and the Cathedral school page give no children's times)**
+- [ ] London: French and other language nurseries and Saturday schools **(run locally: 2026-10-30 cloud try found only directory snippets; school sites not found by the search tool, polskamacierz.com is the Irish society)**
+
+### Finished lines
 
 - [x] Ealing: churches, church halls and pubs (incl. The Drapers Arms)
 - [x] Ealing: churches, sweep 2: list every church via A Church Near You + other denominations, check each events page (checked so far: St Mary's, St Andrew's URC, St John's, St Stephen's, All Saints, St Paul's hall)
@@ -15,8 +51,6 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: language (La Chouette French nursery, Polish Saturday school, Russian schools)
 - [x] Ealing: libraries (Northfields, Greenford, Hanwell, Acton rhyme times) **(run locally: council sites block the cloud run)**. Done locally 2026-10-27; repeat every 2–3 months (libraries.ealing.gov.uk/events/category/kids)
 - [x] Ealing: council family hubs and children's centres **(run locally: council sites block the cloud run)**. Done locally 2026-10-27 from the October timetables; **monthly re-check** (new PDFs each month at ealingfamiliesdirectory.org.uk/childrens-centre-timetables)
-- [ ] Ealing: holiday clubs and camps for Christmas, February half-term and Easter (multi-sport, Supercamps, football clubs, leisure centres, churches, Brentford FC CST camps). Dated camps get EventDate/EventEndDate; `HolidayClub` = Yes. **Christmas: SuperCamps done 2026-10-28 (cloud); recheck in Dec/Jan for Feb half-term and Easter dates** **(run locally: 2026-10-29 cloud retry failed; Let's Leap Christmas page 404 and booking on magicbooking, First Steps classforkids schedule empty, brentfordfccommunity.org not allowed in the cloud network, eequ.org shows no dates)** **Christmas done locally 2026-10-30 (6 rows); recheck late Nov for Ealing Cricket Club, Brentford CST multi-sport and Trailfinders; Feb half-term and Easter in Jan**
-- [ ] Ealing: Eventbrite, browse in Chrome (monthly: Google `site:eventbrite.co.uk Ealing toddler OR baby OR kids OR family`, past 3 months) **(run locally: Eventbrite search needs a real browser)**. Last done 2026-10-30; next late November
 - [x] Ealing: franchises. Done locally 2026-10-28: Water Babies (4 pools), Jo Jingles (none in Ealing). Left: Hartbeeps (site 403 to the cloud), Baby Sensory, Sing and Sign, Monkey Music, Tumble Tots, Little Kickers **(run locally)**
 - [x] Ealing: gymnastics and swimming. Done locally 2026-10-28 (Everyone Active pools, Ealing Gymnastics, Twisters). YMCA South Ealing gymnastics still a lead
 - [x] Chiswick and Ealing: private swim schools. Done locally 2026-10-28: First Swim, Sevenus, Gliders. Comfort Aquatics added 2026-10-28 (pin at the middle of Corfton Road, user's OK). Left: Swim-Life Brentford, Angel Swim Shepherds Bush, Puddle Ducks, London Baby Swim, First Swim Twickenham **(run locally)**
@@ -25,14 +59,8 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [x] Ealing: ballet and dance. Done locally 2026-10-28: Prima School of Ballet, Innovation Dance Studios (Twisters ballet earlier). Leads: The Little Dance Academy, Lyric Dance, Ealing School of Dance, EM Ballet School, babyballet
 - [x] Ealing: sport (football, tennis, martial arts) and chess. Done locally 2026-10-28: Footy Fun 4 Kids, Ealing Cadets chess, Kenshukai Karate. Leads: Wildcats Combat, De Silva Taekwondo, Kaishi, Elkai, SKC Karate, Ealing Junior Chess Club
 - [x] Ealing: parks, forest school and more museums (Musical Museum Brentford, Boston Manor House, Pitzhanger Wonder Room, Kew Gardens' children's garden) **(Musical Museum done 2026-10-28 from the cloud; Kew 403; Boston Manor House, Pitzhanger Wonder Room, forest schools left) Boston Manor House and Pitzhanger Wonder Room/PlayWorks done 2026-10-29 from the cloud; Kew still 403; forest schools: only Ealing 135 Blue Fox (already listed) found)**
-- [ ] West London: Christmas events (Santa's grottos in other shopping centres and garden centres, pantomimes, Christmas shows and parties, Russian/Polish New Year parties). Run in November **(started 2026-10-29 from the cloud: Lyric and Exchange Cinderella pantos, Fulham Palace grotto; left: Chiswick House, Richmond Theatre, other grottos, Russian/Polish parties; repeat in mid-November)**
 - [x] West London: riding schools and city farms (toddler pony sessions, lessons, pony days): Stag Lodge, Barnfield, Littlebourne, Deen City Farm. Done 2026-10-29 from the cloud (Stag Lodge, Deen City Farm); Barnfield (Kingston KT2 5LL, from age 2, 020 8546 3616) and Littlebourne not read, see leads
-- [ ] London: Russian-speaking classes and schools (all boroughs) **(run locally: 2026-10-30 cloud try; znayka-academy.com schedule page not reachable/404, artopolis.academy not allowed in cloud network, russiancentre.co.uk and the Cathedral school page give no children's times)**
-- [ ] London: French and other language nurseries and Saturday schools **(run locally: 2026-10-30 cloud try found only directory snippets; school sites not found by the search tool, polskamacierz.com is the Irish society)**
-- [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md) **(run locally: needs a browser)**
 - [x] Hounslow: leisure centres (Lampton: Heston, Isleworth, Hanworth, Feltham), soft play, churches. Lampton done 2026-10-30 (cloud); Hobbledown Heath, other soft play and churches left
-- [ ] Hammersmith & Fulham: follow "Any council area" in sources.md (started 2026-10-30 from the cloud: Lillie Road soft play done; lbhf.gov.uk pages come back empty to the cloud, so children's centres, libraries and play centres **(run locally: needs a browser)**; leisure centres left: Janet Adegoke, Fulham Pools, Hammersmith Fitness)
-- [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md **(run locally: 2026-10-30 cloud try at Richmond only found Happity listings; waystoplaytoday.co.uk not allowed in the cloud network; Better Pools on the Park pages show no recurring kids sessions, only junior swim £3.20 non-member / £3.00 members (age 4–12) and under-4s free)**
 
 ## Done
 
