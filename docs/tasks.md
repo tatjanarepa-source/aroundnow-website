@@ -18,7 +18,7 @@ To go live, in this order:
 Then test on the phone:
 - [x] Open a class → share icon (top right, next to ×) → the phone's share menu → send to yourself on WhatsApp;
       the link opens the app on that class, with the map around it
-- [ ] Add a class with the same name and postcode as one on the map → "Is it one of these?" →
+- [x] Add a class with the same name and postcode as one on the map → "Is it one of these?" →
       "Yes, that's it" confirms the existing class; "No, mine is different" carries on to the last step
 - [ ] Add the same class twice → the second time says "You’ve already added this class."
 - [ ] "Something's wrong" on a class has "It’s listed twice"
