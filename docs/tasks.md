@@ -16,6 +16,9 @@ The + form starts with "Fill in from a photo": a parent takes or picks a photo o
 Claude Haiku 5.5 reads it on our server (`worker/`), the form fills in, and the parent checks every step before adding.
 Costs well under 1p a photo. Limits: signed-in parents only, 10 photos each a day, 200 a day for everyone together.
 
+**Until these steps are done, don't run `npm run deploy`:** the code on GitHub already has the photo button, and
+without the key it would only show an error. If something else needs deploying first, ask Claude to hide the button.
+
 To go live, in this order (Tatjana):
 - [ ] console.anthropic.com: create an account, add £5–10 of credit, set a monthly spend limit (e.g. £10)
       (Settings → Limits), create an API key
