@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v26";
+const APP_VERSION = "v27";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1779,6 +1779,7 @@ function afterSignedIn() {
   if (state.sheet === "signin") state.sheet = null;
   if (after === "add") {
     if (!state.add || state.add.step === "done") state.add = blankAdd();
+    else if (state.add.photo !== "reading") Object.assign(state.add, { photo: "", photoMsg: "" }); // no old photo message
     state.sheet = "add";
   } else if (after && after.open) {
     state.detail = after.open;
@@ -2066,6 +2067,7 @@ const ACTIONS = {
   add: () => {
     if (!state.user) { openSignIn("add"); return; }
     if (!state.add || state.add.step === "done") state.add = blankAdd();
+    else if (state.add.photo !== "reading") Object.assign(state.add, { photo: "", photoMsg: "" }); // no old photo message
     state.detail = null;
     state.sheet = "add";
   },
