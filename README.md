@@ -36,6 +36,11 @@ public: the database only allows reading visible listings.
 - `npm run import:listings` — loads `data/listings-seed.csv` (the mums'
   spreadsheet) into Supabase. Needs the secret key in `.env`; both `data/`
   and `.env` are git-ignored because they hold private contact details
+- `npm run backup` — copies every table, the parents' accounts and `supabase/`
+  to `Documents\AroundNow-Backups\<date>\` (outside the project; keeps 14 days
+  plus one a month). Supabase's Free plan keeps no backups, so Windows Task
+  Scheduler runs it nightly at 23:30 ("AroundNow nightly backup", log in
+  `backup.log` there). `npm run feedback` warns if the last one is over 2 days old
 
 ### Adding and checking classes
 

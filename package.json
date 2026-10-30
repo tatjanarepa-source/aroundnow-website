@@ -8,6 +8,7 @@
     "build": "node scripts/build.mjs",
     "check:batch": "node scripts/check-batch.mjs",
     "feedback": "node --env-file=.env scripts/feedback.mjs",
-    "check": "node scripts/check-app.mjs"
+    "check": "node scripts/check-app.mjs",
+    "backup": "node --env-file=.env scripts/backup.mjs"
   }
 }

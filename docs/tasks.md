@@ -6,8 +6,30 @@ Ideas and problems to come back to. Newest first. Tick when done.
 
 1. Ask Claude "what did the night run find?" → review the new batch files, then import the good ones
    (`npm run import:listings -- research/batches/<file>.csv`) and `git pull` first.
-2. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
+2. `npm run feedback` also says when the last database backup was; it shouts "!!! BACKUP" if it's over 2 days old.
+3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
+
+## Database backups (nightly since 30 Oct)
+
+Supabase's Free plan keeps no backups at all, so we make our own.
+- [x] `npm run backup`: every table, the parents' accounts and the database setup, to
+      `Documents\AroundNow-Backups\<date>\` (outside the project, never on GitHub; it holds parents' emails).
+      Keeps 14 days plus the first backup of each month
+- [x] Windows Task Scheduler runs it every night at 23:30 ("AroundNow nightly backup"); if the laptop is off,
+      as soon as it's next on. Log: `Documents\AroundNow-Backups\backup.log`
+
+To think about later:
+- [ ] Second copy in Google Drive: install Google Drive for desktop, then add
+      `BACKUP_COPY_DIR=G:\My Drive\AroundNow-Backups` to `.env` (the script already copies there when it's set)
+- [ ] Full database copy with `pg_dump` as well (exact copy, one-step restore). Needs PostgreSQL 17 client tools
+      on the laptop (the installed PostgreSQL 12 is too old) and the database password in `.env`
+- [ ] Practise a restore into a spare free Supabase project, so we know the backup really works
+- [ ] Backups only run when the laptop is on. Later: run them from a server instead (e.g. a scheduled GitHub Action
+      or Cloudflare cron), with the copies stored privately
+- [ ] Supabase Pro ($25/month): daily backups kept 7 days (restore from the dashboard, not downloadable) and no
+      pausing; point-in-time recovery is about $100/month extra. Automatic failover only as an early test feature
+      (Multigres), not for real apps yet. Revisit when there are real users
 
 ## Duplicates and sharing (live 30 Oct as v24)
 

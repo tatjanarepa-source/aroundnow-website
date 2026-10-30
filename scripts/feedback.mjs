@@ -70,6 +70,21 @@ try {
   console.warn(`Could not read class reports: ${e.message}`);
 }
 
+// The nightly backup (npm run backup, Task Scheduler) writes a folder per day with an OK file when it worked
+{
+  const { readdirSync, existsSync } = await import("node:fs");
+  const { join } = await import("node:path");
+  const { homedir } = await import("node:os");
+  const root = process.env.BACKUP_DIR || join(homedir(), "Documents", "AroundNow-Backups");
+  const done = existsSync(root) ? readdirSync(root).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && existsSync(join(root, d, "OK"))).sort() : [];
+  const last = done[done.length - 1];
+  const age = last ? Math.floor((Date.now() - Date.parse(`${last}T00:00:00`)) / 864e5) : null;
+  if (age == null || age > 2) {
+    console.log(`\n!!! BACKUP: ${last ? `last good database backup was ${last}` : "no database backup found"}. ` +
+      `Run npm run backup, and check the "AroundNow nightly backup" task in Task Scheduler.`);
+  } else console.log(`\nLast database backup: ${last}`);
+}
+
 // Classes parents added that look like one already listed: held back as Pending until you decide.
 // In Supabase → listings: status 'Check' if it's a different class, 'Removed' if it's a copy.
 try {
