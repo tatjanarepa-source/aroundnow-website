@@ -85,6 +85,20 @@ try {
   } else console.log(`\nLast database backup: ${last}`);
 }
 
+// Past events get status 'Ended' every night in Supabase (supabase/migrations/20261030_end_past_events.sql).
+// Any still showing from before yesterday means that job has stopped.
+try {
+  const before = new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10);
+  const stale = (await get(`listings?select=id,title,event_date,event_end_date&status=in.(Active,Check,Pending,Flagged)&event_date=lt.${before}`))
+    .filter((l) => (l.event_end_date || l.event_date) < before);
+  if (stale.length) {
+    console.log(`\n!!! PAST EVENTS: ${stale.length} event(s) ended over a day ago but weren't marked Ended ` +
+      `(e.g. ${stale[0].title}). Check the job in Supabase: select * from cron.job_run_details order by start_time desc limit 5;`);
+  }
+} catch (e) {
+  console.warn(`Could not check past events: ${e.message}`);
+}
+
 // Classes parents added that look like one already listed: held back as Pending until you decide.
 // In Supabase → listings: status 'Check' if it's a different class, 'Removed' if it's a copy.
 try {

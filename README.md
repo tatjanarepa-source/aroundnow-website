@@ -62,7 +62,8 @@ supabase-js browser build (2.117.3), kept locally like Leaflet.
 - "Something else" as the activity waits for an admin (status `Pending`).
 - Two reports from different parents hide it (status `Flagged`).
 - No confirmation for 90 days: back to "Not yet confirmed". 120 days: hidden.
-  One-off events disappear after their date. The website works this out from
+  One-off events disappear after their date, and every night Supabase marks them `Ended`
+  (`supabase/migrations/20261030_end_past_events.sql`). The website works this out from
   `last_confirmed_at`, `created_at` and the event dates.
 - After someone taps Directions or the website for an unconfirmed class, the
   next visit (half a day later) asks "Did you go?". Kept on their phone only.
