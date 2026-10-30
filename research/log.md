@@ -32,7 +32,7 @@ Ealing first, then the rest of London borough by borough, then England (franchis
 - [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md) **(run locally: needs a browser)**
 - [x] Hounslow: leisure centres (Lampton: Heston, Isleworth, Hanworth, Feltham), soft play, churches. Lampton done 2026-10-30 (cloud); Hobbledown Heath, other soft play and churches left
 - [ ] Hammersmith & Fulham: follow "Any council area" in sources.md (started 2026-10-30 from the cloud: Lillie Road soft play done; lbhf.gov.uk pages come back empty to the cloud, so children's centres, libraries and play centres **(run locally: needs a browser)**; leisure centres left: Janet Adegoke, Fulham Pools, Hammersmith Fitness)
-- [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md
+- [ ] Richmond, Hillingdon, Brent, Harrow: follow "Any council area" in sources.md **(run locally: 2026-10-30 cloud try at Richmond only found Happity listings; waystoplaytoday.co.uk not allowed in the cloud network; Better Pools on the Park pages show no recurring kids sessions, only junior swim £3.20 non-member / £3.00 members (age 4–12) and under-4s free)**
 
 ## Done
 
