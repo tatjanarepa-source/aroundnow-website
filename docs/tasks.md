@@ -10,25 +10,23 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
-## Fill in a class from a photo (built 30 Oct, v25, not deployed yet)
+## Fill in a class from a photo (live 30 Oct, v26)
 
 The + form starts with "Fill in from a photo": a parent takes or picks a photo of a poster, flyer or screenshot,
 Claude Haiku 5.5 reads it on our server (`worker/`), the form fills in, and the parent checks every step before adding.
-Costs well under 1p a photo. Limits: signed-in parents only, 10 photos each a day, 200 a day for everyone together.
+About $0.001 (0.08p) a photo, 3–9 seconds. Limits: signed-in parents only, 10 photos each a day, 200 a day for
+everyone together. Key: Anthropic console (spend limit set); on the server as the secret `ANTHROPIC_API_KEY`, on this
+laptop in `.dev.vars`. A new key: put it in `.dev.vars`, then
+`! grep ANTHROPIC_API_KEY .dev.vars | cut -d= -f2- | tr -d '
+' | npx wrangler secret put ANTHROPIC_API_KEY`
 
-**Until these steps are done, don't run `npm run deploy`:** the code on GitHub already has the photo button, and
-without the key it would only show an error. If something else needs deploying first, ask Claude to hide the button.
-
-To go live, in this order (Tatjana):
-- [x] console.anthropic.com: create an account, add £5–10 of credit, set a monthly spend limit (e.g. £10)
-      (Settings → Limits), create an API key
-- [x] Put the key on the server: `! npx wrangler secret put ANTHROPIC_API_KEY` and paste it when asked
-- [ ] Also put it in a file `.dev.vars` in the project folder as `ANTHROPIC_API_KEY=…` (for trying it on this
-      laptop; never uploaded to GitHub)
-- [ ] Run `supabase/migrations/20261030_poster_reads.sql` in the Supabase SQL editor
-- [ ] Claude tries a few real poster photos: `npm run try-poster -- photo.jpg` (shows what it read and the cost)
-- [ ] `npm run deploy` and `git push`
-- [ ] On the phone: + → Fill in from a photo → a real poster → check each step → Add to map
+- [x] Tried on 6 real photos (30 Oct): all read right after fixing postcodes and family events
+- [x] Works on the phone (30 Oct). The street address isn't on most posters: left for the parent to type
+      (looking it up online would cost ~10x more and can pick the wrong venue)
+- [ ] `npm run deploy` for v27 (an old photo error no longer stays on the form)
+- [ ] Later, if parents get stuck on the street line: make it optional when there's a venue and a full postcode
+- [ ] Now and then: `select date(created_at), count(*) from poster_reads group by 1 order by 1 desc;` and the
+      Anthropic console's usage page
 
 ## Database backups (nightly since 30 Oct)
 
