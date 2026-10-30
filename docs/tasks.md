@@ -16,7 +16,7 @@ To go live, in this order:
 - [x] `npm run deploy` and `git push`
 
 Then test on the phone:
-- [ ] Open a class → share icon (top right, next to ×) → the phone's share menu → send to yourself on WhatsApp;
+- [x] Open a class → share icon (top right, next to ×) → the phone's share menu → send to yourself on WhatsApp;
       the link opens the app on that class, with the map around it
 - [ ] Add a class with the same name and postcode as one on the map → "Is it one of these?" →
       "Yes, that's it" confirms the existing class; "No, mine is different" carries on to the last step
