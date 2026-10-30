@@ -113,6 +113,7 @@ Pages the browser couldn't read in a local run (froze, didn't load). Try again a
 
 - London Baby Swim (Osterley, Isleworth): londonbabyswim.co.uk shows "Error 403 - This web app is stopped" (30 Oct 2026); only Facebook otherwise.
 - Angel Swim London (Shepherds Bush): angelswim.london says "This site is currently private" (30 Oct 2026).
+- Baby Sensory Richmond, Wandsworth & Barnes: babysensory.com/richmond/timetable loads but the class list didn't parse as text (30 Oct 2026); read it with a screenshot.
 
 ## Leads not checked
 - Christmas camps (2026-10-30, local): Let's Leap provisional Christmas list has no Ealing venue (16 schools elsewhere, 14–18 Dec). Ealing Cricket Club Christmas camp at Ada Lovelace School W5 2JX "to be confirmed" (early drop-off 8:30–10 £5; Feb half-term 16–19 Feb 10–16 shown). Brentford CST: no multi-sport Christmas camp on Pebble yet (only the SEND one). Ealing Trailfinders (W13 0DD) ClassForKids shows no camps now. Mad Science Ealing = after-school clubs (Manorside, St Gregory's, St John's, Drayton Green, North Ealing). Camp Beaumont Ealing (St Augustine's) page 404. TeachMajor holiday camps at Elthorne Park High W7 2AH not checked. Mother Nature Science St Mark's W7 runs Feb half-term to Easter 2027.
