@@ -33,7 +33,7 @@ later from parents adding classes. Lines marked **(run locally)** need Chrome; t
 
 - [ ] Leisure-centre timetables, borough by borough from the sources.md list (family swim, parent and toddler swim, soft play): West London first **(run locally)**
 - [x] Franchise class finders across West London (W, NW10, TW, UB postcodes): Water Babies, Baby Sensory, Toddler Sense, Monkey Music, Hartbeeps, Sing and Sign, Jo Jingles, Musical Bumps, Diddi Dance, babyballet **(run locally)**
-- [ ] Franchise class finders, sport and swimming, across West London: Little Kickers, Puddle Ducks, Turtle Tots, Tumble Tots, Rugbytots, Mini Kickers **(run locally)**
+- [ ] Franchise class finders, sport and swimming, across West London: Little Kickers done 2026-10-30; Puddle Ducks done (The Mall School); left: Rugbytots, Turtle Tots, Mini Kickers **(run locally)**
 - [ ] Same two franchise jobs for North, South and East London, one area per run **(run locally)**
 - [ ] Hounslow: children's centres, libraries, play centres (follow "Any council area" in sources.md) **(run locally: needs a browser)**
 - [ ] Hammersmith & Fulham: follow "Any council area" in sources.md (started 2026-10-30 from the cloud: Lillie Road soft play done; lbhf.gov.uk pages come back empty to the cloud, so children's centres, libraries and play centres **(run locally: needs a browser)**; leisure centres left: Janet Adegoke, Fulham Pools, Hammersmith Fitness)
@@ -66,6 +66,7 @@ later from parents adding classes. Lines marked **(run locally)** need Chrome; t
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-10-30 | West London: sport franchises (local, Chrome) | `2026-10-30-west-london-sport-franchises.csv` | 15 | Little Kickers: Hounslow/Richmond (All Hallows Twickenham, Fairholme Feltham, Hampton YMCA, Kneller Gardens, Lift Richmond Park East Sheen), Harrow/Pinner (Ruislip Gardens, Whitmore High, George V Ave Pinner, Haydon High), Chelsea/Fulham (All Saints SW6, St Etheldreda SW6, Masbro Centre W14, Hall of Remembrance SW3, Marlborough Primary SW3, St Luke's Gardens SW3). Prices behind a pop-up. Lift Kingsley Hounslow opens Jan 2027 (left out). Rugbytots and Turtle Tots not done (see Retry later) |
 | 2026-10-30 | West London: baby and music franchises (local, Chrome) | `2026-10-30-west-london-baby-franchises.csv` | 23 | Water Babies: Harrow School pools HA1, Nuffield Stockley Park UB11, Nuffield Fulham SW6, QE2 Jubilee W9 (times for a 1-year-old). Baby Sensory: Hammersmith W6, Fulham SW6, Hampton Hill, Whitton, Twickenham, Isleworth, South Ruislip, South Harrow, Greenford UB6 (prices not read). Toddler Sense Hampton Hill. Monkey Music: Kensal Rise, Queen's Park, East Twickenham, Teddington, Richmond, Barnes. Hartbeeps: Fulham, East Sheen, Kew (£12.25 term / £14.50 drop-in; Northfields W13 added to the Ealing batch). Not found near Ealing: diddi dance (finder shows only Walton), Sing and Sign beyond Ealing, Jo Jingles, Musical Bumps. Baby Sensory Hillingdon and North Harrow show no classes |
 | 2026-10-30 | Kew Gardens Children's Garden (local, Chrome) | `2026-10-30-kew-childrens-garden.csv` | 1 | Included in entry; child 4–15 £2–£4, adults £10 on Tuesdays to 29 Dec. Closes the parks/forest school/museums line |
 | 2026-10-30 | Ealing: Eventbrite (local, Chrome) | `2026-10-30-ealing-eventbrite.csv` | 2 | Ealing Beaver Project guided walks at Paradise Fields UB6 0UW (Thu 5 Nov 13:00, Fri 4 Dec 11:30; adults £10, under-18s free; families welcome). Rest of Google `site:eventbrite.co.uk` past month: Bach to Baby (already listed), NHS OT parent workshops (for parents), County Hall art workshop (Westminster, ended), Fennies open evening, markets and adult events |
@@ -116,6 +117,7 @@ Pages the browser couldn't read in a local run (froze, didn't load). Try again a
 - Angel Swim London (Shepherds Bush): angelswim.london says "This site is currently private" (30 Oct 2026).
 - Baby Sensory Richmond, Wandsworth & Barnes: babysensory.com/richmond/timetable loads but the class list didn't parse as text (30 Oct 2026); read it with a screenshot.
 - babyballet Twickenham, Richmond & Kingston: class list is in a widget that didn't load as text (30 Oct 2026); try a screenshot or their Pebble page.
+- Rugbytots: class finder (rugbytots.co.uk/Class/Find) shows results only on a map; Google shows "Harrow Saturdays" at Vaughan Primary School HA1 4EL, £118 for 12 sessions (£9.75 a session). Read the list with screenshots.
 
 ## Leads not checked
 - West London franchises (2026-10-30): diddi dance Richmond (directories say Mon 10:00 at 76-78 Church Road, Teddington TW11 8EY; not on diddi dance's own finder). Sing and Sign "West London & Haslemere" (Google Maps, 07947 304717) and "Islington, Primrose Hill, Chelsea, Marylebone, Notting Hill" pages on singandsign.co.uk not read. Hartbeeps Middlesex: class page empty.
