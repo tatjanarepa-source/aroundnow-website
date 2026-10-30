@@ -10,7 +10,7 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
-## Fill in a class from a photo (live 30 Oct, v26)
+## Fill in a class from a photo (live 30 Oct, v27)
 
 The + form starts with "Fill in from a photo": a parent takes or picks a photo of a poster, flyer or screenshot,
 Claude Haiku 5.5 reads it on our server (`worker/`), the form fills in, and the parent checks every step before adding.
@@ -23,7 +23,7 @@ laptop in `.dev.vars`. A new key: put it in `.dev.vars`, then
 - [x] Tried on 6 real photos (30 Oct): all read right after fixing postcodes and family events
 - [x] Works on the phone (30 Oct). The street address isn't on most posters: left for the parent to type
       (looking it up online would cost ~10x more and can pick the wrong venue)
-- [ ] `npm run deploy` for v27 (an old photo error no longer stays on the form)
+- [x] v27 deployed 30 Oct (an old photo error no longer stays on the form)
 - [ ] Later, if parents get stuck on the street line: make it optional when there's a venue and a full postcode
 - [ ] Now and then: `select date(created_at), count(*) from poster_reads group by 1 order by 1 desc;` and the
       Anthropic console's usage page
