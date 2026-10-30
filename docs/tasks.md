@@ -20,9 +20,9 @@ Costs well under 1p a photo. Limits: signed-in parents only, 10 photos each a da
 without the key it would only show an error. If something else needs deploying first, ask Claude to hide the button.
 
 To go live, in this order (Tatjana):
-- [ ] console.anthropic.com: create an account, add £5–10 of credit, set a monthly spend limit (e.g. £10)
+- [x] console.anthropic.com: create an account, add £5–10 of credit, set a monthly spend limit (e.g. £10)
       (Settings → Limits), create an API key
-- [ ] Put the key on the server: `! npx wrangler secret put ANTHROPIC_API_KEY` and paste it when asked
+- [x] Put the key on the server: `! npx wrangler secret put ANTHROPIC_API_KEY` and paste it when asked
 - [ ] Also put it in a file `.dev.vars` in the project folder as `ANTHROPIC_API_KEY=…` (for trying it on this
       laptop; never uploaded to GitHub)
 - [ ] Run `supabase/migrations/20261030_poster_reads.sql` in the Supabase SQL editor

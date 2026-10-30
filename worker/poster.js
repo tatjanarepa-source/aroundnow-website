@@ -26,7 +26,7 @@ const Poster = z.object({
   online: z.boolean(),
   venue: z.string().describe("venue name, e.g. St Mary's Church Hall"),
   address: z.string().describe("street address without the postcode"),
-  postcode: z.string().describe("full UK postcode, e.g. W5 5JY, only if printed"),
+  postcode: z.string().describe("full UK postcode, e.g. W5 5JY, only if printed (often right after the venue name)"),
   days: z.array(z.enum(DAYS)),
   runs: z.enum(["term", "year", "hols", ""]).describe("term = term time only; year = all year; hols = school holidays"),
   date: z.string().describe("first or only date as YYYY-MM-DD, for one-off events and camps"),
@@ -48,7 +48,10 @@ that a parent will check before it goes on a map. Today is ${today}.
 - "Term time" or school-term dates mean runs = term. Weekly classes with no such hint: runs = "".
 - Ages: "toddlers" alone is not an age. "18 months to 3 years" = 18 and 36. "Under 5s" = 0 and 59. "5+" = 60 and null.
 - Keep the poster's own wording for names. Don't add marketing words.
-- If the photo isn't about a children's activity, set is_class to false and leave the rest empty.`;
+- Read the whole photo before answering: venue lines often end with the postcode ("St Andrew's Church Centre, W5 2RS").
+- Family events count as children's activities when they offer something for children (kids' disco, fairground,
+  bouncy castle, "family-friendly"). Only adult-only things, adverts for products, or photos with no event or class
+  at all get is_class = false, with the rest left empty.`;
 }
 
 // imageBase64: the photo as base64 (no "data:" prefix); mediaType: image/jpeg, image/png, image/webp or image/gif
