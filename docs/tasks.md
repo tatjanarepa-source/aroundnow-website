@@ -9,11 +9,11 @@ Ideas and problems to come back to. Newest first. Tick when done.
 2. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
-## Duplicates and sharing (built 30 Oct, v24, not deployed yet)
+## Duplicates and sharing (live 30 Oct as v24)
 
 To go live, in this order:
-- [ ] Run `supabase/migrations/20261030_duplicates.sql` in the Supabase SQL editor
-- [ ] `npm run deploy` and `git push`
+- [x] Run `supabase/migrations/20261030_duplicates.sql` in the Supabase SQL editor
+- [x] `npm run deploy` and `git push`
 
 Then test on the phone:
 - [ ] Open a class → share icon (top right, next to ×) → the phone's share menu → send to yourself on WhatsApp;
