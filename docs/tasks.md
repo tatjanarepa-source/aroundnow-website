@@ -35,13 +35,18 @@ Ideas and problems to come back to. Newest first. Tick when done.
       `research/batches/2026-10-31-ealing-school-of-dance.csv` (3 rows), not imported yet
 - [ ] **Sign-in**: see Phase 3 (email service such as Resend so sign-in emails reach real users; password and/or Google
       sign-in). Needs Tatjana to create the email service account
-- [ ] **About page**: what AroundNow is, who runs it, how classes get on the map, how to report or add one, privacy.
+- [ ] **About page**: draft written 31 Oct in `docs/about-draft.md` (questions in [brackets]); once Tatjana approves the
+      wording Claude builds it into the app in English and Russian. Was: what AroundNow is, who runs it, how classes get on the map, how to report or add one, privacy.
       Claude can draft the text and page; Tatjana checks the wording
 - [ ] **Earn money**: affiliate links checked 28 Oct (Ticketmaster via Impact ~0.6–1%, needs approval; Eventbrite none):
       not worth it until we list ticketed shows. Simplest start: a "Buy me a coffee" (or Ko-fi) link on the About page;
       Tatjana creates the account and sends the link. Later ideas: featured listings for providers, a small fee for
       providers to manage their own listing
-- [ ] **Research on a schedule around the 5-hour limit**: research uses the 5-hour allowance fast (5 parallel agents
+- [ ] **Morning research at 07:00** (Tatjana chose 07:00, 31 Oct): `scripts/morning-research.ps1` + instructions in
+      `scripts/morning-research.md` (2–3 parallel agents on the next "run locally" lines; commits, never imports, deploys
+      or pushes; log in `Documents\AroundNow-Research-Logs\<date>.log`). Claude wasn't allowed to create the scheduled
+      task itself; Tatjana registers it once (command in the 31 Oct chat / README). Each evening: read the log, then
+      import the good batches. Was: research on a schedule around the 5-hour limit: research uses the 5-hour allowance fast (5 parallel agents
       used it up in ~20 min on 31 Oct, and the weekly limit was hit the same day). Idea: a morning run (e.g. 07:00) with
       2–3 agents so the allowance has reset by the evening when Tatjana works. Options: Windows Task Scheduler starting
       Claude Code on this laptop (Chrome must be open for the "run locally" jobs), or the existing nightly cloud run for
