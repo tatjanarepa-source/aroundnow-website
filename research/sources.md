@@ -124,6 +124,7 @@ their booking platform.
   `ealingfamiliesdirectory.org.uk/childrens-centre-timetables` (needs a real browser to find the links; the PDFs themselves
   download fine). Read the 3 locality PDFs; the text is in 5 day columns, so extract by column (pypdf with positions)
 - The council's Family Information Service / Local Offer directory.
+- Hammersmith & Fulham: family hub timetables sit in collapsed sections on each hub's lbhf.gov.uk page (read `document.querySelector('article').textContent`); all library sessions are on lbhf.gov.uk/libraries/library-events-and-activities; hubs book via Plinth (book.plinth.org.uk). lbhf.gov.uk returns 'Page not found' to curl: use Chrome.
 - Richmond (and Kingston): children's centres are run by Achieving for Children; one combined termly PDF for all Richmond centres is linked from kr.afcinfo.org.uk → Children's centres in Richmond (plain text, reads directly). Richmond libraries have no events system: richmond.gov.uk pages `baby_rhyme_time`, `storytime` and 'library events for children and teens' hold the whole programme.
 
 ### Leisure centre operators by London borough (checked 2026-10-31)
