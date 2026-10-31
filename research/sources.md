@@ -145,7 +145,9 @@ the operators' URL names. (pool) = the card lists a swimming or leisure pool; (s
 - **Everyone Active**: London Aquatics Centre (Newham), Cheam and Westcroft (Sutton), Abbey and Becontree Heath (Barking & Dagenham), Harrow Lodge, Sapphire Ice & Leisure, Rainham (Havering)
 - **Fusion Lifestyle no longer runs anything**: in administration 1 April 2026, stopped trading 30 June 2026; Brockwell Lido went to Active Lambeth, Golden Lane (City) closed 30 April 2026. Lambeth's other centres (Brixton, Clapham, Streatham) are not on Better's list: probably Active Lambeth (check)
 - **Reading Everyone Active times**: on a centre page, click an activity name in 'Activities at this centre' (press LOAD MORE first); a pop-up shows every day's session times and the prices. Better: `/leisure-centre/london/<borough>/<centre>/prices` and `/soft-play` pages are plain text.
-- **Not yet checked**: Southwark, Wandsworth, Tower Hamlets, Kingston, Bromley, Redbridge, Haringey (Places Leisure / 1Life / council-run?)
+- **Council-run brands** (own websites): Lambeth = **Active Lambeth** (active.lambeth.gov.uk: Brixton Rec, Clapham, Streatham Ice & Leisure, West Norwood, Brockwell Lido; family leisure zone, soft play, ice skating). Southwark = **Move Southwark** (movesouthwark.co.uk: Camberwell, Peckham Pulse, Dulwich, Castle, Southwark Park and others). Tower Hamlets = **Be Well** (be-well.org.uk: Mile End, York Hall (closed for water problems, Oct 2026), John Orwell, Whitechapel). Haringey: council took its centres back from Fusion on 1 Oct 2024 (HamHigh); operator name not checked
+- **Places Leisure**: Wandsworth (from 1 Oct 2025: Putney, Balham, Latchmere, Tooting and others, per council news) and Kingston (from 31 Mar 2026, per council papers)
+- **Not yet checked**: Bromley, Redbridge (retendering in 2026, current operator not confirmed), Bexley beyond the Better gyms, Havering beyond Everyone Active
 
 ### Franchises (one "find a class" page covers a whole region)
 Class finders often need a date of birth or postcode: enter a made-up child age and a public postcode (search only, never book).
