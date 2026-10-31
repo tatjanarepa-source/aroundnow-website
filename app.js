@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v27";
+const APP_VERSION = "v28";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1798,6 +1798,8 @@ function renderDetail(c) {
   const o = state.detail && c.rows.find((x) => x.l.i === state.detail);
   if (!o) { el.hidden = true; el.innerHTML = ""; el.dataset.open = ""; return; }
   const again = el.dataset.open === state.detail;
+  // Redrawing the same class keeps its scroll position, so a message next to a button stays in view
+  const scrolled = again && el.querySelector(".sheet-body") ? el.querySelector(".sheet-body").scrollTop : 0;
   const l = o.l;
   const type = Object.keys(TYPES).find((k) => TYPES[k](l));
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
@@ -1841,6 +1843,9 @@ function renderDetail(c) {
     </div>`;
   el.hidden = false;
   el.dataset.open = state.detail;
+  if (scrolled) el.querySelector(".sheet-body").scrollTop = scrolled;
+  const msg = el.querySelector(".community .form-msg");
+  if (msg) msg.scrollIntoView({ block: "nearest" });
 }
 
 function ensureMap() {

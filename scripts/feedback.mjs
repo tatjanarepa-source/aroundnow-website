@@ -118,3 +118,17 @@ try {
   // Before supabase/migrations/20261030_duplicates.sql has been run there's no duplicate_of column
   if (!/duplicate_of/.test(e.message)) console.warn(`Could not read possible duplicates: ${e.message}`);
 }
+
+// Every class parents added in the last 14 days, so new ones get a look while the app is young.
+// Fix or remove in Supabase → listings (status 'Removed' hides one).
+try {
+  const since = new Date(Date.now() - 14 * 864e5).toISOString();
+  const added = await get(`listings?select=id,title,provider_name,postcode,status,website,created_at&source=eq.Community&created_at=gte.${since}&order=created_at`);
+  console.log(added.length ? `\n--- ${added.length} class(es) added by parents in the last 14 days ---` : "\nNo classes added by parents in the last 14 days.");
+  for (const l of added) {
+    console.log(`${new Date(l.created_at).toLocaleString("en-GB")} · ${l.title} · ${l.provider_name || "?"} · ${l.postcode || "online"} · ${l.status} (${l.id})`);
+    if (l.website) console.log(`  ${l.website}`);
+  }
+} catch (e) {
+  console.warn(`Could not read new classes: ${e.message}`);
+}

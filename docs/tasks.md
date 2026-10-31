@@ -10,6 +10,40 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## Tatjana's list (30–31 Oct)
+
+- [x] **"Send report" did nothing and jumped to the top** (fixed in v28, needs `npm run deploy`). Every tap in a class's
+      details redrew it from the top, so the "Pick what's wrong first." message under the button was out of sight and
+      nothing was sent (your 31 Oct report never reached the database). Now the details keep their scroll position and
+      the message scrolls into view. Test after deploy: open a class → "Something's wrong" → type a note without picking a
+      reason → Send → the message shows; pick a reason → Send → "Thanks" shows
+- [ ] **Two places for "something's wrong"** on an unconfirmed class: the "Something's wrong" button in the "Know it?" box
+      (signed-in parents only; goes to `listing_reports`; two reports from different parents hide the class) and the link
+      "Something wrong with this class? Tell us" (anyone; goes to `feedback`). Proposal: keep one link, "Something wrong?
+      Tell us", for everyone; signed in → it counts as a report (can hide the class), not signed in → it is a message to us.
+      Needs Tatjana's OK before building
+- [x] **Where do reports go?** Both kinds are read with `npm run feedback`: messages (feedback table) and open reports on
+      classes (listing_reports). Nobody is notified yet. Next step: an email to Tatjana when a report or message arrives
+      (needs the email service from "Sign-in" below), or a daily summary
+- [x] **Keep an eye on classes parents add**: `npm run feedback` now also lists every class parents added in the last
+      14 days (none so far). Look at it each morning while the app is young
+- [x] **Ballet at Ealing Green Church** wasn't listed: it's Ealing School of Dance (preschool ballet and tap, Mon/Thu/Fri
+      after school; Saturday nursery ballet 2–3 at St Matthew's and Blondin Park). Batch
+      `research/batches/2026-10-31-ealing-school-of-dance.csv` (3 rows), not imported yet
+- [ ] **Sign-in**: see Phase 3 (email service such as Resend so sign-in emails reach real users; password and/or Google
+      sign-in). Needs Tatjana to create the email service account
+- [ ] **About page**: what AroundNow is, who runs it, how classes get on the map, how to report or add one, privacy.
+      Claude can draft the text and page; Tatjana checks the wording
+- [ ] **Earn money**: affiliate links checked 28 Oct (Ticketmaster via Impact ~0.6–1%, needs approval; Eventbrite none):
+      not worth it until we list ticketed shows. Simplest start: a "Buy me a coffee" (or Ko-fi) link on the About page;
+      Tatjana creates the account and sends the link. Later ideas: featured listings for providers, a small fee for
+      providers to manage their own listing
+- [ ] **Research on a schedule around the 5-hour limit**: research uses the 5-hour allowance fast (5 parallel agents
+      used it up in ~20 min on 31 Oct, and the weekly limit was hit the same day). Idea: a morning run (e.g. 07:00) with
+      2–3 agents so the allowance has reset by the evening when Tatjana works. Options: Windows Task Scheduler starting
+      Claude Code on this laptop (Chrome must be open for the "run locally" jobs), or the existing nightly cloud run for
+      jobs that don't need Chrome. Needs Tatjana to choose the time and how many agents
+
 ## Fill in a class from a photo (live 30 Oct, v27)
 
 The + form starts with "Fill in from a photo": a parent takes or picks a photo of a poster, flyer or screenshot,
