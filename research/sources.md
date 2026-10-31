@@ -125,6 +125,27 @@ their booking platform.
   download fine). Read the 3 locality PDFs; the text is in 5 day columns, so extract by column (pypdf with positions)
 - The council's Family Information Service / Local Offer directory.
 
+### Leisure centre operators by London borough (checked 2026-10-31)
+From the operators' own centre lists (better.org.uk/leisure-centre/london, everyoneactive.com/centre). Centre names are
+the operators' URL names. (pool) = the card lists a swimming or leisure pool; (soft play) = the card lists soft play.
+
+**West London first**
+- **Ealing**: Everyone Active: Acton Centre, Dormers Wells, Greenford Sports Centre, Northolt, Elthorne, Reynolds, Perivale Park track (Gurnell closed for rebuilding). Pools and Northolt soft play done 2026-10-27
+- **Hounslow**: Lampton Leisure (done 2026-10-30)
+- **Hammersmith & Fulham**: Better: Lillie Road (soft play), Phoenix Fitness Centre and Janet Adegoke Swimming Pool (pool), Hammersmith Fitness and Squash. No Fulham Pools on Better's list
+- **Kensington & Chelsea**: Better: Kensington Leisure Centre (pool, soft play), Chelsea Sports Centre (pool). Everyone Active: Westway Sports & Fitness, Westway Portobello
+- **Westminster**: Everyone Active: Porchester Centre, Marshall Street, Moberly, Little Venice, Paddington Recreation Ground, Queen Mother, Church Street, Jubilee
+- **Brent**: Better: Wembley Leisure Centre. Everyone Active: Vale Farm. Willesden Sports Centre not on either list (check)
+- **Harrow**: Everyone Active: Harrow Leisure Centre, Hatch End Swimming Pool. Better: gym in Pinner only
+- **Hillingdon**: Better: Botwell Green (pool, soft play), Highgrove (pool), Hillingdon Sports & Leisure Complex (pool, soft play), Platinum Jubilee (pool, soft play), Queensmead
+- **Richmond**: Better: Pools on the Park (pool), Teddington Pools (pool), Hampton, Teddington Sports Centre, Whitton (soft play at those three), Shene, Active Hampton
+
+**Rest of London**
+- **Better**: Barnet (Copthall pool + soft play, Finchley Lido, New Barnet, Burnt Oak, Hendon), Camden (Swiss Cottage pool + soft play, Kentish Town, Oasis, Pancras Square, Talacre), Croydon (Waddon pool + soft play, New Addington, South Norwood, Thornton Heath), Enfield (Edmonton, Southbury pool + soft play, Albany, Arnos, Southgate), Greenwich (Woolwich Waves pool + soft play, Charlton Lido, Plumstead, Sutcliffe Park), Hackney (Britannia pool + soft play, Clissold, Kings Hall, London Fields Lido, Clissold Park splash pad), Islington (Cally, Beacon, Sobell soft play, Ironmonger Row), Lewisham (Forest Hill Pools and Wavelengths pool + soft play, Glass Mill, Bellingham), Merton (Morden, Wimbledon pools; Canons soft play), Newham (Atherton pool + soft play, East Ham, Newham LC), Waltham Forest (Leyton, Leytonstone, Walthamstow, Feel Good Centre), Sutton Sports Village, Crystal Palace NSC, Vauxhall (Lambeth), Barking Sporthouse, Bexleyheath
+- **Everyone Active**: London Aquatics Centre (Newham), Cheam and Westcroft (Sutton), Abbey and Becontree Heath (Barking & Dagenham), Harrow Lodge, Sapphire Ice & Leisure, Rainham (Havering)
+- **Fusion Lifestyle no longer runs anything**: in administration 1 April 2026, stopped trading 30 June 2026; Brockwell Lido went to Active Lambeth, Golden Lane (City) closed 30 April 2026. Lambeth's other centres (Brixton, Clapham, Streatham) are not on Better's list: probably Active Lambeth (check)
+- **Not yet checked**: Southwark, Wandsworth, Tower Hamlets, Kingston, Bromley, Redbridge, Haringey (Places Leisure / 1Life / council-run?)
+
 ### Franchises (one "find a class" page covers a whole region)
 Class finders often need a date of birth or postcode: enter a made-up child age and a public postcode (search only, never book).
 Water Babies: region page lists pools; times per pool via the finder. Jo Jingles: browse by region (no Ealing franchise, Oct 2026).
