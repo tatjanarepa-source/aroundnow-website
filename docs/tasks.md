@@ -17,11 +17,14 @@ Ideas and problems to come back to. Newest first. Tick when done.
       nothing was sent (your 31 Oct report never reached the database). Now the details keep their scroll position and
       the message scrolls into view. Test after deploy: open a class → "Something's wrong" → type a note without picking a
       reason → Send → the message shows; pick a reason → Send → "Thanks" shows
-- [ ] **Two places for "something's wrong"** on an unconfirmed class: the "Something's wrong" button in the "Know it?" box
+- [x] **One "something's wrong" link** (built 31 Oct, v29, needs `npm run deploy`): the "Something's wrong" button in the
+      "Know it?" box is gone; the link "Something wrong with this class? Tell us" at the bottom of every class opens the
+      report box (reasons + note, counts towards hiding) for signed-in parents, and the message form for everyone else or
+      anyone who already reported it. Test after deploy, signed in and signed out. Was: two places: the "Something's wrong" button in the "Know it?" box
       (signed-in parents only; goes to `listing_reports`; two reports from different parents hide the class) and the link
       "Something wrong with this class? Tell us" (anyone; goes to `feedback`). Proposal: keep one link, "Something wrong?
       Tell us", for everyone; signed in → it counts as a report (can hide the class), not signed in → it is a message to us.
-      Needs Tatjana's OK before building
+      (Tatjana OK'd 31 Oct)
 - [x] **Where do reports go?** Both kinds are read with `npm run feedback`: messages (feedback table) and open reports on
       classes (listing_reports). Nobody is notified yet. Next step: an email to Tatjana when a report or message arrives
       (needs the email service from "Sign-in" below), or a daily summary

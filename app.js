@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v28";
+const APP_VERSION = "v29";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1543,8 +1543,7 @@ function communityHtml(l) {
   }
   if (unconfirmed(l)) {
     return `<div class="community"><b>${t.knowIt}</b><p>${t.knowItText}</p>${err}
-      <button type="button" class="primary" data-act="confirm" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${ICON.check}<span>${t.yesReal}</span></button>
-      <button type="button" class="secondary" data-act="report" data-v="${esc(l.i)}">${t.wrong}</button></div>`;
+      <button type="button" class="primary" data-act="confirm" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${ICON.check}<span>${t.yesReal}</span></button></div>`;
   }
   return err;
 }
@@ -1834,7 +1833,7 @@ function renderDetail(c) {
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${shareBoxHtml(l)}
         ${communityHtml(l)}
-        <button type="button" class="link-btn report-link" data-act="feedback" data-v="${esc(l.i)}">${t.fbClassLink}</button>
+        <button type="button" class="link-btn report-link" data-act="wrong" data-v="${esc(l.i)}">${t.fbClassLink}</button>
       </div></div>
       <div class="actions">
         ${l.w ? `<a class="primary" href="${esc(l.w)}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}"><span>${t.website}</span>${ICON.external}</a>` : ""}
@@ -1846,6 +1845,12 @@ function renderDetail(c) {
   if (scrolled) el.querySelector(".sheet-body").scrollTop = scrolled;
   const msg = el.querySelector(".community .form-msg");
   if (msg) msg.scrollIntoView({ block: "nearest" });
+  // The report box opened from the link at the bottom shows above it: bring it into view
+  if (state.box && state.box.opened) {
+    state.box.opened = false;
+    const box = el.querySelector(".community");
+    if (box) box.scrollIntoView({ block: "nearest" });
+  }
 }
 
 function ensureMap() {
@@ -2117,6 +2122,15 @@ const ACTIONS = {
       listing: v || null, problem: "" };
     if (v) state.detail = null;
     state.sheet = "feedback";
+  },
+  // The one "Something wrong?" link on a class: signed-in parents get the report box (two reports hide a class),
+  // everyone else, and anyone who has already reported it, gets the message form
+  wrong: (v) => {
+    if (sb && state.user && !state.mine.reported[v] && !mineAdded(state.items.find((x) => x.i === v) || {})) {
+      state.box = { id: v, mode: "report", reason: "", note: "", opened: true };
+      return;
+    }
+    return ACTIONS.feedback(v);
   },
   fbProblem: (v) => { Object.assign(state.fb, { problem: state.fb.problem === v ? "" : v, error: "" }); },
   sendFeedback: () => { sendFeedback(); return "async"; },
