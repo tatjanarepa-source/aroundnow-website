@@ -124,6 +124,7 @@ their booking platform.
   `ealingfamiliesdirectory.org.uk/childrens-centre-timetables` (needs a real browser to find the links; the PDFs themselves
   download fine). Read the 3 locality PDFs; the text is in 5 day columns, so extract by column (pypdf with positions)
 - The council's Family Information Service / Local Offer directory.
+- Richmond (and Kingston): children's centres are run by Achieving for Children; one combined termly PDF for all Richmond centres is linked from kr.afcinfo.org.uk → Children's centres in Richmond (plain text, reads directly). Richmond libraries have no events system: richmond.gov.uk pages `baby_rhyme_time`, `storytime` and 'library events for children and teens' hold the whole programme.
 
 ### Leisure centre operators by London borough (checked 2026-10-31)
 From the operators' own centre lists (better.org.uk/leisure-centre/london, everyoneactive.com/centre). Centre names are
