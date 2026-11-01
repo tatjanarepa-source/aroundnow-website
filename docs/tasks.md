@@ -32,7 +32,7 @@ Ideas and problems to come back to. Newest first. Tick when done.
       14 days (none so far). Look at it each morning while the app is young
 - [x] **Ballet at Ealing Green Church** wasn't listed: it's Ealing School of Dance (preschool ballet and tap, Mon/Thu/Fri
       after school; Saturday nursery ballet 2–3 at St Matthew's and Blondin Park). Batch
-      `research/batches/2026-10-31-ealing-school-of-dance.csv` (3 rows), not imported yet
+      `research/batches/2026-10-31-ealing-school-of-dance.csv` (3 rows), imported 1 Nov
 - [ ] **Sign-in**: see Phase 3 (email service such as Resend so sign-in emails reach real users; password and/or Google
       sign-in). Needs Tatjana to create the email service account
 - [ ] **About page**: draft written 31 Oct in `docs/about-draft.md` (questions in [brackets]); once Tatjana approves the
