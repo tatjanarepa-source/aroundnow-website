@@ -24,6 +24,10 @@
   --accent-text: #c8f560;
   --accent-soft: rgba(200, 245, 96, 0.14);
   --age-text: #c8f560;
+  --add-bg: #c8f560;
+  --add-ink: #0d1322;
+  --cluster-bg: #c8f560;
+  --cluster-ink: #0d1322;
   --notice-bg: rgba(200, 245, 96, 0.08);
   --notice-line: rgba(200, 245, 96, 0.25);
   --notice-text: #e6f9b8;
@@ -52,51 +56,56 @@
 }
 
 :root[data-theme="light"] {
-  --page: #e4e8f0;
-  --bg: #eef1f6;
-  --surface: #f6f8fb;
-  --card: #ffffff;
-  --chip: #ffffff;
-  --line: #d5dceb;
-  --line-soft: #e3e8f0;
-  --text: #141b2d;
-  --body-text: #2a3550;
-  --muted: #5b6783;
-  --faint: #6b7690;
-  --dim: #a1abc0;
-  --zero-line: #e3e8f0;
-  --dash: #c5cedd;
-  --handle: #cfd6e3;
-  --switch-off: #cfd6e3;
-  --accent: #c8f560;
-  --accent-line: #9fcf3a;
-  --accent-ink: #141b2d;
-  --accent-text: #4d7c0f;
-  --accent-soft: #ecf6d9;
-  --age-text: #3f6212;
-  --notice-bg: #f1f8e4;
-  --notice-line: rgba(77, 124, 15, 0.25);
-  --notice-text: #2f4a0b;
-  --ask-line: rgba(77, 124, 15, 0.3);
-  --tag-bg: rgba(20, 27, 45, 0.06);
+  /* "Trendy 2026" (chosen 1 Nov): Cloud Dancer off-white, Transformative Teal, Rebel Pink + button, sage pins */
+  --page: #e6e3dc;
+  --bg: #efede8;
+  --surface: #f7f5f1;
+  --card: #fffefb;
+  --chip: #fffefb;
+  --line: #dcd7cd;
+  --line-soft: #e4e0d8;
+  --text: #1d2b2b;
+  --body-text: #2f3b3a;
+  --muted: #5f6a68;
+  --faint: #6c7573;
+  --dim: #a9a39a;
+  --zero-line: #e4e0d8;
+  --dash: #cfc9be;
+  --handle: #d3cdc2;
+  --switch-off: #d3cdc2;
+  --accent: #1f6f6f;
+  --accent-line: #1f6f6f;
+  --accent-ink: #ffffff;
+  --accent-text: #1f6f6f;
+  --accent-soft: #e1ebdd;
+  --age-text: #3d6640;
+  --add-bg: #ec6a96;
+  --add-ink: #ffffff;
+  --cluster-bg: #a9c4a0;
+  --cluster-ink: #1d2b20;
+  --notice-bg: #e6efee;
+  --notice-line: rgba(31, 111, 111, 0.25);
+  --notice-text: #174f4f;
+  --ask-line: rgba(31, 111, 111, 0.3);
+  --tag-bg: rgba(29, 43, 43, 0.06);
   --warn: #9a4a08;
   --warn-soft: rgba(245, 158, 11, 0.15);
-  --good: #15803d;
-  --focus: #4d7c0f;
-  --glass: rgba(255, 255, 255, 0.92);
-  --glass-line: rgba(20, 27, 45, 0.08);
-  --scrim: rgba(20, 27, 45, 0.35);
-  --overlay: rgba(255, 255, 255, 0.88);
-  --shadow-bar: rgba(20, 27, 45, 0.14);
-  --shadow-panel: rgba(20, 27, 45, 0.12);
-  --shadow-sheet: rgba(20, 27, 45, 0.16);
-  --shadow-app: rgba(20, 27, 45, 0.18);
-  --cluster-border: 2px solid #4d7c0f;
-  --cluster-ring: 0 0 0 3px #ffffff, 0 3px 10px rgba(20, 27, 45, 0.3);
+  --good: #3d6640;
+  --focus: #1f6f6f;
+  --glass: rgba(247, 245, 241, 0.92);
+  --glass-line: rgba(29, 43, 43, 0.08);
+  --scrim: rgba(29, 43, 43, 0.35);
+  --overlay: rgba(247, 245, 241, 0.88);
+  --shadow-bar: rgba(29, 43, 43, 0.14);
+  --shadow-panel: rgba(29, 43, 43, 0.12);
+  --shadow-sheet: rgba(29, 43, 43, 0.16);
+  --shadow-app: rgba(29, 43, 43, 0.18);
+  --cluster-border: 2px solid #4e7a50;
+  --cluster-ring: 0 0 0 3px #ffffff, 0 3px 10px rgba(29, 43, 43, 0.3);
   --tiles: saturate(0.45) contrast(0.94) brightness(1.04);
-  --white-btn-bg: #ffffff;
-  --white-btn-text: #141b2d;
-  --white-btn-line: #d5dceb;
+  --white-btn-bg: #fffefb;
+  --white-btn-text: #1d2b2b;
+  --white-btn-line: #dcd7cd;
   color-scheme: light;
 }
 
@@ -159,8 +168,8 @@ svg.i {
   justify-content: center;
   border: var(--cluster-border);
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--cluster-bg);
+  color: var(--cluster-ink);
   font-size: 13px;
   font-weight: 800;
   box-shadow: var(--cluster-ring);
@@ -675,8 +684,8 @@ svg.i {
   height: 44px;
   border: 0;
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--add-bg);
+  color: var(--add-ink);
 }
 .add-btn[hidden] { display: none; }
 .add-btn .i { stroke-width: 2.6; }
@@ -801,12 +810,6 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
   font-weight: 700;
   line-height: 1.4;
 }
-
-/* Light look: lime buttons get a thin green edge so they don't melt into white */
-:root[data-theme="light"] .primary,
-:root[data-theme="light"] .add-btn,
-:root[data-theme="light"] .done-mark,
-:root[data-theme="light"] .search-form button { box-shadow: inset 0 0 0 1px rgba(77, 124, 15, 0.35); }
 
 @media (prefers-reduced-motion: reduce) {
   .panel, .chip, .day, .switch::after { transition: none; }

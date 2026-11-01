@@ -23,6 +23,8 @@ Tatjana picked design B ("Day by day", bigger map) from the design canvas
 - [x] Map pins show start times when a day is picked; a label that would cover another is left out until you zoom in
 - [x] Filters button moved next to the count; the language chips are inside Filters now (counted on its badge)
 - [x] Prices like "£2,935" no longer show as "£2"
+- [x] v32: age chips all the same circle. v33: light look in the "Trendy 2026" colours Tatjana picked from the canvas
+      (off-white, teal selected day and buttons, pink + button, sage map bubbles); dark look unchanged. Needs `npm run deploy`
 - [x] The map stays as big as before (the panel rests where it did), which is bigger than the "bigger map" mockup
 
 Test after deploy (close and reopen the app first):

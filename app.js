@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v32";
+const APP_VERSION = "v33";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -482,7 +482,7 @@ function applyTheme() {
   const mode = state.theme === "light" || state.theme === "dark" ? state.theme : lightMq.matches ? "light" : "dark";
   document.documentElement.dataset.theme = mode;
   const meta = $("themeColor");
-  if (meta) meta.setAttribute("content", mode === "light" ? "#f6f8fb" : "#0d1322");
+  if (meta) meta.setAttribute("content", mode === "light" ? "#f7f5f1" : "#0d1322");
 }
 // The phone switching between light and dark (e.g. at sunset) while the app is open
 lightMq.addEventListener("change", () => {
@@ -2061,11 +2061,11 @@ function renderMap(c) {
   ensureMap();
   markersLayer.clearLayers();
   const centre = [state.place.lat, state.place.lng];
-  // Lime on the dark map; dark green on the light one, where lime can't be seen
-  const light = isLight(), line = light ? "#4d7c0f" : "#c8f560";
+  // Lime on the dark map; teal on the light one, where lime can't be seen
+  const light = isLight(), line = light ? "#1f6f6f" : "#c8f560";
   L.circle(centre, {
     radius: state.radius * 1000, color: line, weight: 1.5, opacity: light ? 0.7 : 0.6, dashArray: "6 6",
-    fillColor: light ? "#84cc16" : line, fillOpacity: light ? 0.08 : 0.05, interactive: false,
+    fillColor: line, fillOpacity: light ? 0.06 : 0.05, interactive: false,
   }).addTo(markersLayer);
   L.circleMarker(centre, { radius: 6, color: line, weight: 10, opacity: 0.25, fillColor: line, fillOpacity: 1, interactive: false }).addTo(markersLayer);
 
