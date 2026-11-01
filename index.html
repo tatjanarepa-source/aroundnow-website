@@ -3,9 +3,21 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0d1322" />
-<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0d1322" id="themeColor" />
+<meta name="color-scheme" content="dark light" />
 <title>AroundNow</title>
+<script>
+  // Light or dark before anything is drawn: the phone's setting, unless chosen in the app (app.js keeps it up to date)
+  (function () {
+    var mode = "";
+    try { mode = JSON.parse(localStorage.getItem("aroundnow-prefs") || "{}").theme || ""; } catch (e) { mode = ""; }
+    if (mode !== "light" && mode !== "dark") {
+      mode = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+    document.documentElement.setAttribute("data-theme", mode);
+    document.getElementById("themeColor").setAttribute("content", mode === "light" ? "#f6f8fb" : "#0d1322");
+  })();
+</script>
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="icons/icon-192.png" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
@@ -33,7 +45,10 @@
     <div id="filters" class="filters"></div>
     <div class="results-head drag-zone">
       <span id="countLabel" class="count" aria-live="polite"></span>
-      <button type="button" id="panelBtn" class="link-btn" data-act="panel"></button>
+      <div class="head-actions">
+        <button type="button" id="filtersBtn" class="chip" data-act="sheet" data-v="filters"></button>
+        <button type="button" id="panelBtn" class="link-btn" data-act="panel"></button>
+      </div>
     </div>
     <div id="list" class="list"></div>
   </section>

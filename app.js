@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v30";
+const APP_VERSION = "v31";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -74,7 +74,8 @@ function sportOf(r) {
   const text = `${(r.subjects || []).join(" ")} ${r.title || ""}`;
   return (SPORTS.find(([, re]) => re.test(text)) || ["Sports / Dance"])[0];
 }
-// One colour per activity, for the map pins and the dot on each card
+// One colour per activity, for the map pins and the dot on each card. The light look uses deeper shades,
+// since the pastel ones vanish on a light map.
 const SPORT_COLOR = "#6ee7a8";
 const CAT_COLORS = {
   "Languages": "#7cc7ff", "Sports / Dance": SPORT_COLOR, "Performing arts": "#c9a2ff", "Arts / Crafts": "#ff9bc9",
@@ -82,7 +83,14 @@ const CAT_COLORS = {
   "Soft play": "#fb923c", "Museums": "#d6b98c", "Life skills": "#fca5a5", "Mixed": "#ffb86b", "Events / Parties": "#ff9bc9",
   ...Object.fromEntries(SPORTS.map(([k]) => [k, SPORT_COLOR])),
 };
-const catColor = (c) => CAT_COLORS[c] || "#a3adc2";
+const SPORT_COLOR_LIGHT = "#1fae6b";
+const CAT_COLORS_LIGHT = {
+  "Languages": "#2f8fe0", "Sports / Dance": SPORT_COLOR_LIGHT, "Performing arts": "#9b6bff", "Arts / Crafts": "#e2559b",
+  "Chess": "#6b78f0", "STEM / Thinking": "#0aa5c0", "Childcare / Preschool": "#e0a800", "Outdoor / Nature": "#0f9e8e",
+  "Soft play": "#f07316", "Museums": "#b0874f", "Life skills": "#e05d5d", "Mixed": "#ef8a17", "Events / Parties": "#e2559b",
+  ...Object.fromEntries(SPORTS.map(([k]) => [k, SPORT_COLOR_LIGHT])),
+};
+const catColor = (c) => (isLight() ? CAT_COLORS_LIGHT[c] || "#7c88a6" : CAT_COLORS[c] || "#a3adc2");
 // Dance cards name the styles, e.g. "Dance: Ballet, Tap" (subjects are in English, so only in English)
 function catLabel(l) {
   const t = T(), name = t.cat[l.c] || l.c;
@@ -136,6 +144,11 @@ const STRINGS = {
     ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
     and: " & ",
     date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
+    dayGroup: "Pick a day", toTime: (x) => `to ${x}`,
+    part: { morning: "Morning", afternoon: "Afternoon", evening: "Evening", none: "Time not listed" },
+    countOn: { today: (n) => `${n} today`, tomorrow: (n) => `${n} tomorrow`, weekend: (n) => `${n} this weekend`,
+      day: (n, d) => `${n} on ${d}` },
+    look: { auto: "Phone setting", light: "Light", dark: "Dark" }, lookTitle: "Appearance",
     hol: { half: "half term", xmas: "the Christmas holidays", easter: "the Easter holidays", summer: "the summer holidays" },
     holNote: (h, range) => `Ealing schools are off for ${h} (${range}). Term-time classes are hidden; holiday clubs are shown.`,
     noDays: (n) => `${n === 1 ? "1 more class nearby doesn’t" : `${n} more classes nearby don’t`} list their days. Check their websites.`,
@@ -273,6 +286,11 @@ const STRINGS = {
     ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
     and: " и ",
     date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
+    dayGroup: "Выберите день", toTime: (x) => `до ${x}`,
+    part: { morning: "Утро", afternoon: "День", evening: "Вечер", none: "Время не указано" },
+    countOn: { today: (n) => `${n} сегодня`, tomorrow: (n) => `${n} завтра`, weekend: (n) => `${n} в выходные`,
+      day: (n, d) => `${n} · ${d}` },
+    look: { auto: "Как на телефоне", light: "Светлое", dark: "Тёмное" }, lookTitle: "Оформление",
     hol: { half: "короткие каникулы", xmas: "рождественские каникулы", easter: "пасхальные каникулы", summer: "летние каникулы" },
     holNote: (h, range) => `В школах Илинга ${h} (${range}). Занятия только в учебное время скрыты, каникулярные клубы показаны.`,
     noDays: (n) => `Ещё ${n} ${ruForm(n, "занятие рядом не указывает", "занятия рядом не указывают", "занятий рядом не указывают")} дни. Проверьте на их сайтах.`,
@@ -397,7 +415,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [],
+  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [],
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -442,6 +460,7 @@ function loadPrefs() {
     if (Array.isArray(p.ages)) state.ages = p.ages.filter((a) => AGES.includes(a));
     if (Array.isArray(p.langs)) state.langs = p.langs.filter((x) => typeof x === "string");
     if (p.units === "mi" || p.units === "km") state.units = p.units;
+    if (["auto", "light", "dark"].includes(p.theme)) state.theme = p.theme;
     if (Number.isInteger(p.ri) && RADII.km[p.ri] != null) state.ri = p.ri;
     else if (RADII.km.includes(p.radius)) state.ri = RADII.km.indexOf(p.radius); // saved before miles existed
   } catch (e) { /* storage unavailable */ }
@@ -449,16 +468,36 @@ function loadPrefs() {
 }
 function savePrefs() {
   try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ ages: state.ages, langs: state.langs, ri: state.ri, units: state.units }));
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ ages: state.ages, langs: state.langs, ri: state.ri, units: state.units,
+      theme: state.theme }));
   } catch (e) { /* storage unavailable */ }
 }
+
+// ---- Light and dark ----
+// "auto" follows the phone's setting; index.html applies the same rule before the page is first drawn
+
+const lightMq = window.matchMedia("(prefers-color-scheme: light)");
+function isLight() { return document.documentElement.dataset.theme === "light"; }
+function applyTheme() {
+  const mode = state.theme === "light" || state.theme === "dark" ? state.theme : lightMq.matches ? "light" : "dark";
+  document.documentElement.dataset.theme = mode;
+  const meta = $("themeColor");
+  if (meta) meta.setAttribute("content", mode === "light" ? "#f6f8fb" : "#0d1322");
+}
+// The phone switching between light and dark (e.g. at sunset) while the app is open
+lightMq.addEventListener("change", () => {
+  if (state.theme !== "auto") return;
+  applyTheme();
+  render({ keepScroll: true });
+});
 
 // ---- Data ----
 
 function shortPrice(p) {
   if (!p) return "";
   if (/^free\b/i.test(p)) return isRu() ? "Бесплатно" : "Free";
-  const m = p.match(/£\s?\d+(?:\.\d+)?(?:\s?[–-]\s?£?\d+)?/);
+  // "£2,935" stays whole (it used to come out as "£2"); "£7.90–£13.40" keeps both ends
+  const m = p.match(/£\s?\d+(?:,\d{3})*(?:\.\d+)?(?:\s?[–-]\s?£?\d+(?:,\d{3})*(?:\.\d+)?)?/);
   if (!m) return "";
   return (/^(approx|about)/i.test(p) ? "~" : "") + m[0].replace(/\s/g, "");
 }
@@ -586,6 +625,7 @@ function dayKey(d) { return DAY_ORDER[(d.getDay() + 6) % 7]; }
 function datesFor(key) {
   const now = new Date();
   const at = (n) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
+  if (/^[0-6]$/.test(String(key))) return [at(Number(key))]; // the day strip: "0" is today, "6" six days ahead
   if (key === "today") return [at(0)];
   if (key === "tomorrow") return [at(1)];
   const dow = now.getDay(); // 0 = Sunday
@@ -793,26 +833,44 @@ function renderFilters(c) {
   const s = state, t = T(), el = $("filters");
   const ages = AGES.map((a) => chipHtml("age", a, a === 6 ? "<1" : ageWord(a), s.ages.includes(a),
     !finds(c, "ages", (l) => fitsAge(l, a)), a === 6 ? t.under1 : "")).join("");
-  // Rarely used filters live in the Filters sheet; its badge says how many are on
-  const hidden = s.when.length + s.types.length + s.cats.length + s.prices.length + (s.showOnline ? 1 : 0);
-  const filtersBtn = `<button type="button" class="chip${hidden ? " active" : ""}" data-act="sheet" data-v="filters">${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}</button>`;
-  const dates = DATES.map((k) => {
-    const ds = datesFor(k);
-    return chipHtml("date", k, t.date[k], s.date === k, !finds(c, "date", (l) => onDates(l, ds)));
+  // The next seven days. "This weekend" (in Filters) lights up its Saturday and Sunday.
+  const picked = s.date ? datesFor(s.date).map(isoDate) : [];
+  const now = new Date();
+  const days = [0, 1, 2, 3, 4, 5, 6].map((n) => {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
+    const on = picked.includes(isoDate(d));
+    const zero = !on && s.loaded && !finds(c, "date", (l) => runsOn(l, d));
+    const name = d.toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
+    return `<button type="button" class="day${zero ? " zero" : ""}" data-act="date" data-v="${n}" ${pressed(on)} aria-label="${esc(name)}"><span>${esc(n === 0 ? t.date.today : t.day[dayKey(d)])}</span><b>${d.getDate()}</b></button>`;
   }).join("");
-  const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
 
-  // Keep each row's sideways scroll, so tapping "9" doesn't jump the row back to the start
+  // Rarely used filters (and languages) live in the Filters sheet; the button sits next to the count
+  const hidden = s.when.length + s.types.length + s.cats.length + s.prices.length + s.langs.length + (s.showOnline ? 1 : 0);
+  const fb = $("filtersBtn");
+  fb.classList.toggle("active", hidden > 0);
+  fb.innerHTML = `${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}`;
+
+  // Keep the age row's sideways scroll, so tapping "9" doesn't jump the row back to the start
   const keep = [...el.querySelectorAll(".scroller")].map((r) => r.scrollLeft);
-  el.innerHTML = `<div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${ages}</div>
-    <div class="scroller" role="group" aria-label="${esc(t.quick)}">${filtersBtn}${dates}${langs}</div>`;
+  el.innerHTML = `<div class="days" role="group" aria-label="${esc(t.dayGroup)}">${days}</div>
+    <div class="scroller" role="group" aria-label="${esc(t.ageGroup)}"><span class="scroller-label">${t.age}</span>${ages}</div>`;
   el.querySelectorAll(".scroller").forEach((r, n) => { r.scrollLeft = keep[n] || 0; });
 }
 
 function renderHead(c) {
   const s = state, t = T();
   const extra = c.showOnline && c.online.length ? t.plusOnline(c.online.length) : "";
-  $("countLabel").textContent = s.loaded && !s.error ? t.nearby(c.nearby.length) + extra : "";
+  $("countLabel").textContent = s.loaded && !s.error ? countText(c.nearby.length) + extra : "";
+}
+
+// "33 nearby", or with a day picked "9 today", "9 on Thu"
+function countText(n) {
+  const t = T(), k = state.date;
+  if (!k) return t.nearby(n);
+  if (k === "0" || k === "today") return t.countOn.today(n);
+  if (k === "1" || k === "tomorrow") return t.countOn.tomorrow(n);
+  if (k === "weekend") return t.countOn.weekend(n);
+  return t.countOn.day(n, datesFor(k)[0].toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "short" }));
 }
 
 function renderPanel() {
@@ -842,6 +900,54 @@ function cardHtml(o, dates, multi) {
   </button>`;
 }
 
+// ---- A picked day as a timetable ----
+// One day: Morning, Afternoon, Evening, then "Time not listed". "This weekend": a section for each day.
+
+// Start time on that day; holiday-club days run to the club's own times, which we don't have
+function slotTime(l, d) { return runsOn(l, d) === "regular" ? l.st : ""; }
+function partOfDay(st) { return !st ? "none" : st < "12:00" ? "morning" : st < "17:00" ? "afternoon" : "evening"; }
+function byTime(rows, d) {
+  return rows.slice().sort((a, b) =>
+    (slotTime(a.l, d) || "99").localeCompare(slotTime(b.l, d) || "99") || (a.d ?? 1e9) - (b.d ?? 1e9));
+}
+
+function timetableHtml(rows, dates) {
+  const t = T(), sections = [];
+  if (dates.length > 1) {
+    for (const d of dates) {
+      const on = rows.filter((o) => runsOn(o.l, d));
+      const title = d.toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "long", day: "numeric", month: "short" });
+      if (on.length) sections.push({ title, d, rows: byTime(on, d) });
+    }
+  } else {
+    const d = dates[0], parts = { morning: [], afternoon: [], evening: [], none: [] };
+    rows.forEach((o) => parts[partOfDay(slotTime(o.l, d))].push(o));
+    for (const k of Object.keys(parts)) if (parts[k].length) sections.push({ title: t.part[k], d, rows: byTime(parts[k], d) });
+  }
+  return sections.map((sec) => `<h3 class="slot-head">${esc(sec.title)}</h3>
+    <div class="slots">${sec.rows.map((o) => slotHtml(o, sec.d)).join("")}</div>`).join("");
+}
+
+function slotHtml(o, d) {
+  const s = state, t = T(), l = o.l;
+  const st = slotTime(l, d), et = st ? l.et : "";
+  const time = st ? `<b>${esc(st)}</b>${et ? `<small>${esc(t.toTime(et))}</small>` : ""}` : "<small>–</small>";
+  const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
+  if (s.ages.length >= 2 && (l.mn != null || l.mx != null) && s.ages.every((a) => fitsAge(l, a))) {
+    tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
+  }
+  if (runsOn(l, d) === "club") tags.push(`<span class="tag">${t.holidayClub}</span>`);
+  if (l.rr) tags.push(`<span class="tag warn">${esc(t.reported[l.rr] || t.reported.other)}</span>`);
+  else if (unconfirmed(l)) tags.push(statusTag(l));
+  const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
+  const meta = [far, shortPrice(l.p)].filter(Boolean).join(" · ");
+  return `<button type="button" class="slot" data-act="open" data-v="${esc(l.i)}">
+    <span class="slot-time">${time}</span>
+    <span class="slot-body"><span class="slot-title">${esc(l.t)}</span>
+      <span class="tags">${tags.join("")}<span class="slot-meta">${esc(meta)}</span></span></span>
+  </button>`;
+}
+
 function renderList(c) {
   const s = state, t = T(), list = $("list");
   if (!s.loaded) { list.innerHTML = `<div class="loading">${t.loading}</div>`; return; }
@@ -866,7 +972,8 @@ function renderList(c) {
   }
 
   const multi = s.ages.length >= 2;
-  html += c.shown.map((o) => cardHtml(o, dates, multi)).join("");
+  // A picked day reads like a timetable; otherwise the nearest come first
+  html += dates ? timetableHtml(c.shown, dates) : c.shown.map((o) => cardHtml(o, dates, multi)).join("");
 
   if (!w && !s.onlyNew && RADII.km[s.ri + 1] != null) {
     const more = c.inPerson.filter((o) => o.d > s.radius && o.d <= radiusKm(s.ri + 1) && passes(o.l)).length;
@@ -940,23 +1047,24 @@ function placeSheet(c) {
     chipHtml("area", n, a.name, s.place.kind !== "me" && s.place.kind !== "search" && s.place.name === a.name, false)).join("");
   const radii = RADII.km.map((_, i) => chipHtml("radius", i, rLabel(i), s.ri === i, false)).join("");
   const units = ["mi", "km"].map((u) => chipHtml("units", u, t.units[u], s.units === u, false)).join("");
+  const looks = ["auto", "light", "dark"].map((k) => chipHtml("theme", k, t.look[k], s.theme === k, false)).join("");
   return {
     title: t.where,
     body: `<button type="button" class="row-btn" data-act="nearMe">${ICON.locate}<span>${t.useMyLocation}</span></button>
       <form class="search-form" id="areaForm"><input id="areaInput" type="text" placeholder="${t.searchArea}" autocomplete="off" aria-label="${t.searchArea}" />
       <button type="submit">${t.go}</button></form>${status}
       <div class="sec"><h3>${t.quickAreas}</h3><div class="wrap">${areas}</div></div>
-      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div><div class="wrap units">${units}</div></div>`,
+      <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div><div class="wrap units">${units}</div></div>
+      <div class="sec"><h3>${t.lookTitle}</h3><div class="wrap">${looks}</div></div>`,
     foot: `<button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
   };
 }
 
 function filtersSheet(c) {
   const s = state, t = T();
-  const dates = DATES.map((k) => {
-    const ds = datesFor(k);
-    return chipHtml("date", k, t.date[k], s.date === k, !finds(c, "date", (l) => onDates(l, ds)));
-  }).join("");
+  // Single days are in the strip above the list; this picks Saturday and Sunday together
+  const weekend = datesFor("weekend");
+  const dates = chipHtml("date", "weekend", t.date.weekend, s.date === "weekend", !finds(c, "date", (l) => onDates(l, weekend)));
   const when = Object.keys(WHEN).map((w) => chipHtml("when", w, t.w[w], s.when.includes(w), !finds(c, "when", WHEN[w]))).join("");
   const types = Object.keys(TYPES).map((k) => {
     const src = k === "online" ? c.onlineAll : c.pool;
@@ -1025,7 +1133,9 @@ function applyReplay() {
     setRadius(state.ri);
     if (STRINGS[r.ui]) state.ui = r.ui;
     Object.assign(state, {
-      ages: list(r.ages).filter((a) => AGES.includes(a)), langs: list(r.langs), date: DATES.includes(r.date) ? r.date : null,
+      ages: list(r.ages).filter((a) => AGES.includes(a)), langs: list(r.langs),
+      // Older links say "today" / "tomorrow"; the day strip uses "0"–"6"
+      date: DATES.includes(r.date) || /^[0-6]$/.test(String(r.date)) ? ({ today: "0", tomorrow: "1" }[r.date] || String(r.date)) : null,
       when: list(r.when), types: list(r.types), cats: list(r.cats), prices: list(r.prices),
       showOnline: !!r.showOnline, onlyNew: !!r.onlyNew, detail: r.detail || null,
     });
@@ -1894,6 +2004,11 @@ function ensureMap() {
 // Pins closer together than a fingertip on screen become one numbered bubble
 function drawPins(nearby) {
   pinsLayer.clearLayers();
+  // With one day picked, each pin says when it starts (a bubble: the earliest start in it)
+  const ds = state.date ? datesFor(state.date) : null;
+  const day = ds && ds.length === 1 ? ds[0] : null;
+  const startOf = (l) => (day ? slotTime(l, day) : "");
+  const ring = isLight() ? "#ffffff" : "#0d1322";
   const groups = [];
   for (const o of nearby) {
     const p = map.latLngToLayerPoint([o.l.y, o.l.x]);
@@ -1901,20 +2016,32 @@ function drawPins(nearby) {
     if (g) g.items.push(o);
     else groups.push({ p, items: [o] });
   }
-  for (const { items } of groups) {
-    const l = items[0].l;
-    if (items.length === 1) {
-      L.circleMarker([l.y, l.x], {
-        radius: 8, color: "#0d1322", weight: 3, opacity: l.ap ? 0.6 : 1, fillColor: catColor(l.c), fillOpacity: l.ap ? 0.45 : 1,
-      }).on("click", () => { state.detail = l.i; render({ keepScroll: true }); }).addTo(pinsLayer);
-      continue;
-    }
+  // Where each pin or bubble sits on screen. A time label that would cover a pin or another label is left
+  // out; zooming in spreads the pins and brings it back (pins are redrawn after every zoom).
+  const marks = groups.map(({ items }) => {
     const lat = items.reduce((sum, o) => sum + o.l.y, 0) / items.length;
     const lng = items.reduce((sum, o) => sum + o.l.x, 0) / items.length;
-    L.marker([lat, lng], {
-      icon: L.divIcon({ className: "cluster", html: String(items.length), iconSize: [34, 34] }),
-      title: T().here(items.length),
-    }).on("click", () => openGroup(items)).addTo(pinsLayer);
+    return { items, lat, lng, p: map.latLngToLayerPoint([lat, lng]), r: items.length === 1 ? 10 : 18 };
+  });
+  const taken = marks.map(({ p, r }) => ({ x: p.x - r, y: p.y - r, w: 2 * r, h: 2 * r }));
+  const free = (b) => !taken.some((a) => b.x < a.x + a.w && a.x < b.x + b.w && b.y < a.y + a.h && a.y < b.y + b.h);
+  for (const { items, lat, lng, p, r } of marks) {
+    const l = items[0].l;
+    const pin = items.length === 1
+      ? L.circleMarker([l.y, l.x], {
+        radius: 8, color: ring, weight: 3, opacity: l.ap ? 0.6 : 1, fillColor: catColor(l.c), fillOpacity: l.ap ? 0.45 : 1,
+      }).on("click", () => { state.detail = l.i; render({ keepScroll: true }); })
+      : L.marker([lat, lng], {
+        icon: L.divIcon({ className: "cluster", html: String(items.length), iconSize: [34, 34] }),
+        title: T().here(items.length),
+      }).on("click", () => openGroup(items));
+    const time = items.map((o) => startOf(o.l)).filter(Boolean).sort()[0];
+    const box = { x: p.x + r + 3, y: p.y - 9, w: 46, h: 18 };
+    if (time && free(box)) {
+      taken.push(box);
+      pin.bindTooltip(time, { permanent: true, direction: "right", offset: [r, 0], className: "time-tip", interactive: false });
+    }
+    pin.addTo(pinsLayer);
   }
 }
 
@@ -1934,11 +2061,13 @@ function renderMap(c) {
   ensureMap();
   markersLayer.clearLayers();
   const centre = [state.place.lat, state.place.lng];
-  const lime = "#c8f560";
+  // Lime on the dark map; dark green on the light one, where lime can't be seen
+  const light = isLight(), line = light ? "#4d7c0f" : "#c8f560";
   L.circle(centre, {
-    radius: state.radius * 1000, color: lime, weight: 1.5, opacity: 0.6, dashArray: "6 6", fillColor: lime, fillOpacity: 0.05, interactive: false,
+    radius: state.radius * 1000, color: line, weight: 1.5, opacity: light ? 0.7 : 0.6, dashArray: "6 6",
+    fillColor: light ? "#84cc16" : line, fillOpacity: light ? 0.08 : 0.05, interactive: false,
   }).addTo(markersLayer);
-  L.circleMarker(centre, { radius: 6, color: lime, weight: 10, opacity: 0.25, fillColor: lime, fillOpacity: 1, interactive: false }).addTo(markersLayer);
+  L.circleMarker(centre, { radius: 6, color: line, weight: 10, opacity: 0.25, fillColor: line, fillOpacity: 1, interactive: false }).addTo(markersLayer);
 
   lastNearby = c.nearby;
   drawPins(c.nearby);
@@ -2052,6 +2181,7 @@ const ACTIONS = {
   age: (v) => { toggle("ages", Number(v)); savePrefs(); },
   radius: (v) => { setRadius(Number(v)); savePrefs(); },
   units: (v) => { state.units = v; setRadius(state.ri); savePrefs(); },
+  theme: (v) => { state.theme = ["auto", "light", "dark"].includes(v) ? v : "auto"; savePrefs(); applyTheme(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
   date: (v) => { state.date = state.date === v ? null : v; },
   when: (v) => toggle("when", v),
@@ -2297,6 +2427,7 @@ if (sb) {
 }
 
 loadPrefs();
+applyTheme();
 const replaying = applyReplay(); // a tester's search from `npm run feedback`; not saved as this phone's choices
 const shared = applyShared(); // a class someone sent
 render();

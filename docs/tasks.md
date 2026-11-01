@@ -10,6 +10,27 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## Day by day + light mode (built 1 Nov, v31, needs `npm run deploy`)
+
+Tatjana picked design B ("Day by day", bigger map) from the design canvas
+(https://claude.ai/artifact/1jCeBecu82UPimLufhmXmQ) and asked for both light and dark.
+- [x] Light and dark looks: the app follows the phone's setting; "Where" sheet → Appearance: Phone setting / Light / Dark
+      (remembered on that phone). The laptop is set to light, so the app opens light there unless Dark is picked
+- [x] Day strip (Today + the next 6 days) replaces the Today / Tomorrow / This weekend chips; "This weekend" is in Filters
+      and lights up Saturday and Sunday
+- [x] A picked day lists its classes as a timetable: Morning / Afternoon / Evening / Time not listed, with start and
+      end times; tap the day again for every day (the usual nearest-first cards)
+- [x] Map pins show start times when a day is picked; a label that would cover another is left out until you zoom in
+- [x] Filters button moved next to the count; the language chips are inside Filters now (counted on its badge)
+- [x] Prices like "£2,935" no longer show as "£2"
+- [x] The map stays as big as before (the panel rests where it did), which is bigger than the "bigger map" mockup
+
+Test after deploy (close and reopen the app first):
+- [ ] Phone in dark mode → app dark; phone in light mode → app light; Where → Appearance → Light or Dark overrides it
+- [ ] Tap a day → timetable and start times on the pins; tap it again → back to all days
+- [ ] Filters → This weekend → Saturday and Sunday light up, and the list is split by day
+- [ ] Say if the map should be bigger still
+
 ## Tatjana's list (30–31 Oct)
 
 - [x] **"Reported" label** (Tatjana's idea, 1 Nov, v30; SQL run and deployed 1 Nov; test reports on St Mary's and A Little Me Time deleted): after the first report a class shows "Reported: not running?"
