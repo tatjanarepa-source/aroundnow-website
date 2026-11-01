@@ -22,6 +22,7 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const TIMES = ["Morning", "Afternoon", "Evening"];
 
 const path = process.argv[2];
+const UPDATING = /-(update|recheck)\.csv$/i.test(path);
 if (!path) {
   console.error("Usage: npm run check:batch -- <batch.csv>");
   process.exit(1);
@@ -145,7 +146,12 @@ for (const r of rows) {
   for (const o of others) {
     // A live row with an ID from this file is this batch, already imported (re-importing updates it)
     if (o.where === "live" && seenIds.has(o.id)) continue;
-    if (o.id === r.RecordID) { note(r, "errors", `RecordID already used (${o.where})`); continue; }
+    if (o.id === r.RecordID) {
+      // Files named "...-update.csv" or "...-recheck.csv" may reuse an ID on purpose: importing updates that listing
+      if (UPDATING) { if (o.where === "live") note(r, "warnings", `updates live ${o.id} in place`); continue; }
+      note(r, "errors", `RecordID already used (${o.where})`);
+      continue;
+    }
     const samePlace = pc(o.postcode) && pc(o.postcode) === pc(r.Postcode);
     const sameSite = host(o.website) && host(o.website) === host(r.Website);
     const a = words(`${r.Title} ${r.ProviderName}`), b = words(`${o.title} ${o.provider}`);
