@@ -369,6 +369,8 @@ svg.i {
   scrollbar-width: none;
 }
 .scroller::-webkit-scrollbar { display: none; }
+/* Age chips: all the same circle, "<1" and "12+" included */
+.filters .scroller .chip { width: 44px; padding: 0; }
 .scroller-label { flex: none; margin-right: 2px; color: var(--muted); font-size: 14px; font-weight: 800; }
 
 .results-head {
