@@ -137,7 +137,7 @@ Close and reopen the app (or reload on the laptop) first, so it has the latest v
 - [ ] Add a class: ages in months (e.g. 6, 18 months)
 - [ ] Small distance → "N more within …" at the end of the list, with a button that widens it
 - [ ] Laptop: list on the left, map on the right
-- [ ] Look at 2 open class reports (`npm run feedback`): Centrum Gymnastics "details are wrong" (27 Oct);
+- [x] Look at 2 open class reports (`npm run feedback`): Centrum Gymnastics "details are wrong" (27 Oct; fixed 1 Nov from its website: rhythmic gymnastics, ages 6–17, Tue/Thu/Fri 18–20 and Sat 8:45–10:45, £25 trial; report resolved);
       A Little Me Time nursery "not for kids" (28 Oct, Tatjana's test: deleted 1 Nov)
 
 ## App plan (agreed 28 Oct 2026)
