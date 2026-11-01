@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v29";
+const APP_VERSION = "v30";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -224,6 +224,13 @@ const STRINGS = {
     youAdded: "You added this. When another parent confirms it, it shows as confirmed.",
     youConfirmed: "You confirmed this. Thank you!",
     youReported: "Thanks, we’ve noted it. If another parent reports it too, it’s hidden until we’ve checked it.",
+    reported: { gone: "Reported: not running?", wrong: "Reported: details wrong?", duplicate: "Reported: listed twice?",
+      other: "Reported" },
+    reportedTitle: (day) => `A parent reported this on ${day}`,
+    reportedAsk: "Do you know if that’s right? If one more parent agrees, we hide it until we’ve checked.",
+    reportFine: { gone: "No, it still runs", wrong: "No, the details are right", duplicate: "No, it’s not a copy",
+      other: "No, it’s fine" },
+    reportAgree: "Yes, I agree",
     notAllowed: "You can’t do that for this class right now. You may already have done it recently.",
     askSeen: (day) => `You looked this up on ${day}`, askTitle: (title) => `Did you go to ${title}?`,
     askYes: "Yes, it was as listed", askDiff: "Something was different", askNo: "We didn’t go",
@@ -355,6 +362,13 @@ const STRINGS = {
     youAdded: "Вы добавили это занятие. Когда другой родитель подтвердит его, пометка исчезнет.",
     youConfirmed: "Вы подтвердили это занятие. Спасибо!",
     youReported: "Спасибо, мы учли. Если ещё кто-то пожалуется, занятие скроем до проверки.",
+    reported: { gone: "Жалоба: больше не проходит?", wrong: "Жалоба: неверные данные?", duplicate: "Жалоба: дубликат?",
+      other: "Есть жалоба" },
+    reportedTitle: (day) => `Родитель пожаловался на это занятие ${day}`,
+    reportedAsk: "Вы знаете, так ли это? Если ещё один родитель согласится, мы скроем занятие до проверки.",
+    reportFine: { gone: "Нет, оно проходит", wrong: "Нет, всё указано верно", duplicate: "Нет, это не дубликат",
+      other: "Нет, всё в порядке" },
+    reportAgree: "Да, согласен",
     notAllowed: "Сейчас это сделать нельзя. Возможно, вы уже делали это недавно.",
     askSeen: (day) => `Вы смотрели это занятие: ${day}`, askTitle: (title) => `Вы ходили на «${title}»?`,
     askYes: "Да, всё как указано", askDiff: "Кое-что не так", askNo: "Мы не ходили",
@@ -468,6 +482,7 @@ function normalize(r) {
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
     ca: r.created_at || "", lc: r.last_confirmed_at || "", cb: r.created_by || "", src: r.source || "",
     ed: r.event_date || "", ee: r.event_end_date || "",
+    rr: r.report_reason || "", ra: r.reported_at || "", // an open report since the last confirmation
   };
 }
 
@@ -815,7 +830,8 @@ function cardHtml(o, dates, multi) {
     tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
   }
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
-  if (unconfirmed(l)) tags.push(statusTag(l));
+  if (l.rr) tags.push(`<span class="tag warn">${esc(T().reported[l.rr] || T().reported.other)}</span>`);
+  else if (unconfirmed(l)) tags.push(statusTag(l));
   const where = [catLabel(l), l.on ? "" : l.a].filter(Boolean).join(" · ");
   const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
   return `<button type="button" class="card" data-act="open" data-v="${esc(l.i)}">
@@ -1541,6 +1557,13 @@ function communityHtml(l) {
       ${err}<div class="foot-row"><button type="button" class="text-btn" data-act="cancelReport">${t.cancel}</button>
       <button type="button" class="primary" data-act="sendReport" data-v="${esc(l.i)}"${b.busy ? " disabled" : ""}>${t.sendReport}</button></div></div>`;
   }
+  if (l.rr) {
+    // One parent reported it: ask the next ones. Agreeing is a second report (hides it); "it's fine" confirms it.
+    const day = new Date(l.ra).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { day: "numeric", month: "short" });
+    const fine = s.mine.confirmed[l.i] ? "" : `<button type="button" class="primary" data-act="confirm" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${ICON.check}<span>${t.reportFine[l.rr] || t.reportFine.other}</span></button>`;
+    return `<div class="community reported"><b>${t.reportedTitle(day)}</b><p>“${esc(t.reason[l.rr] || "")}”. ${t.reportedAsk}</p>${err}
+      <div class="foot-row">${fine}<button type="button" class="secondary" data-act="agreeReport" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${t.reportAgree}</button></div></div>`;
+  }
   if (unconfirmed(l)) {
     return `<div class="community"><b>${t.knowIt}</b><p>${t.knowItText}</p>${err}
       <button type="button" class="primary" data-act="confirm" data-v="${esc(l.i)}"${b && b.busy ? " disabled" : ""}>${ICON.check}<span>${t.yesReal}</span></button></div>`;
@@ -2116,6 +2139,14 @@ const ACTIONS = {
   reason: (v) => { Object.assign(state.box, { reason: v, error: "" }); },
   cancelReport: () => { state.box = null; },
   sendReport: (v) => { sendReport(v); return "async"; },
+  // "Yes, I agree" with an earlier report: the same reason, sent straight away
+  agreeReport: (v) => {
+    if (needSignIn(v)) return;
+    const l = state.items.find((x) => x.i === v);
+    state.box = { id: v, mode: "agree", reason: l.rr, note: "" };
+    sendReport(v);
+    return "async";
+  },
   // From a class's details (v = its id) the message is about that class; the details close so the form shows
   feedback: (v) => {
     state.fb = { msg: "", contact: (state.user && state.user.email) || "", share: true, busy: false, error: "", sent: false,

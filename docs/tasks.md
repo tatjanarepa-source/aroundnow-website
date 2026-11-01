@@ -12,6 +12,14 @@ Ideas and problems to come back to. Newest first. Tick when done.
 
 ## Tatjana's list (30–31 Oct)
 
+- [ ] **"Reported" label** (Tatjana's idea, 1 Nov, v30): after the first report a class shows "Reported: not running?"
+      (or "details wrong?" / "listed twice?") on its card, and its details ask the next parents "Do you know if that's
+      right?" with "No, it still runs" (a confirmation: takes the label off and resets the count) and "Yes, I agree" (a
+      second report: hides it until we check). Only the reason and date show, never who reported or their note.
+      To go live: 1) run `supabase/migrations/20261101_reported_label.sql` in the Supabase SQL editor, 2) `npm run deploy`.
+      Test: St Mary's Ealing babies group should show the label (from the 1 Nov test report). Then watch with real
+      parents whether people report silly things; if they do, we could show the label only for "not running" / "details wrong"
+
 - [x] **"Send report" did nothing and jumped to the top** (fixed in v28, deployed 1 Nov as v29). Every tap in a class's
       details redrew it from the top, so the "Pick what's wrong first." message under the button was out of sight and
       nothing was sent (your 31 Oct report never reached the database). Now the details keep their scroll position and
