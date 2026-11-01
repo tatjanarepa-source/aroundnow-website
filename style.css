@@ -88,8 +88,8 @@
   --notice-text: #174f4f;
   --ask-line: rgba(31, 111, 111, 0.3);
   --tag-bg: rgba(29, 43, 43, 0.06);
-  --warn: #9a4a08;
-  --warn-soft: rgba(245, 158, 11, 0.15);
+  --warn: #9c2f58;
+  --warn-soft: #fbe3ec;
   --good: #3d6640;
   --focus: #1f6f6f;
   --glass: rgba(247, 245, 241, 0.92);
