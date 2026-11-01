@@ -106,7 +106,8 @@
   --white-btn-bg: #fffefb;
   --white-btn-text: #1d2b2b;
   --white-btn-line: #dcd7cd;
-  color-scheme: light;
+  /* "only": stops phone browsers (e.g. Chrome's "dark theme for sites") from darkening the light look */
+  color-scheme: only light;
 }
 
 * { box-sizing: border-box; }
