@@ -5,6 +5,10 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- (2026-11-01) Mockingbird Music (St Paul's W13): times are from its own Instagram post, seen only through Google (the post needs a login). Keep, or leave out until the times are on a page we can open?
+- (2026-11-01) The RAD 'find a teacher' map only works after accepting functional cookies. OK for research agents to accept functional-only cookies on that site?
+- (2026-11-01) Petite Performers says 'from walking'; the agent used 14 months from Happity. OK?
+
 - (2026-11-01) Wildcats Combat: times are from its own Instagram, but the ages come from the British Taekwondo Council club listing (not the club's own site). OK to keep, or leave ages empty?
 - (2026-11-01) De Silva Taekwon-Do Wembley (HA0 4JB) is just over the border in Brent. Kept, like other Brent rows; say if AroundNow should stay Ealing-only.
 
