@@ -12,12 +12,12 @@ Ideas and problems to come back to. Newest first. Tick when done.
 
 ## Tatjana's list (30–31 Oct)
 
-- [x] **"Send report" did nothing and jumped to the top** (fixed in v28, needs `npm run deploy`). Every tap in a class's
+- [x] **"Send report" did nothing and jumped to the top** (fixed in v28, deployed 1 Nov as v29). Every tap in a class's
       details redrew it from the top, so the "Pick what's wrong first." message under the button was out of sight and
       nothing was sent (your 31 Oct report never reached the database). Now the details keep their scroll position and
       the message scrolls into view. Test after deploy: open a class → "Something's wrong" → type a note without picking a
       reason → Send → the message shows; pick a reason → Send → "Thanks" shows
-- [x] **One "something's wrong" link** (built 31 Oct, v29, needs `npm run deploy`): the "Something's wrong" button in the
+- [x] **One "something's wrong" link** (built 31 Oct, v29, deployed 1 Nov): the "Something's wrong" button in the
       "Know it?" box is gone; the link "Something wrong with this class? Tell us" at the bottom of every class opens the
       report box (reasons + note, counts towards hiding) for signed-in parents, and the message form for everyone else or
       anyone who already reported it. Test after deploy, signed in and signed out. Was: two places: the "Something's wrong" button in the "Know it?" box
