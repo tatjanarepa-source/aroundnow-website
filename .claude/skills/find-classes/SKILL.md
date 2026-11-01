@@ -35,7 +35,9 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
   Google in Chrome; it finds far more than the built-in search.
 - For **venues** (churches, libraries, community centres, leisure centres): first list every venue in
   the area, then open each one's events or what's-on page. Keyword searches miss groups with their own
-  names. For **providers** (franchises, activities): search, then confirm on their site.
+  names. Also check who **hires** each hall (dance and ballet schools, music, martial arts): the venue's
+  own pages usually don't list them; see "Churches" step 3 and "Dance and ballet schools" in `sources.md`.
+  For **providers** (franchises, activities): search, then confirm on their site, one row per venue.
 - Confirm every class on the provider's own site (or the council's). Quote, don't guess.
 - **Be as precise as possible: always get days, times and prices.** When a timetable sits in an
   embedded widget, an app, a class finder or a collapsed panel, don't leave the fields empty: in a
@@ -79,7 +81,8 @@ warnings, look at both; drop the row if it's the same class, or say why it isn't
 
 ## 5. Log
 In `research/log.md`: tick the queue line, add a row to "Done" (date, run, file, number of classes,
-notes), and put anything you couldn't check under "Leads not checked". If you learned a new kind of
+notes), and put anything you couldn't check under "Leads not checked". Every provider you found but
+didn't check becomes its own queue line (`- [ ] <area>: <provider> (lead from <date>)`), so it isn't forgotten. If you learned a new kind of
 source, add it to `research/sources.md`.
 
 ## 6. Finish

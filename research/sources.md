@@ -57,6 +57,9 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
 - Every row gets `Status = Check`, so it shows as "Not yet confirmed" until a parent confirms it.
 - Note how current the timetable is ("2026/27 timetable", "page updated Sep 2026") in `NeedsInfo`.
 - No private contact details (personal phone numbers or emails) in batch files.
+- **Don't let leads sit.** A provider found but not checked in a run (e.g. "Leads: …" in a queue line) must either
+  be checked before the run ends or become its own queue line in `log.md`. On 28 Oct 2026 Ealing School of Dance was
+  noted as a lead and never followed up, so its ballet at Ealing Green Church was missing until a parent asked.
 
 ## Source types
 
@@ -67,7 +70,13 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
      plus Catholic parishes, Baptist, Methodist, URC, Salvation Army and independent churches.
   2. For each church, open its events page (`achurchnearyou.com/church/<id>/service-and-events/events-all/`)
      and its own website's "what's on" or "children and families" page.
-  3. Write in `log.md` which churches you checked, so the next run doesn't repeat them.
+  3. Also look for **who hires the hall**: many classes in church halls are run by outside providers (dance
+     and ballet schools, music groups, martial arts, baby classes) that the church's own events page never
+     mentions. Look for "hall hire", "regular hirers", "who uses our hall", "community groups" or "our halls"
+     pages, then search Google for `"<church name>" ballet OR dance OR class` and `<church hall postcode> classes`.
+     Example: ballet at Ealing Green Church (W5 5QT) is Ealing School of Dance, which appears nowhere on the church's
+     own pages (found 31 Oct 2026 after a parent asked).
+  4. Write in `log.md` which churches you checked (and their hirers), so the next run doesn't repeat them.
   Note: churches rarely post weekday groups on A Church Near You. Their own website ("hosting our
   community", "children and families") and booking pages are usually where they are.
   Ealing's Church of England churches are A Church Near You IDs 15685–15700.
@@ -165,6 +174,18 @@ Kumon, Explore Learning, Crafty Kids, Rugbytots, Footy Pups, Diddi Dance.
 ### Independent providers, by activity
 Ballet and dance, gymnastics, swimming, art, music, drama, martial arts, football,
 tennis, chess, coding, cooking.
+
+**Dance and ballet schools** (learned from Ealing School of Dance, 31 Oct 2026): small independent schools rarely
+have their own studio. They teach in church halls, school halls and community centres, often at several venues,
+and the venue's site doesn't list them. To find them in an area:
+1. Google in Chrome: `ballet <area>`, `preschool ballet <area>`, `baby ballet <postcode district>`,
+   `tap dance children <area>`, and the Places map for "dance school".
+2. RAD and ISTD teacher finders (royalacademyofdance.org "Find a teacher", istd.org "Find a teacher"): list the
+   registered teachers and schools near the area's postcode.
+3. For every school found, open its timetable or "classes / venues" page and add **one row per venue** (a school
+   with three halls is three rows). Note term dates; fees are often not published (say so in `NeedsInfo`).
+4. Then do the same sweep for other activities that hire halls: music (e.g. Monkey Music is a franchise, but
+   independent music groups aren't), drama, martial arts, gymnastics clubs.
 
 ### Language
 - **Russian**: Saturday and Sunday schools, Russian-speaking clubs, art, music, chess, ballet.
