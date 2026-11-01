@@ -12,7 +12,7 @@ Ideas and problems to come back to. Newest first. Tick when done.
 
 ## Tatjana's list (30–31 Oct)
 
-- [ ] **"Reported" label** (Tatjana's idea, 1 Nov, v30): after the first report a class shows "Reported: not running?"
+- [x] **"Reported" label** (Tatjana's idea, 1 Nov, v30; SQL run and deployed 1 Nov; test reports on St Mary's and A Little Me Time deleted): after the first report a class shows "Reported: not running?"
       (or "details wrong?" / "listed twice?") on its card, and its details ask the next parents "Do you know if that's
       right?" with "No, it still runs" (a confirmation: takes the label off and resets the count) and "Yes, I agree" (a
       second report: hides it until we check). Only the reason and date show, never who reported or their note.
@@ -138,7 +138,7 @@ Close and reopen the app (or reload on the laptop) first, so it has the latest v
 - [ ] Small distance → "N more within …" at the end of the list, with a button that widens it
 - [ ] Laptop: list on the left, map on the right
 - [ ] Look at 2 open class reports (`npm run feedback`): Centrum Gymnastics "details are wrong" (27 Oct);
-      A Little Me Time nursery "not for kids" (28 Oct, probably Tatjana's test)
+      A Little Me Time nursery "not for kids" (28 Oct, Tatjana's test: deleted 1 Nov)
 
 ## App plan (agreed 28 Oct 2026)
 
