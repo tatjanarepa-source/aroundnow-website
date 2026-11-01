@@ -40,7 +40,7 @@ Test after deploy (close and reopen the app first):
 
 - [x] **New free map** (v38, 1 Nov): OpenFreeMap through MapLibre inside Leaflet: "Liberty" in the light look,
       "Fiord" in the dark one (picked on the canvas). Old OpenStreetMap tiles if a phone has no WebGL. Tested in the
-      browser (both looks, switching, zoom, start times). Needs `npm run deploy`
+      browser (both looks, switching, zoom, start times). Deployed 1 Nov
 - [ ] **Google Maps look** (asked 1 Nov, mainly for the look): parked, keep the free map for now. Needs a Google
       Cloud account with billing, a Maps JavaScript API key (locked to the site), dark and light map styles; about
       10,000 free map loads a month then about $7 per 1,000 (check current pricing); about a day to swap the map.
