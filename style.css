@@ -151,6 +151,8 @@ svg.i {
 .map { position: absolute; inset: 0; z-index: 0; }
 .leaflet-container { background: var(--bg); font-family: inherit; }
 .map .leaflet-tile-pane { filter: var(--tiles); }
+/* The vector map (OpenFreeMap) has its own light and dark styles: no filter */
+.map.vector .leaflet-tile-pane { filter: none; }
 .leaflet-top.leaflet-right { top: calc(76px + env(safe-area-inset-top)); }
 .leaflet-container .leaflet-control-attribution {
   margin: 0;

@@ -1,4 +1,4 @@
-const CACHE_NAME = "aroundnow-v37";
+const CACHE_NAME = "aroundnow-v38";
 
 const APP_SHELL = [
   "./",
@@ -8,6 +8,9 @@ const APP_SHELL = [
   "./manifest.webmanifest",
   "./vendor/leaflet/leaflet.css",
   "./vendor/leaflet/leaflet.js",
+  "./vendor/maplibre/maplibre-gl.css",
+  "./vendor/maplibre/maplibre-gl.js",
+  "./vendor/maplibre/leaflet-maplibre-gl.js",
   "./vendor/supabase/supabase.js",
   "./vendor/leaflet/images/marker-icon.png",
   "./vendor/leaflet/images/marker-icon-2x.png",

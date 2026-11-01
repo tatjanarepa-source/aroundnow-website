@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v37";
+const APP_VERSION = "v38";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1986,15 +1986,42 @@ function renderDetail(c) {
   }
 }
 
+// The map itself: OpenFreeMap (free, no account) drawn by MapLibre inside Leaflet, "Liberty" in the light look and
+// "Fiord" in the dark one (Tatjana's choice, 1 Nov). Phones that can't draw it (no WebGL) get the old OpenStreetMap
+// tiles, darkened in the dark look.
+const MAP_STYLES = {
+  light: "https://tiles.openfreemap.org/styles/liberty",
+  dark: "https://tiles.openfreemap.org/styles/fiord",
+};
+const OFM_CREDIT = '<a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noreferrer">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>';
+let baseLayer = null, baseLook = "", baseVector = false;
+function setBaseMap() {
+  const look = isLight() ? "light" : "dark";
+  if (look === baseLook) return;
+  baseLook = look;
+  if (baseLayer && baseVector) { baseLayer.getMaplibreMap().setStyle(MAP_STYLES[look]); return; }
+  if (baseLayer) return; // the plain tiles follow the look through the CSS filter
+  try {
+    const gl = document.createElement("canvas");
+    if (!window.maplibregl || !L.maplibreGL || !(gl.getContext("webgl2") || gl.getContext("webgl"))) throw new Error("no WebGL");
+    baseLayer = L.maplibreGL({ style: MAP_STYLES[look], attribution: OFM_CREDIT }).addTo(map);
+    baseVector = true;
+    $("map").classList.add("vector");
+  } catch (e) {
+    console.warn("Vector map unavailable, using plain tiles", e);
+    baseLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+  }
+}
+
 function ensureMap() {
   if (map) return;
   map = L.map("map", { zoomControl: false, attributionControl: false });
   // Top right, just under the search bar: the bottom of the map is covered by the results panel
   L.control.attribution({ position: "topright", prefix: false }).addTo(map);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+  setBaseMap();
   markersLayer = L.layerGroup().addTo(map);
   pinsLayer = L.layerGroup().addTo(map);
   map.on("zoomend", () => drawPins(lastNearby));
@@ -2059,6 +2086,7 @@ function openGroup(items) {
 
 function renderMap(c) {
   ensureMap();
+  setBaseMap(); // the light or dark map style, after a change of look
   markersLayer.clearLayers();
   const centre = [state.place.lat, state.place.lng];
   // Lime on the dark map; teal on the light one, where lime can't be seen
