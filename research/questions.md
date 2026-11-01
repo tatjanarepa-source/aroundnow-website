@@ -5,6 +5,9 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- (2026-11-01) Wildcats Combat: times are from its own Instagram, but the ages come from the British Taekwondo Council club listing (not the club's own site). OK to keep, or leave ages empty?
+- (2026-11-01) De Silva Taekwon-Do Wembley (HA0 4JB) is just over the border in Brent. Kept, like other Brent rows; say if AroundNow should stay Ealing-only.
+
 ## Answered
 
 - **Monkey Music Ealing (E03, on the map at OPEN Ealing W5 2TD):** Monkey Music's own class finder (30 Oct) shows no
