@@ -10,7 +10,7 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
-## Day by day + light mode (built 1 Nov, v31, needs `npm run deploy`)
+## Day by day + light mode (built and deployed 1 Nov, v31)
 
 Tatjana picked design B ("Day by day", bigger map) from the design canvas
 (https://claude.ai/artifact/1jCeBecu82UPimLufhmXmQ) and asked for both light and dark.
