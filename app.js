@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v35";
+const APP_VERSION = "v36";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -80,14 +80,14 @@ const SPORT_COLOR = "#6ee7a8";
 const CAT_COLORS = {
   "Languages": "#7cc7ff", "Sports / Dance": SPORT_COLOR, "Performing arts": "#c9a2ff", "Arts / Crafts": "#ff9bc9",
   "Chess": "#a5b4fc", "STEM / Thinking": "#67e8f9", "Childcare / Preschool": "#ffe27a", "Outdoor / Nature": "#5eead4",
-  "Soft play": "#fb923c", "Museums": "#d6b98c", "Life skills": "#fca5a5", "Mixed": "#ffb86b", "Events / Parties": "#ff9bc9",
+  "Soft play": "#e9a6ff", "Museums": "#d6b98c", "Life skills": "#fca5a5", "Mixed": "#a7c4e0", "Events / Parties": "#ff9bc9",
   ...Object.fromEntries(SPORTS.map(([k]) => [k, SPORT_COLOR])),
 };
 const SPORT_COLOR_LIGHT = "#1fae6b";
 const CAT_COLORS_LIGHT = {
   "Languages": "#2f8fe0", "Sports / Dance": SPORT_COLOR_LIGHT, "Performing arts": "#9b6bff", "Arts / Crafts": "#e2559b",
   "Chess": "#6b78f0", "STEM / Thinking": "#0aa5c0", "Childcare / Preschool": "#e0a800", "Outdoor / Nature": "#0f9e8e",
-  "Soft play": "#f07316", "Museums": "#b0874f", "Life skills": "#e05d5d", "Mixed": "#ef8a17", "Events / Parties": "#e2559b",
+  "Soft play": "#b05cc9", "Museums": "#b0874f", "Life skills": "#e05d5d", "Mixed": "#4f7fae", "Events / Parties": "#e2559b",
   ...Object.fromEntries(SPORTS.map(([k]) => [k, SPORT_COLOR_LIGHT])),
 };
 const catColor = (c) => (isLight() ? CAT_COLORS_LIGHT[c] || "#7c88a6" : CAT_COLORS[c] || "#a3adc2");
