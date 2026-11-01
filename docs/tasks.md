@@ -38,6 +38,11 @@ Test after deploy (close and reopen the app first):
       on 1 Nov; she checks again on 2 Nov. Next: a screenshot, plus which phone/browser and whether it's installed on
       the home screen
 
+- [ ] **Google Maps look** (asked 1 Nov, mainly for the look): parked, keep the free map for now. Needs a Google
+      Cloud account with billing, a Maps JavaScript API key (locked to the site), dark and light map styles; about
+      10,000 free map loads a month then about $7 per 1,000 (check current pricing); about a day to swap the map.
+      Free look-alikes to try first: CARTO Voyager tiles, OpenFreeMap styles
+
 ## Tatjana's list (30–31 Oct)
 
 - [x] **"Reported" label** (Tatjana's idea, 1 Nov, v30; SQL run and deployed 1 Nov; test reports on St Mary's and A Little Me Time deleted): after the first report a class shows "Reported: not running?"
