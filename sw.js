@@ -1,4 +1,4 @@
-const CACHE_NAME = "aroundnow-v34";
+const CACHE_NAME = "aroundnow-v35";
 
 const APP_SHELL = [
   "./",
