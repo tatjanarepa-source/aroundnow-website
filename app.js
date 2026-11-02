@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v44";
+const APP_VERSION = "v45";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -580,7 +580,7 @@ function deviceId() {
   } catch (e) { return "nostorage-" + Math.random().toString(36).slice(2, 10); }
 }
 function logUsage(kind, extra = {}) {
-  if (!sb) return;
+  if (!sb || /^(localhost|127.0.0.1)$/.test(location.hostname)) return; // tests on the developer's computer don't count
   try { if (replaying) return; } catch (e) { return; } // not set yet while the app is starting
   const p = state.place, r2 = (v) => (v == null ? null : Math.round(v * 100) / 100);
   sb.from("usage_events").insert({
