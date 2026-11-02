@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v45";
+const APP_VERSION = "v46";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -64,6 +64,15 @@ const CATEGORIES = ["Languages", "Swimming", "Gymnastics", "Dance", "Football", 
 // The database keeps one "Sports / Dance" activity; the app splits it by sport, using the subjects and title.
 // Multi-sport camps and anything not matched stay "Sports / Dance" (shown as "Other sports").
 const DANCE = /dance|ballet|\btap\b|jazz|contemporary|zumba/i;
+const DANCE_STYLES = {
+  ballet: /ballet/i, tap: /\btap\b/i, jazz: /jazz/i, contemporary: /contemporary|modern dance|lyrical/i,
+  street: /street ?(\/|dance)|hip ?hop|commercial dance|breakdanc/i, ballroom: /ballroom|latin|salsa/i,
+};
+// Only dance classes count, so "Latin" lessons or a hall on Ballet Street don't
+function danceStyle(l, k) {
+  const text = `${l.sj.join(" ")} ${l.t}`;
+  return (l.c === "Dance" || DANCE.test(text)) && DANCE_STYLES[k].test(text);
+}
 const SPORTS = [
   ["Sports / Dance", /multi/i], ["Swimming", /swim/i], ["Gymnastics", /gymnast|trampolin|tumbl/i],
   ["Dance", DANCE], ["Football", /football|soccer/i],
@@ -122,7 +131,9 @@ const DAY_MS = 864e5;
 const STRINGS = {
   en: {
     age: "Age", under1: "Under 1", ageGroup: "Child’s age. Two kids? Tap both ages",
-    filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", hideTitle: "Don't show", hideHelp: "Hidden everywhere until you tap them again. Remembered on this phone.", type: "Type", distance: "Distance",
+    filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", danceStyle: "Dance style",
+    dStyle: { ballet: "Ballet", tap: "Tap", jazz: "Jazz", contemporary: "Contemporary", street: "Street & hip hop", ballroom: "Ballroom & Latin" },
+    hideTitle: "Don't show", hideHelp: "Hidden everywhere until you tap them again. Remembered on this phone.", type: "Type", distance: "Distance",
     where: "Where to look", nearMe: "Near me", useMyLocation: "Use my location", locating: "Finding your location…",
     blocked: "Location is blocked. Allow it in your browser settings, or search an area.",
     locFail: "Couldn’t get your location. Search an area instead.",
@@ -274,7 +285,9 @@ const STRINGS = {
   },
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
-    filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", hideTitle: "Не показывать", hideHelp: "Скрыто везде, пока не нажмёте снова. Запоминается на этом телефоне.", type: "Тип", distance: "Расстояние",
+    filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", danceStyle: "Стиль танца",
+    dStyle: { ballet: "Балет", tap: "Степ", jazz: "Джаз", contemporary: "Контемпорари", street: "Уличные танцы", ballroom: "Бальные танцы" },
+    hideTitle: "Не показывать", hideHelp: "Скрыто везде, пока не нажмёте снова. Запоминается на этом телефоне.", type: "Тип", distance: "Расстояние",
     where: "Где искать", nearMe: "Рядом со мной", useMyLocation: "Определить моё местоположение", locating: "Определяем местоположение…",
     blocked: "Доступ к геолокации запрещён. Разрешите его в настройках браузера или найдите район.",
     locFail: "Не удалось определить местоположение. Найдите район.",
@@ -425,7 +438,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [],
+  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], styles: [],
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -735,6 +748,7 @@ function passes(l, skip) {
   if (skip !== "cats" && s.cats.length && !s.cats.includes(l.c)) return false;
   if (skip !== "prices" && s.prices.length && !s.prices.some((p) => PRICES[p](l))) return false;
   if (skip !== "hide" && s.hide.length && s.hide.some((h) => hidden(l, h))) return false;
+  if (skip !== "styles" && s.styles.length && !s.styles.some((k) => danceStyle(l, k))) return false;
   return true;
 }
 
@@ -901,7 +915,7 @@ function renderFilters(c) {
   }).join("");
 
   // Rarely used filters (and languages) live in the Filters sheet; the button sits next to the count
-  const nOn = s.when.length + s.types.length + s.cats.length + s.prices.length + s.langs.length + s.hide.length + (s.showOnline ? 1 : 0);
+  const nOn = s.when.length + s.types.length + s.cats.length + s.prices.length + s.langs.length + s.hide.length + s.styles.length + (s.showOnline ? 1 : 0);
   const fb = $("filtersBtn");
   fb.classList.toggle("active", nOn > 0);
   fb.innerHTML = `${ICON.sliders}<span>${t.filters}</span>${nOn ? `<span class="badge">${nOn}</span>` : ""}`;
@@ -1127,6 +1141,10 @@ function filtersSheet(c) {
     .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
   const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
   const prices = Object.keys(PRICES).map((k) => chipHtml("price", k, t.pr[k], s.prices.includes(k), !finds(c, "prices", PRICES[k]))).join("");
+  const styles = Object.keys(DANCE_STYLES).map((k) => {
+    const n = c.pool.filter((o) => passes(o.l, "styles") && danceStyle(o.l, k)).length;
+    return n || s.styles.includes(k) ? chipHtml("style", k, t.dStyle[k], s.styles.includes(k), n === 0) : "";
+  }).join("");
   const hideCounts = {};
   c.pool.forEach((o) => { hideCounts[o.l.c] = (hideCounts[o.l.c] || 0) + 1; });
   const hideTypes = Object.keys(TYPES).filter((k) => k !== "online")
@@ -1139,6 +1157,7 @@ function filtersSheet(c) {
       <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
       <div class="sec"><h3>${t.dPrice}</h3><div class="wrap">${prices}</div></div>
       ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
+      ${styles ? `<div class="sec"><h3>${t.danceStyle}</h3><div class="wrap">${styles}</div></div>` : ""}
       ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
       <div class="sec"><h3>${t.hideTitle}</h3><p class="muted-row" style="margin:0 0 10px">${t.hideHelp}</p><h4 class="sub-head">${t.type}</h4><div class="wrap hide-chips">${hideTypes}</div>
         <h4 class="sub-head">${t.activity}</h4><div class="wrap hide-chips">${hideCats}</div></div>
@@ -2393,14 +2412,15 @@ const ACTIONS = {
   cat: (v) => toggle("cats", v),
   price: (v) => toggle("prices", v),
   hide: (v) => { toggle("hide", v); savePrefs(); },
+  style: (v) => toggle("styles", v),
   online: () => { state.showOnline = !state.showOnline; },
   clear: () => {
-    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], showOnline: false });
+    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], styles: [], showOnline: false });
     savePrefs();
   },
   // Everything except age, which is about the child rather than this search
   resetFilters: () => {
-    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], showOnline: false });
+    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], styles: [], showOnline: false });
     savePrefs();
   },
   sheet: (v) => { state.sheet = v; state.placeStatus = ""; },

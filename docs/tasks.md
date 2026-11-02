@@ -37,7 +37,7 @@ App ideas (need a decision on how):
 - [ ] **Parents edit classes themselves** (v43, 2 Nov: "driven by the people", replaces v42's "Suggest a change"): "Edit this class" on every class page opens the add form filled in; signed-in parents only; only changed fields are saved; the class goes back to "Not yet confirmed" until ANOTHER parent confirms (the editor can't). Every edit kept with old/new values: `npm run edits`, `npm run edits -- undo <id>`; 20 edits per person per day. To go live: run supabase/migrations/20261102_3_edit_listing.sql, then deploy. Note: re-importing a research batch overwrites parents' edits to those rows (check npm run edits before re-importing)
 - [x] Statistics (v42): `npm run stats` (people per day, app opens, areas searched, ages, classes opened, reports, messages, suggested changes, classes added). Needs supabase/migrations/20261102_2_usage_stats.sql run first. Could become a private dashboard page later. Statistics page for Tatjana: users, areas searched, reported issues, classes added (needs simple, privacy-
       friendly counting: Cloudflare Web Analytics + counts from Supabase; areas only as rough areas)
-- [ ] Ballet filter: parent feedback 2 Nov "i cannot see ballet filter" (Dance styles are inside Sports / Dance)
+- [x] Ballet filter (v46): "Dance style" row in Filters (Ballet, Tap, Jazz, Contemporary, Street & hip hop, Ballroom & Latin) when dance is nearby
 
 ## London basic layer (agreed 2 Nov 2026)
 
