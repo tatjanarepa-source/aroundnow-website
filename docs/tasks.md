@@ -41,6 +41,13 @@ Test after deploy (close and reopen the app first):
 - [x] **New free map** (v38, 1 Nov): OpenFreeMap through MapLibre inside Leaflet: "Liberty" in the light look,
       "Fiord" in the dark one (picked on the canvas). Old OpenStreetMap tiles if a phone has no WebGL. Tested in the
       browser (both looks, switching, zoom, start times). Deployed 1 Nov
+- [ ] **Small shadows on cards and buttons** (v39, 2 Nov): picked on the canvas, "subtle" in the light look and
+      "a bit more" in the dark one (dark also gets a faint light top edge). Day buttons, age circles, class cards,
+      the + and the big buttons; the selected day and filled buttons glow in the accent colour. Not deployed yet
+- [ ] **The app loads at most 500 classes** (found 2 Nov): `listings_near` returns the nearest 500 within 20 km.
+      From Ealing Broadway they now reach only 11.8 km (575 live; 50 within 20 km are cut, e.g. the British Museum).
+      Fine for now because the biggest distance choice is 10 km / 6 mi, but more imports near Ealing will shrink it
+      below that. Fix: a migration that limits by distance (about 12 km) instead of a count, or raises the limit
 - [ ] **Google Maps look** (asked 1 Nov, mainly for the look): parked, keep the free map for now. Needs a Google
       Cloud account with billing, a Maps JavaScript API key (locked to the site), dark and light map styles; about
       10,000 free map loads a month then about $7 per 1,000 (check current pricing); about a day to swap the map.

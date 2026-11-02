@@ -45,6 +45,13 @@
   --shadow-panel: rgba(0, 0, 0, 0.45);
   --shadow-sheet: rgba(0, 0, 0, 0.4);
   --shadow-app: rgba(0, 0, 0, 0.5);
+  /* Small shadows on cards and buttons ("a bit more" in dark, picked 2 Nov): shadows barely show on navy,
+     so each also gets a faint light top edge. The selected day, filled buttons and + glow in lime. */
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 4px rgba(0, 0, 0, 0.35), 0 8px 22px rgba(0, 0, 0, 0.4);
+  --shadow-chip: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-sel: 0 4px 14px rgba(200, 245, 96, 0.28);
+  --shadow-sel-sm: 0 2px 6px rgba(200, 245, 96, 0.3);
+  --shadow-add: 0 4px 14px rgba(200, 245, 96, 0.32);
   --cluster-border: 3px solid #0d1322;
   --cluster-ring: 0 0 0 4px rgba(200, 245, 96, 0.25);
   --tiles: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.5);
@@ -100,6 +107,12 @@
   --shadow-panel: rgba(29, 43, 43, 0.12);
   --shadow-sheet: rgba(29, 43, 43, 0.16);
   --shadow-app: rgba(29, 43, 43, 0.18);
+  /* "Subtle" shadows in light (picked 2 Nov); the selected day and filled buttons glow teal, the + pink */
+  --shadow-card: 0 1px 2px rgba(29, 43, 43, 0.06), 0 2px 8px rgba(29, 43, 43, 0.06);
+  --shadow-chip: 0 1px 2px rgba(29, 43, 43, 0.1);
+  --shadow-sel: 0 2px 6px rgba(31, 111, 111, 0.3);
+  --shadow-sel-sm: 0 2px 6px rgba(31, 111, 111, 0.3);
+  --shadow-add: 0 2px 6px rgba(236, 106, 150, 0.4);
   --cluster-border: 2px solid #4e7a50;
   --cluster-ring: 0 0 0 3px #ffffff, 0 3px 10px rgba(29, 43, 43, 0.3);
   --tiles: saturate(0.45) contrast(0.94) brightness(1.04);
@@ -255,15 +268,16 @@ svg.i {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--chip);
+  box-shadow: var(--shadow-chip);
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
 }
 .chip.sq { width: 44px; padding: 0; font-size: 13px; font-weight: 800; }
 .chip.zero { border-color: var(--zero-line); color: var(--dim); }
-.chip[aria-pressed="true"], .chip.active { border-color: var(--accent-line); background: var(--accent); color: var(--accent-ink); }
+.chip[aria-pressed="true"], .chip.active { border-color: var(--accent-line); background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-sel); }
 
 .badge {
   display: inline-flex;
@@ -293,6 +307,7 @@ svg.i {
   border-radius: 999px;
   background: var(--accent);
   color: var(--accent-ink);
+  box-shadow: var(--shadow-sel);
   font-size: 16px;
   font-weight: 800;
   text-decoration: none;
@@ -312,6 +327,7 @@ svg.i {
   border-radius: 999px;
   background: var(--chip);
   color: var(--text);
+  box-shadow: var(--shadow-chip);
   font-size: 16px;
   font-weight: 800;
   text-decoration: none;
@@ -362,12 +378,13 @@ svg.i {
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--chip);
+  box-shadow: var(--shadow-chip);
   line-height: 1.1;
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
 }
 .day span { color: var(--muted); font-size: 11px; font-weight: 700; white-space: nowrap; }
 .day b { font-size: 16px; font-weight: 800; }
-.day[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent); color: var(--accent-ink); }
+.day[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-sel); }
 .day[aria-pressed="true"] span { color: var(--accent-ink); font-weight: 800; }
 .day.zero { border-color: var(--zero-line); color: var(--dim); }
 .day.zero span { color: var(--dim); }
@@ -383,6 +400,8 @@ svg.i {
 .scroller::-webkit-scrollbar { display: none; }
 /* Age chips: all the same circle, "<1" and "12+" included */
 .filters .scroller .chip { width: 44px; padding: 0; }
+/* The scroller has 8px below the chips, so a chosen age gets the small glow (a big one would be cut off) */
+.scroller .chip[aria-pressed="true"], .scroller .chip.active { box-shadow: var(--shadow-sel-sm); }
 .scroller-label { flex: none; margin-right: 2px; color: var(--muted); font-size: 14px; font-weight: 800; }
 
 .results-head {
@@ -418,6 +437,7 @@ svg.i {
   border: 1px solid var(--line-soft);
   border-radius: 18px;
   background: var(--card);
+  box-shadow: var(--shadow-card);
   text-align: left;
 }
 .card-top { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 700; }
@@ -451,6 +471,7 @@ svg.i {
   border: 1px solid var(--line-soft);
   border-radius: 18px;
   background: var(--card);
+  box-shadow: var(--shadow-card);
 }
 .slot {
   display: flex;
@@ -689,6 +710,7 @@ svg.i {
   border-radius: 50%;
   background: var(--add-bg);
   color: var(--add-ink);
+  box-shadow: var(--shadow-add);
 }
 .add-btn[hidden] { display: none; }
 .add-btn .i { stroke-width: 2.6; }
@@ -744,7 +766,7 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 .sheet-body .primary, .sheet-body .secondary { flex: none; }
 .foot-row { display: flex; align-items: center; gap: 14px; }
 .foot-row .primary { flex: 1; }
-.primary.wait { background: var(--line); color: var(--muted); }
+.primary.wait { background: var(--line); color: var(--muted); box-shadow: none; }
 .primary:disabled, .secondary:disabled { opacity: 0.7; cursor: default; }
 .secondary.light { border-color: var(--white-btn-line); background: var(--white-btn-bg); color: var(--white-btn-text); }
 .who { margin: 0; color: var(--muted); font-size: 13px; font-weight: 600; }
