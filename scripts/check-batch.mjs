@@ -79,12 +79,16 @@ for (const r of rows) {
 // 2. Map pins from postcodes
 const toGeocode = rows.filter((r) => r.Postcode && !(r.Lat && r.Lng));
 if (toGeocode.length) {
-  const res = await fetch("https://api.postcodes.io/postcodes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ postcodes: toGeocode.map((r) => r.Postcode) }),
-  });
-  const { result } = await res.json();
+  // postcodes.io takes at most 100 postcodes per request
+  const result = [];
+  for (let i = 0; i < toGeocode.length; i += 100) {
+    const res = await fetch("https://api.postcodes.io/postcodes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ postcodes: toGeocode.slice(i, i + 100).map((r) => r.Postcode) }),
+    });
+    result.push(...((await res.json()).result || []));
+  }
   for (const [i, r] of toGeocode.entries()) {
     let hit = result?.[i]?.result;
     // Organisations often still print a postcode that Royal Mail has since retired; it still has a location
