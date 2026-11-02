@@ -43,7 +43,7 @@ Test after deploy (close and reopen the app first):
       browser (both looks, switching, zoom, start times). Deployed 1 Nov
 - [ ] **Small shadows on cards and buttons** (v39, 2 Nov): picked on the canvas, "subtle" in the light look and
       "a bit more" in the dark one (dark also gets a faint light top edge). Day buttons, age circles, class cards,
-      the + and the big buttons; the selected day and filled buttons glow in the accent colour. Not deployed yet
+      the + and the big buttons; the selected day and filled buttons glow in the accent colour. Deployed 2 Nov
 - [ ] **The app loads at most 500 classes** (found 2 Nov): `listings_near` returns the nearest 500 within 20 km.
       From Ealing Broadway they now reach only 11.8 km (575 live; 50 within 20 km are cut, e.g. the British Museum).
       Fine for now because the biggest distance choice is 10 km / 6 mi, but more imports near Ealing will shrink it
