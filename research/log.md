@@ -1,4 +1,4 @@
-# Research log
+ Imported 2 Nov | Imported 2 Nov |# Research log
 
 Each run takes the **first unticked line** in the queue, saves one batch file in `batches/`,
 ticks the line and adds a row to "Done". Keep batches small (up to ~10 classes).
