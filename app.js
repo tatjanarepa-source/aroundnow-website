@@ -717,7 +717,8 @@ function runsOn(l, d) {
 }
 function regularOn(l, d, day, term) {
   // One-off events and dated camps run on their dates, whatever the school calendar says
-  if (l.ed) return isoDate(d) >= l.ed && isoDate(d) <= (l.ee || l.ed) && !endedToday(l, d);
+  // A dated course with weekdays (e.g. Fridays 13 Nov – 11 Dec) runs only on those days within its dates
+  if (l.ed) return isoDate(d) >= l.ed && isoDate(d) <= (l.ee || l.ed) && (!l.ee || !l.d.length || l.d.includes(day)) && !endedToday(l, d);
   const days = l.d.length ? l.d : (l.f === "Preschool / nursery" || l.f === "Holiday camp" ? WEEKDAYS : []);
   if (!days.includes(day)) return false;
   if (l.r === "Term time" && term === "holiday") return false;

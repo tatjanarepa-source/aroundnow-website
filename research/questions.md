@@ -5,10 +5,12 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
-- (2026-11-02) Hartbeeps: some franchises give ages only in words ("newborn to sitting", "toddlers and siblings"). Rows use months only where hartbeeps.com gives them; Happy House rows mostly have no ages, so they show "Ages not listed" and may drop out when an age is picked. Keep it that way (never guess), or use Hartbeeps' general bands (Baby Bells 0–7 months, Baby Beeps 7 months–walking, Happy House about 18 months–4 years)?
-- (2026-11-02) Baby Sensory's free "Hello Baby" massage course (birth–3 months, Woolwich and Greenwich): own row, or keep it mentioned inside the Baby Sensory rows?
 
 ## Answered
+
+- **Hartbeeps ages only in words:** **Answer (2 Nov): use Hartbeeps' general bands** (Baby Bells 0–7 m, Baby Beeps 7–14 m, Happy House 18–48 m; exact months where given). 98 of 99 rows now have ages (one Christmas special says none). Re-import the Hartbeeps batch to fix the live rows.
+
+- **Baby Sensory "Hello Baby":** **Answer (2 Nov): own class.** 2026-11-02-london-hello-baby.csv (Mycenae House Fri 13 Nov–11 Dec; Shrewsbury House Wed 13 Jan–10 Feb 2027).
 
 - **Reading a franchise timetable from the data feed its own page loads?** **Answer (2 Nov): yes.** Rule added to research/sources.md (check two venues against the page in Chrome first).
 
