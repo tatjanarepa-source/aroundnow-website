@@ -63,6 +63,11 @@ RecordID: `W` + `YYMMDD` + `-` + two digits, e.g. `W261027-01`.
   - `LastChecked`: the date you confirmed it (today). Importing it restarts the 90-day clock
   - Leave `Lat`/`Lng` empty; the check script fills them.
 - One row per venue and class. If a provider runs the same class at 3 venues, that's 3 rows.
+- **One row per age group (Tatjana, 2 Nov 2026: as detailed as possible).** When a venue runs several age groups or
+  class levels at different times (e.g. 9:00 for 6–9 months, 9:30 for 18–24 months), each group is its own row with its
+  own ages, days, times and price, so the timetable shows "9:00 · 6–9 months". Title: `<Brand> <class name> (<ages>) –
+  <venue>`. If one group runs at several times, StartTime is the earliest and ScheduleText lists them all. Class
+  finders that ask for a child's age: read them for every age group, not just one.
 
 ## Re-check run ("re-check classes")
 Classes show "Needs re-checking" 90 days after their last check and disappear at 120 days unless a

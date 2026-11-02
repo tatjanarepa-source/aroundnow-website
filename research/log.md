@@ -5,6 +5,8 @@ ticks the line and adds a row to "Done". Keep batches small (up to ~10 classes).
 
 ## Queue
 - [ ] London basic layer: franchise class finders, every venue in Greater London (plan in docs/tasks.md). Water Babies done 2026-11-02 (36 pools; retry Hendon Hydro, Ravensbourne Romford). Baby Sensory/Toddler Sense done 2026-11-02 (74; nothing left in London). Monkey Music done 2026-11-02 (69; nothing left in London). Running/next: Little Kickers, Baby Sensory/Toddler Sense, Monkey Music, Hartbeeps, Tumble Tots, Stagecoach, Kumon, Puddle Ducks, Jo Jingles, Musical Bumps, Diddi Dance, babyballet, Creation Station, Pyjama Drama, Little Gym **(run locally)**
+- [ ] Rework 2026-11-02 franchise batches to one row per age group (Tatjana, 2 Nov): Water Babies (re-read the finder for every age; also the 8 live pools as a ...-update.csv), Monkey Music (split by class level, levels' ages from its site), Baby Sensory/Toddler Sense (split where a venue lists different age groups) **(run locally)**
+- [ ] Later: older franchise rows already live (Little Kickers, Hartbeeps, Monkey Music, Water Babies from 28–30 Oct) to one row per age group, as re-check files
 - [ ] London: Monkey Music Walthamstow, United Trinity Church E17 9QU, starts January 2027 (lead from 2026-11-02). Add in January
 - [ ] Re-check live Monkey Music rows St Luke's Richmond (now Tue and Fri) and St Michael's Barnes (now Tue and Thu): save as a ...-recheck.csv (found 2026-11-02)
 
