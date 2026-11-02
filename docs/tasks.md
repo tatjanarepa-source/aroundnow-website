@@ -10,6 +10,14 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## Tomorrow (3 Nov)
+
+1. Phone (v49): edit the Ballet Class languages (Romamian → Romanian from the list); add a class with "Not mentioned" days; Filters → Dance style → Ballet; a test city request
+2. `npm run stats` and `npm run edits` (first real numbers), `npm run feedback`
+3. Ballet Class (YMCA South Ealing): still running? call 020 8832 1501 or the teacher; phone number in the description OK to show?
+4. Say "go" to restart research: redo Monkey Music + Baby Sensory per age group, rest of Little Kickers and Hartbeeps (south/south-east/east), then libraries, leisure centres, children's centres, museums
+5. Review the 90-day freshness check before London grows (ideas below)
+
 ## Tatjana's ideas (1–2 Nov 2026)
 
 Done in v41 and v42 (deployed 2 Nov):
