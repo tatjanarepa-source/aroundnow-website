@@ -76,6 +76,8 @@ const feedback = await getAll(`feedback?select=message,created_at&created_at=gte
 const changes = feedback.filter((f) => /^Suggested change/.test(f.message || "")).length;
 const added = await getAll(`listings?select=id,title,status,created_at&source=eq.Community&created_at=gte.${since(days)}`);
 const live = (await getAll("listings?select=id&status=in.(Active,Check)")).length;
+let edits = [];
+try { edits = await getAll(`listing_edits?select=id,undone&created_at=gte.${since(days)}`); } catch (e) { /* not set up yet */ }
 
 console.log(`\nReports and messages (last ${days} days)`);
 console.log(`  class reports              ${reports.length} (open now: ${openReports})`);
@@ -84,6 +86,7 @@ console.log(`  messages ("Tell us")       ${feedback.length - changes}`);
 console.log(`  suggested changes          ${changes}`);
 console.log(`\nClasses`);
 console.log(`  live on the map            ${live}`);
+console.log(`  edited by parents          ${edits.length} (undone: ${edits.filter((e) => e.undone).length}; details: npm run edits)`);
 console.log(`  added by parents           ${added.length}${added.length ? ":" : ""}`);
 added.slice(-10).forEach((l) => console.log(`    ${l.created_at.slice(0, 10)} ${l.title} (${l.status})`));
 console.log("\nDetails of messages and reports: npm run feedback\n");

@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v42";
+const APP_VERSION = "v43";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -192,6 +192,7 @@ const STRINGS = {
     fDays: "Days", fRuns: "Runs", runs: { term: "Term time", year: "All year", hols: "School holidays" },
     fDate: "Date", fDates: "Dates", firstDay: "First day", lastDay: "Last day",
     fDatesHelp: "Leave empty if it runs in every school holiday.",
+    fSched: "All days and times, as parents see them", fSchedHint: "e.g. Tue 10:00 (2–3 years), Sat 9:30 and 10:15",
     fTime: "Time", startsAt: "Starts at", endsAt: "Ends at",
     fPrice: "Price", price: { free: "Free", paid: "Paid", unsure: "Not sure" }, fPriceHint: "e.g. £12 a session", howMuch: "How much?",
     fNote: "Anything parents should know?", fNoteHint: "e.g. Drop in, no booking. First session free.",
@@ -235,6 +236,11 @@ const STRINGS = {
       unreadable: "We couldn’t read that photo. Try a sharper one, or fill it in by hand.", too_big: "That photo is too big. Try a screenshot of it.",
       busy: "Photo reading is busy. Try again in a minute.", failed: "That didn’t work. Try again, or fill it in by hand." },
     youAdded: "You added this. When another parent confirms it, it shows as confirmed.",
+    youEdited: "You edited this. When another parent confirms it, it shows as confirmed again.",
+    editLink: "Edit this class (ages, address, times…)", editClass: "Edit class", saveChange: "Save change", saving: "Saving…",
+    editDoneTitle: "Thanks, it’s updated!",
+    editDoneText: "Your change is on the map now. It shows as “Not yet confirmed” until another parent confirms it.",
+    editNothing: "Nothing has changed yet.",
     youConfirmed: "You confirmed this. Thank you!",
     youReported: "Thanks, we’ve noted it. If another parent reports it too, it’s hidden until we’ve checked it.",
     reported: { gone: "Reported: not running?", wrong: "Reported: details wrong?", duplicate: "Reported: listed twice?",
@@ -424,7 +430,7 @@ const state = {
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
   // Accounts and community checks
-  user: null, google: false, mine: { confirmed: {}, reported: {} },
+  user: null, google: false, mine: { confirmed: {}, reported: {}, edited: {} },
   auth: null, afterSignIn: null, add: null, box: null, onlyNew: false,
   group: null, // classes behind a tapped map bubble
   fb: null, // the feedback form while it's open
@@ -520,7 +526,7 @@ function normalize(r) {
     ap: (r.approx != null ? r.approx : (r.address_source || "").startsWith("Approximate")) ? 1 : 0, on: online ? 1 : 0,
     mn: r.age_min_months, mx: r.age_max_months, l: langs, d: r.days_of_week || [], tm: r.time_of_day || [],
     st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "",
-    c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", sj: r.subjects || [], r: r.runs_when || "",
+    c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", cr: r.category || "", sj: r.subjects || [], r: r.runs_when || "",
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
     w: r.website || "", k: r.status === "Check" ? 1 : 0,
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
@@ -1323,6 +1329,37 @@ function blankAdd() {
   };
 }
 
+// ---- Editing a class: the add form, filled in from the class; only changed fields are sent ----
+function formFromListing(l) {
+  const a = blankAdd();
+  const find = (map, v, dflt) => Object.keys(map).find((k) => map[k] === v) || dflt;
+  const langs = l.l.filter((x) => x === "English" || x === "Russian");
+  const other = l.l.find((x) => x !== "English" && x !== "Russian");
+  const free = /^free\b/i.test(l.p);
+  Object.assign(a, {
+    editId: l.i, name: l.t, org: l.pv, link: l.w, kind: find(ADD_KINDS, l.f, ""), cat: l.cr,
+    ageMin: l.mn == null ? "" : String(l.mn), ageMax: l.mx == null ? (l.mn == null ? "" : "999") : String(l.mx),
+    langs: other ? langs.concat(["Other"]) : langs, otherLang: other || "",
+    mode: l.on ? "online" : "inperson", address: l.adr || "", postcode: l.pc || "",
+    geo: l.y != null && !l.on ? { lat: l.y, lng: l.x, area: l.a, postcode: l.pc || null } : null,
+    days: l.d.slice(), runs: find(ADD_RUNS, l.r, "term"), date: l.ed || "", dateTo: l.ee || "",
+    timeFrom: l.st || "", timeTo: l.et || "",
+    price: free ? "free" : l.p ? "paid" : "unsure", priceText: free ? "" : l.p,
+    note: l.ds || "", sched: l.s || "", dupesOk: true,
+  });
+  a.orig = listingFromForm(a);
+  return a;
+}
+function changedFields(a) {
+  const now = listingFromForm(a), out = {};
+  for (const k of Object.keys(now)) if (JSON.stringify(now[k]) !== JSON.stringify(a.orig[k])) out[k] = now[k];
+  // A new place moves the pin with it
+  if (["postcode", "location", "address"].some((k) => k in out)) {
+    for (const k of ["address", "postcode", "location", "location_area", "address_source"]) out[k] = now[k];
+  }
+  return out;
+}
+
 // ---- Filling in the form from a photo of a poster (read by Claude on our server: worker/index.js) ----
 
 // Phones take 12-megapixel photos; Claude reads up to about 1568 pixels on the long side, so send no more than that
@@ -1483,6 +1520,21 @@ function dupesSheet(a) {
 // What a step still needs before it can move on. Only fields parents can't skip are checked.
 function addMissing(n) {
   const a = state.add, need = T().need, out = [];
+  if (a.editId) {
+    if (n === 1 && !a.name.trim()) out.push(need.name);
+    if (n === 2) {
+      if ((a.ageMin === "") !== (a.ageMax === "")) out.push(need.ages);
+      else if (a.ageMin !== "" && Number(a.ageMax) < Number(a.ageMin)) out.push(need.agesOrder);
+      if (a.langs.includes("Other") && !a.otherLang.trim()) out.push(need.otherLang);
+    }
+    if (n === 3 && a.mode !== "online" && a.postcode.trim()
+      && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(a.postcode.trim())) out.push(need.postcodeFull);
+    if (n === 4) {
+      if (a.price === "paid" && !a.priceText.trim()) out.push(need.priceText);
+      if (!a.trueOk) out.push(need.ticks);
+    }
+    return out;
+  }
   if (n === 1) {
     if (!a.name.trim()) out.push(need.name);
     if (!a.org.trim()) out.push(need.org);
@@ -1514,6 +1566,17 @@ function addMissing(n) {
 
 function addSheet() {
   const t = T(), a = state.add, n = a.step;
+  if (n === "done" && a.editId) {
+    return {
+      title: t.editClass, tall: true,
+      body: `<div class="done">
+        <span class="done-mark">${ICON.tick}</span>
+        <h3>${t.editDoneTitle}</h3>
+        <p class="lead">${t.editDoneText}</p>
+        <button type="button" class="primary" data-act="addSeeIt">${t.seeIt}</button>
+      </div>`,
+    };
+  }
   if (n === "done") {
     return {
       title: t.addClass, tall: true,
@@ -1532,9 +1595,9 @@ function addSheet() {
   const who = state.user
     ? `<p class="who">${esc(t.signedInAs(state.user.email || ""))} · <button type="button" data-act="signOut">${t.signOut}</button></p>` : "";
   const msg = a.error || (a.tried === n && miss.length ? t.stillNeeded(listWords(miss)) : "");
-  const label = a.busy ? (n === 4 ? t.adding : t.checking) : n === 4 ? t.addToMap : t.next;
+  const label = a.busy ? (n === 4 ? (a.editId ? t.saving : t.adding) : t.checking) : n === 4 ? (a.editId ? t.saveChange : t.addToMap) : t.next;
   return {
-    title: t.addClass, tall: true, stack: true,
+    title: a.editId ? t.editClass : t.addClass, tall: true, stack: true,
     top: `<div class="steps"><span>${esc(t.step(n, t.steps[n]))}</span>
       <div class="bar">${[1, 2, 3, 4].map((i) => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</div></div>`,
     body: steps[n](a) + who,
@@ -1546,7 +1609,7 @@ function addSheet() {
 
 function addStep1(a) {
   const t = T();
-  return photoHtml(a) + fieldHtml(t.fName, inputHtml("name", a.name, `type="text" maxlength="120" placeholder="${t.fNameHint}"`))
+  return (a.editId ? "" : photoHtml(a)) + fieldHtml(t.fName, inputHtml("name", a.name, `type="text" maxlength="120" placeholder="${t.fNameHint}"`))
     + fieldHtml(t.fOrg, inputHtml("org", a.org, `type="text" maxlength="120" placeholder="${t.fOrgHint}"`), t.fOrgHelp)
     + fieldHtml(t.fLink, inputHtml("link", a.link, `type="url" inputmode="url" maxlength="300" placeholder="${t.fLinkHint}"`), t.fLinkHelp, true)
     + groupHtml(t.fKind, wrap(Object.keys(ADD_KINDS).map((k) => chipHtml("fKind", k, t.kind[k], a.kind === k, false)).join("")));
@@ -1554,8 +1617,9 @@ function addStep1(a) {
 
 function addStep2(a) {
   const t = T();
-  const from = AGE_FROM.map((v) => [v, v === 0 ? t.birth : t.ageOpt(v)]);
-  const to = AGE_TO.map((v) => [v, v === 999 ? t.noUpper : t.ageOpt(v)]);
+  const withValue = (list, v) => (v !== "" && !list.includes(Number(v)) ? list.concat(Number(v)).sort((x, y) => x - y) : list);
+  const from = withValue(AGE_FROM, a.ageMin).map((v) => [v, v === 0 ? t.birth : t.ageOpt(v)]);
+  const to = withValue(AGE_TO, a.ageMax).map((v) => [v, v === 999 ? t.noUpper : t.ageOpt(v)]);
   const langs = ["English", "Russian", "Other"].map((x) => chipHtml("fLang", x, x === "Other" ? t.otherLang : t.lang[x], a.langs.includes(x), false)).join("");
   const otherLang = a.langs.includes("Other")
     ? inputHtml("otherLang", a.otherLang, `type="text" maxlength="40" placeholder="${t.otherLangHint}" aria-label="${t.otherLangHint}"`) : "";
@@ -1583,6 +1647,7 @@ function addStep3(a) {
     html += groupHtml(t.fDays, wrap(DAY_ORDER.map((d) => chipHtml("fDay", d, t.day[d], a.days.includes(d), false)).join("")))
       + groupHtml(t.fRuns, wrap(Object.keys(ADD_RUNS).map((r) => chipHtml("fRuns", r, t.runs[r], a.runs === r, false)).join("")));
   }
+  if (a.editId) html += fieldHtml(t.fSched, `<textarea class="input" data-field="sched" rows="3" maxlength="600" placeholder="${t.fSchedHint}">${esc(a.sched || "")}</textarea>`, "", true);
   return html + groupHtml(t.fTime, `<div class="pair">${inputHtml("timeFrom", a.timeFrom, `type="time" aria-label="${t.startsAt}"`)}${inputHtml("timeTo", a.timeTo, `type="time" aria-label="${t.endsAt}"`)}</div>`, "", true);
 }
 
@@ -1593,7 +1658,7 @@ function addStep4(a) {
   return groupHtml(t.fPrice, wrap(["free", "paid", "unsure"].map((p) => chipHtml("fPrice", p, t.price[p], a.price === p, false)).join("")) + howMuch)
     + fieldHtml(t.fNote, `<textarea class="input" data-field="note" rows="3" maxlength="1000" placeholder="${t.fNoteHint}">${esc(a.note)}</textarea>`, "", true)
     + groupHtml(t.fPreview, previewHtml(a))
-    + `<label class="tick"><input type="checkbox" data-field="orgOk"${a.orgOk ? " checked" : ""}><span>${t.tickOrg}</span></label>`
+    + (a.editId ? "" : `<label class="tick"><input type="checkbox" data-field="orgOk"${a.orgOk ? " checked" : ""}><span>${t.tickOrg}</span></label>`)
     + `<label class="tick"><input type="checkbox" data-field="trueOk"${a.trueOk ? " checked" : ""}><span>${t.tickTrue}</span></label>`;
 }
 
@@ -1631,7 +1696,7 @@ function scheduleText(a) {
     const dates = a.date ? (a.dateTo ? `${longDate(a.date)} – ${longDate(a.dateTo)}` : longDate(a.date)) : T().runs.hols;
     return [dates, time].filter(Boolean).join(", ");
   }
-  return [daysText(a.days), time, T().runs[a.runs].toLowerCase()].filter(Boolean).join(", ");
+  return [daysText(a.days), time, (T().runs[a.runs] || "").toLowerCase()].filter(Boolean).join(", ");
 }
 
 // The new row for the listings table. The database fills in who added it, its id and status.
@@ -1643,10 +1708,10 @@ function listingFromForm(a) {
   return {
     title: a.name.trim(), provider_name: a.org.trim(), website: website || null, contact_method: website ? "Website" : null,
     delivery_mode: online ? "Online" : "In-person",
-    location_area: online ? null : a.geo.area || null,
+    location_area: online || !a.geo ? null : a.geo.area || null,
     address: online ? null : [a.venue.trim(), a.address.trim()].filter(Boolean).join(", "),
-    postcode: online ? null : a.geo.postcode,
-    location: online ? null : `SRID=4326;POINT(${a.geo.lng} ${a.geo.lat})`,
+    postcode: online || !a.geo ? null : a.geo.postcode,
+    location: online || !a.geo ? null : `SRID=4326;POINT(${a.geo.lng} ${a.geo.lat})`,
     address_source: online ? null : "Community: postcode",
     format: ADD_KINDS[a.kind], category: a.cat,
     age_min_months: Number(a.ageMin), age_max_months: a.ageMax === "999" ? null : Number(a.ageMax),
@@ -1657,7 +1722,8 @@ function listingFromForm(a) {
     start_time: a.timeFrom || null, end_time: a.timeTo || null,
     event_date: (a.kind === "oneoff" || a.kind === "camp") && a.date ? a.date : null,
     event_end_date: a.kind === "camp" && a.dateTo ? a.dateTo : null,
-    schedule_text: scheduleText(a),
+    // An edit keeps the class's own timetable text (often several sessions); the parent edits it directly
+    schedule_text: a.editId ? (a.sched || "").trim() || null : scheduleText(a),
     price_text: a.price === "free" ? "Free" : a.price === "paid" ? a.priceText.trim() : null,
     description: a.note.trim() || null,
   };
@@ -1676,7 +1742,7 @@ async function addNext() {
   a.error = "";
   if (addMissing(n).length) { a.tried = n; render({ keepScroll: true }); return; }
   a.tried = 0;
-  if (n === 3 && a.mode !== "online" && !a.geo) {
+  if (n === 3 && a.mode !== "online" && !a.geo && (!a.editId || a.postcode.trim())) {
     a.busy = true;
     render({ keepScroll: true });
     a.geo = await lookupPostcode(a.postcode).catch(() => null);
@@ -1693,6 +1759,7 @@ async function addNext() {
   }
   if (n < 4) { a.step = n + 1; render({ keepScroll: true }); return; }
 
+  if (a.editId) { await saveEdit(a); return; }
   a.busy = true;
   render({ keepScroll: true });
   const { data, error } = await sb.from("listings").insert(listingFromForm(a)).select("id, status").single();
@@ -1709,6 +1776,24 @@ async function addNext() {
   await loadListings();
 }
 
+async function saveEdit(a) {
+  const t = T(), fields = changedFields(a);
+  if (!Object.keys(fields).length) { a.error = t.editNothing; render({ keepScroll: true }); return; }
+  a.busy = true;
+  render({ keepScroll: true });
+  const { error } = await sb.rpc("edit_listing", { p_id: a.editId, p_fields: fields });
+  a.busy = false;
+  if (error) {
+    console.warn("Edit failed", error);
+    a.error = t.failed(error.message);
+    render({ keepScroll: true });
+    return;
+  }
+  state.mine.edited[a.editId] = true;
+  Object.assign(a, { step: "done", newId: a.editId, pending: false });
+  await loadListings();
+}
+
 // ---- Confirming and reporting ----
 
 function communityHtml(l) {
@@ -1716,6 +1801,7 @@ function communityHtml(l) {
   if (!sb) return "";
   const err = b && b.error ? `<p class="form-msg" role="alert">${esc(b.error)}</p>` : "";
   if (mineAdded(l)) return `<div class="community"><p>${t.youAdded}</p></div>`;
+  if (s.mine.edited[l.i] && unconfirmed(l)) return `<div class="community"><p>${t.youEdited}</p></div>`;
   if (s.mine.reported[l.i]) return `<div class="community"><p>${t.youReported}</p></div>`;
   if (s.mine.confirmed[l.i] && !unconfirmed(l)) return `<div class="community"><p>${t.youConfirmed}</p></div>`;
   if (b && b.mode === "report") {
@@ -1968,7 +2054,7 @@ function afterSignedIn() {
   state.auth = null;
   if (state.sheet === "signin") state.sheet = null;
   if (after === "add") {
-    if (!state.add || state.add.step === "done") state.add = blankAdd();
+    if (!state.add || state.add.step === "done" || state.add.editId) state.add = blankAdd(); // never reopen a half-done edit
     else if (state.add.photo !== "reading") Object.assign(state.add, { photo: "", photoMsg: "" }); // no old photo message
     state.sheet = "add";
   } else if (after && after.open) {
@@ -1994,6 +2080,8 @@ async function loadDetails(l) {
     l.ds = d.description || "";
     l.s = d.schedule_text || "";
     l.ad = [d.address, d.postcode].filter(Boolean).join(", ");
+    l.adr = d.address || "";
+    l.pc = d.postcode || "";
   } catch (e) {
     console.warn("Details error", e);
   }
@@ -2045,7 +2133,7 @@ function renderDetail(c) {
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${shareBoxHtml(l)}
         ${communityHtml(l)}
-        <button type="button" class="link-btn report-link" data-act="suggest" data-v="${esc(l.i)}">${t.chLink}</button>
+        ${sb ? `<button type="button" class="link-btn report-link" data-act="edit" data-v="${esc(l.i)}">${t.editLink}</button>` : ""}
         <button type="button" class="link-btn report-link" data-act="wrong" data-v="${esc(l.i)}">${t.fbClassLink}</button>
       </div></div>
       <div class="actions">
@@ -2344,7 +2432,7 @@ const ACTIONS = {
   // Adding a class
   add: () => {
     if (!state.user) { openSignIn("add"); return; }
-    if (!state.add || state.add.step === "done") state.add = blankAdd();
+    if (!state.add || state.add.step === "done" || state.add.editId) state.add = blankAdd(); // never reopen a half-done edit
     else if (state.add.photo !== "reading") Object.assign(state.add, { photo: "", photoMsg: "" }); // no old photo message
     state.detail = null;
     state.sheet = "add";
@@ -2416,6 +2504,15 @@ const ACTIONS = {
   },
   // "Suggest a change": the message form, set up for corrections an admin applies
   suggest: (v) => { ACTIONS.feedback(v); state.fb.change = true; },
+  // Anyone signed in can edit a class; it goes back to "Not yet confirmed" until another parent confirms it
+  edit: (v) => {
+    if (needSignIn(v)) return;
+    const l = state.items.find((x) => x.i === v);
+    if (!l) return;
+    state.add = formFromListing(l);
+    state.detail = null;
+    state.sheet = "add";
+  },
   fbProblem: (v) => { Object.assign(state.fb, { problem: state.fb.problem === v ? "" : v, error: "" }); },
   sendFeedback: () => { sendFeedback(); return "async"; },
   // Opens the class, so the thank-you (or any problem) shows where it happened
