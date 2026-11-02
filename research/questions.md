@@ -5,6 +5,8 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- (2026-11-02) Baby Sensory: the agent read each franchise timetable from the same data feed the timetable page itself loads (after checking two against the page in Chrome): same information, much faster for 50+ franchises. OK to do this for franchise sites, or only read the pages one by one?
+- (2026-11-02) Baby Sensory's free "Hello Baby" massage course (birth–3 months, Woolwich and Greenwich): own row, or keep it mentioned inside the Baby Sensory rows?
 - (2026-11-02) Water Babies: the class finder shows times per child age, and research reads it for a 1-year-old only (same as the earlier batches), so a pool row lists just those times though ages are 0–5. Also read 2–4-year-olds' times (slower: about 3 times the work per pool), or keep one age and say "other ages have their own times"?
 
 ## Answered
