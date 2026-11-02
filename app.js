@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v39";
+const APP_VERSION = "v40";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -512,7 +512,7 @@ function normalize(r) {
   }
   return {
     i: r.id, t: r.title, pv: r.provider_name || "", a: online ? "Online" : r.location_area || "", y: pt ? pt.y : null, x: pt ? pt.x : null,
-    ap: (r.address_source || "").startsWith("Approximate") ? 1 : 0, on: online ? 1 : 0,
+    ap: (r.approx != null ? r.approx : (r.address_source || "").startsWith("Approximate")) ? 1 : 0, on: online ? 1 : 0,
     mn: r.age_min_months, mx: r.age_max_months, l: langs, d: r.days_of_week || [], tm: r.time_of_day || [],
     st: (r.start_time || "").slice(0, 5), et: (r.end_time || "").slice(0, 5), f: r.format || "",
     c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", sj: r.subjects || [], r: r.runs_when || "",
@@ -522,33 +522,44 @@ function normalize(r) {
     ca: r.created_at || "", lc: r.last_confirmed_at || "", cb: r.created_by || "", src: r.source || "",
     ed: r.event_date || "", ee: r.event_end_date || "",
     rr: r.report_reason || "", ra: r.reported_at || "", // an open report since the last confirmation
+    det: "description" in r ? 1 : 0, // description, schedule note and address come with the details page
   };
 }
 
-// The database only answers for one area at a time (classes within 20 km, plus online ones), so the whole list
-// can't be copied in one request. Moving more than RELOAD_KM away loads the new area.
-const RELOAD_KM = 8;
+// Only what's needed is loaded (2 Nov): the classes inside the chosen circle and the next bigger one (for the
+// "more within 3 mi" line), plus online ones, without the details-page text (fetched when a class is opened).
+// A bigger circle, or moving the place further than the margin, loads again.
+const LOAD_MARGIN_KM = 1;
 let loadedFor = null;
 let accessToken = null; // when signed in, so the app can tell which classes you added
+function neededKm() { return radiusKm(Math.min(state.ri + 1, RADII.km.length - 1)); }
 function maybeReload() {
-  if (loadedFor && distKm(state.place, { x: loadedFor.lng, y: loadedFor.lat }) > RELOAD_KM) loadListings();
+  if (!loadedFor) return;
+  const moved = distKm(state.place, { x: loadedFor.lng, y: loadedFor.lat });
+  if (moved + neededKm() > loadedFor.km) loadListings();
 }
 
-async function fetchNear(lat, lng) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/listings_near`, {
+async function rpc(name, body) {
+  return fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
     method: "POST",
     headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json",
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
-    body: JSON.stringify({ p_lat: lat, p_lng: lng }),
+    body: JSON.stringify(body),
   });
+}
+
+async function fetchNear(lat, lng, km) {
+  let res = await rpc("listings_within", { p_lat: lat, p_lng: lng, p_km: km });
+  // Until supabase/migrations/20261102_listings_within.sql is run, the old query still works
+  if (res.status === 404) res = await rpc("listings_near", { p_lat: lat, p_lng: lng });
   if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
   return (await res.json()).map(normalize).filter((l) => l && !expired(l));
 }
 
 async function loadListings() {
-  const at = loadedFor = { lat: state.place.lat, lng: state.place.lng };
+  const at = loadedFor = { lat: state.place.lat, lng: state.place.lng, km: neededKm() + LOAD_MARGIN_KM };
   try {
-    const items = await fetchNear(at.lat, at.lng);
+    const items = await fetchNear(at.lat, at.lng, at.km);
     if (at !== loadedFor) return; // a newer area was asked for meanwhile
     state.items = items;
     state.error = false;
@@ -1410,7 +1421,7 @@ function dupesSheet(a) {
   const t = T();
   const cards = a.dupes.map((l) => `<div class="community">
       <b>${esc(l.t)}</b>
-      <p>${esc([l.pv, l.on ? t.online : l.ad].filter(Boolean).join(" · "))}</p>
+      <p>${esc([l.pv, l.on ? t.online : l.ad || l.a].filter(Boolean).join(" · "))}</p>
       <p>${esc([whenText(l) || l.s, ageText(l)].filter(Boolean).join(" · "))}</p>
       <button type="button" class="secondary" data-act="addSame" data-v="${esc(l.i)}">${ICON.check}<span>${t.dupSame}</span></button>
     </div>`).join("");
@@ -1925,6 +1936,25 @@ function needSignIn(id) {
   return true;
 }
 
+// The list download leaves out the text only the details page shows; it's fetched when a class is opened
+const detLoading = new Set();
+async function loadDetails(l) {
+  if (detLoading.has(l.i)) return;
+  detLoading.add(l.i);
+  try {
+    const res = await rpc("listing_details", { p_id: l.i });
+    const d = (res.ok && (await res.json())) || {};
+    l.ds = d.description || "";
+    l.s = d.schedule_text || "";
+    l.ad = [d.address, d.postcode].filter(Boolean).join(", ");
+  } catch (e) {
+    console.warn("Details error", e);
+  }
+  l.det = 1;
+  detLoading.delete(l.i);
+  if (state.detail === l.i) render({ keepScroll: true });
+}
+
 function renderDetail(c) {
   const t = T(), el = $("detail");
   const o = state.detail && c.rows.find((x) => x.l.i === state.detail);
@@ -1933,12 +1963,13 @@ function renderDetail(c) {
   // Redrawing the same class keeps its scroll position, so a message next to a button stays in view
   const scrolled = again && el.querySelector(".sheet-body") ? el.querySelector(".sheet-body").scrollTop : 0;
   const l = o.l;
+  if (!l.det) loadDetails(l);
   const type = Object.keys(TYPES).find((k) => TYPES[k](l));
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
   if (type) tags.push(`<span class="tag">${esc(t.ty[type])}</span>`);
   if (l.l.length) tags.push(`<span class="tag">${esc(langText(l))}</span>`);
   if (l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
-  const where = l.on ? t.online : l.ad || `${l.a} (${t.areaOnly})`;
+  const where = l.on ? t.online : l.ad || (l.det ? `${l.a} (${t.areaOnly})` : l.a); // "area only" once we know
   const dir = l.y != null && !l.on ? `https://www.google.com/maps/search/?api=1&query=${l.y},${l.x}` : "";
   const status = (unconfirmed(l) ? statusTag(l) : "")
     + (l.w ? "" : `<span class="tag">${t.noSource}</span>`);

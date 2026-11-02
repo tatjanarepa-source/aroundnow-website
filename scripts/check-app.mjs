@@ -47,10 +47,11 @@ if (!url || !key || !home) {
   fail("couldn't find SUPABASE_URL, SUPABASE_KEY or DEFAULT_PLACE in app.js");
 } else {
   try {
-    const res = await fetch(`${url}/rest/v1/rpc/listings_near`, {
+    // The widest area the database allows (25 km), so the activity check below sees as many classes as possible
+    const res = await fetch(`${url}/rest/v1/rpc/listings_within`, {
       method: "POST",
       headers: { apikey: key, "Content-Type": "application/json" },
-      body: JSON.stringify({ p_lat: Number(home[1]), p_lng: Number(home[2]) }),
+      body: JSON.stringify({ p_lat: Number(home[1]), p_lng: Number(home[2]), p_km: 25 }),
     });
     if (!res.ok) {
       fail(`the database refused the app's listings query (${res.status}): ${(await res.text()).slice(0, 300)}\n` +
@@ -58,6 +59,13 @@ if (!url || !key || !home) {
     } else {
       const rows = await res.json();
       rows.length ? ok(`database returns ${rows.length} listings for the app's query`) : fail("the database returned no listings");
+      const withText = rows.find((r) => r.delivery_mode !== "Online") || rows[0];
+      if (withText) {
+        const d = await fetch(`${url}/rest/v1/rpc/listing_details`, {
+          method: "POST", headers: { apikey: key, "Content-Type": "application/json" }, body: JSON.stringify({ p_id: withText.id }),
+        });
+        d.ok ? ok("a class's details page text can be fetched") : fail(`listing_details failed (${d.status})`);
+      }
       // 5. Every activity in the data has a name and colour in the app
       const known = new Set(JSON.parse(`[${(app.match(/const CATEGORIES = \[([\s\S]*?)\];/) || [])[1] || ""}]`));
       const unknown = [...new Set(rows.map((r) => r.category))].filter((c) => c && !known.has(c));
