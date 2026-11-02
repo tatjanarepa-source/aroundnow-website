@@ -10,6 +10,24 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## London basic layer (agreed 2 Nov 2026)
+
+Whole of London, but only the big structured sources for now; deep borough-by-borough research (churches, halls,
+independent schools) is parked: not realistic at this stage. `npm run progress` shows the bars. Start: 10% (412 of ~4,100).
+
+- [ ] Franchise class finders, London-wide (~1,800): Little Kickers, Water Babies, Baby Sensory/Toddler Sense,
+      Monkey Music, Hartbeeps, Rugbytots, Tumble Tots, Stagecoach, Kumon, Puddle Ducks, Jo Jingles, Musical Bumps,
+      Diddi Dance, babyballet, Creation Station, Pyjama Drama, Little Gym and similar. One row per venue
+- [ ] Libraries, every borough (~900): rhyme times, story times, Lego clubs
+- [ ] Leisure centres (~600): Better/GLL, Everyone Active, Places Leisure, council-run: swim lessons, soft play, gym
+- [ ] Children's centres / family hubs, every borough (~500)
+- [ ] Museums, city farms, zoos, attractions (~300)
+- [ ] Then stop adding and review.
+- [ ] **Review the 90-day freshness check before London grows** (asked 2 Nov). With ~4,000 classes, 90 days means
+      ~45 re-checks a day. Ideas: re-check by provider (one class finder refreshes all its venues), a no-AI script
+      that re-opens each page and flags only the changed ones, longer intervals for stable sources (libraries,
+      museums, franchises) and shorter for small independents, parent confirmations
+
 ## Day by day + light mode (built and deployed 1 Nov, v31)
 
 Tatjana picked design B ("Day by day", bigger map) from the design canvas
