@@ -12,7 +12,7 @@ Ideas and problems to come back to. Newest first. Tick when done.
 
 ## Tatjana's ideas (1–2 Nov 2026)
 
-Done in v41 (2 Nov, not deployed yet):
+Done in v41 and v42 (deployed 2 Nov):
 - [x] Tap the address on a class page → Google directions (the Directions button was already there)
 - [x] "All ages" button on the add-a-class form (from birth, no upper age; tap again to clear)
 - [x] "Suits both" / "Suits all" tag removed
