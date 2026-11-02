@@ -5,7 +5,7 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
-(none)
+- (2026-11-02) Water Babies: the class finder shows times per child age, and research reads it for a 1-year-old only (same as the earlier batches), so a pool row lists just those times though ages are 0–5. Also read 2–4-year-olds' times (slower: about 3 times the work per pool), or keep one age and say "other ages have their own times"?
 
 ## Answered
 

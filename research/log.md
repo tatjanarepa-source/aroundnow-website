@@ -4,6 +4,7 @@ Each run takes the **first unticked line** in the queue, saves one batch file in
 ticks the line and adds a row to "Done". Keep batches small (up to ~10 classes).
 
 ## Queue
+- [ ] London basic layer: franchise class finders, every venue in Greater London (plan in docs/tasks.md). Water Babies done 2026-11-02 (36 pools; retry Hendon Hydro, Ravensbourne Romford). Running/next: Little Kickers, Baby Sensory/Toddler Sense, Monkey Music, Hartbeeps, Tumble Tots, Stagecoach, Kumon, Puddle Ducks, Jo Jingles, Musical Bumps, Diddi Dance, babyballet, Creation Station, Pyjama Drama, Little Gym **(run locally)**
 
 About once a month (or when the app shows several "Needs re-checking"), do a **re-check run** first (see the skill).
 
@@ -90,6 +91,7 @@ later from parents adding classes. Lines marked **(run locally)** need Chrome; t
 
 | Date | Run | Batch file | Classes | Notes |
 |---|---|---|---|---|
+| 2026-11-02 | London Water Babies, all Greater London pools (parallel agent, local Chrome) | `2026-11-02-london-water-babies.csv` | 36 | London North 11, North East 9, South East 4, Central/SW 3, plus 9 London pools listed under Surrey, Kent and Essex areas (Kingston, Tolworth, Morden, Croydon, Orpington, Romford). Times read from the class finder for a 1-year-old (as earlier batches), so other ages' slots aren't listed; no prices on the site. Hendon Hydro page redirect error; Ravensbourne Romford had no 1-year-old classes. Not imported |
 | 2026-11-02 | Winter attractions, part 4 (cloud) | `2026-11-02-winter-attractions-4.csv` | 1 | Lost Worlds by Luxmuralis, Old Royal Naval College SE10 9NN, 6–8 and 11–15 Nov 17:45–21:00 (adult £22, concession £16.50, family £68, under-5s free; page gives no year, matches Londonist 2026 list). Syon Park: 'no upcoming events'. Imported 2 Nov |
 | 2026-11-02 | Hounslow churches part 2 (cloud) | `2026-11-02-hounslow-churches-2.csv` | 1 | St Michael Steiner School parent & child group, Hanworth TW13 6PN (Mon–Wed 10–12, £10 a family, 2026–27, page updated Jul 2026). Friday group at the Crossway Centre (10–11:30) left out: no postcode on the page (a search suggested St Stephen's Church TW1 2PD, but the school page says 'near Richmond High Street'). All Saints Hanworth and St Richard's Hanworth: no children's groups on their pages. Chiswick Methodist: nothing found. Imported 2 Nov |
 | 2026-11-02 | Theme parks, part 2 (cloud) | `2026-11-02-theme-parks-2.csv` | 1 | Gulliver's Land MK15 0DT: open Sundays 22 and 29 Nov 10:30–16:00, Christmas season 22 Nov–23 Dec per home page; £26 online / £29 gate, under 90 cm free. Ages 2–13 from home-page wording. December days not shown. Thorpe Park: season ended 1 Nov, nothing to add. Namco Funscape London closed in 2021. Imported 2 Nov |
