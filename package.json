@@ -12,7 +12,8 @@
     "backup": "node --env-file=.env scripts/backup.mjs",
     "try-poster": "node scripts/try-poster.mjs",
     "dev:worker": "node scripts/build.mjs && npx wrangler dev",
-    "progress": "node --env-file=.env scripts/london-progress.mjs"
+    "progress": "node --env-file=.env scripts/london-progress.mjs",
+    "stats": "node --env-file=.env scripts/stats.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

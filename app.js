@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v41";
+const APP_VERSION = "v42";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -122,7 +122,7 @@ const DAY_MS = 864e5;
 const STRINGS = {
   en: {
     age: "Age", under1: "Under 1", ageGroup: "Child’s age. Two kids? Tap both ages",
-    filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", type: "Type", distance: "Distance",
+    filters: "Filters", quick: "Quick filters", language: "Language", activity: "Activity", hideTitle: "Don't show", hideHelp: "Hidden everywhere until you tap them again. Remembered on this phone.", type: "Type", distance: "Distance",
     where: "Where to look", nearMe: "Near me", useMyLocation: "Use my location", locating: "Finding your location…",
     blocked: "Location is blocked. Allow it in your browser settings, or search an area.",
     locFail: "Couldn’t get your location. Search an area instead.",
@@ -144,7 +144,7 @@ const STRINGS = {
     ageOpt: (m) => (m < 24 && m % 12 ? `${m} months` : m === 12 ? "1 year" : `${m / 12} years`),
     and: " & ",
     date: { today: "Today", tomorrow: "Tomorrow", weekend: "This weekend" },
-    dayGroup: "Pick a day", toTime: (x) => `to ${x}`,
+    dayGroup: "Pick one or more days", toTime: (x) => `to ${x}`,
     part: { morning: "Morning", afternoon: "Afternoon", evening: "Evening", none: "Time not listed" },
     countOn: { today: (n) => `${n} today`, tomorrow: (n) => `${n} tomorrow`, weekend: (n) => `${n} this weekend`,
       day: (n, d) => `${n} on ${d}` },
@@ -253,6 +253,10 @@ const STRINGS = {
     fbLink: "Something not right? Tell us", fbTitle: "Tell us",
     fbClassLink: "Something wrong with this class? Tell us", fbFilterLink: "A filter not working? Tell us",
     fbAbout: (title) => `About: ${title}`, fbWhat: "What’s wrong?",
+    chLink: "Suggest a change (ages, address, times…)", chTitle: "Suggest a change", chAbout: (title) => `Change: ${title}`,
+    chWhat: "What should change?", chMsg: "What should it say?", chMsgHint: "e.g. Ages 2–5, Saturdays 10:00, St Mary’s Hall W5 2DB",
+    chProb: { age: "Ages", when: "Day or time", price: "Price", place: "Address", category: "Activity", other: "Something else" },
+    chPrefix: "Suggested change", chThanks: "Thanks! We’ll check it and update the class.",
     prob: { category: "Wrong activity", age: "Wrong age", when: "Wrong day or time", price: "Wrong price",
       place: "Wrong place", gone: "Doesn’t run any more", other: "Something else" },
     fbIntro: "Something missing, wrong or confusing? Your message goes straight to the people building AroundNow.",
@@ -264,7 +268,7 @@ const STRINGS = {
   },
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
-    filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", type: "Тип", distance: "Расстояние",
+    filters: "Фильтры", quick: "Быстрые фильтры", language: "Язык", activity: "Направление", hideTitle: "Не показывать", hideHelp: "Скрыто везде, пока не нажмёте снова. Запоминается на этом телефоне.", type: "Тип", distance: "Расстояние",
     where: "Где искать", nearMe: "Рядом со мной", useMyLocation: "Определить моё местоположение", locating: "Определяем местоположение…",
     blocked: "Доступ к геолокации запрещён. Разрешите его в настройках браузера или найдите район.",
     locFail: "Не удалось определить местоположение. Найдите район.",
@@ -286,7 +290,7 @@ const STRINGS = {
     ageOpt: (m) => (m < 24 && m % 12 ? `${m} мес.` : `${m / 12} ${ruForm(m / 12, "год", "года", "лет")}`),
     and: " и ",
     date: { today: "Сегодня", tomorrow: "Завтра", weekend: "Эти выходные" },
-    dayGroup: "Выберите день", toTime: (x) => `до ${x}`,
+    dayGroup: "Выберите дни", toTime: (x) => `до ${x}`,
     part: { morning: "Утро", afternoon: "День", evening: "Вечер", none: "Время не указано" },
     countOn: { today: (n) => `${n} сегодня`, tomorrow: (n) => `${n} завтра`, weekend: (n) => `${n} в выходные`,
       day: (n, d) => `${n} · ${d}` },
@@ -415,7 +419,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [],
+  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [],
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -459,6 +463,7 @@ function loadPrefs() {
     const p = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
     if (Array.isArray(p.ages)) state.ages = p.ages.filter((a) => AGES.includes(a));
     if (Array.isArray(p.langs)) state.langs = p.langs.filter((x) => typeof x === "string");
+    if (Array.isArray(p.hide)) state.hide = p.hide.filter((x) => typeof x === "string");
     if (p.units === "mi" || p.units === "km") state.units = p.units;
     if (["auto", "light", "dark"].includes(p.theme)) state.theme = p.theme;
     if (Number.isInteger(p.ri) && RADII.km[p.ri] != null) state.ri = p.ri;
@@ -469,7 +474,7 @@ function loadPrefs() {
 function savePrefs() {
   try {
     localStorage.setItem(PREFS_KEY, JSON.stringify({ ages: state.ages, langs: state.langs, ri: state.ri, units: state.units,
-      theme: state.theme }));
+      theme: state.theme, hide: state.hide }));
   } catch (e) { /* storage unavailable */ }
 }
 
@@ -556,7 +561,33 @@ async function fetchNear(lat, lng, km) {
   return (await res.json()).map(normalize).filter((l) => l && !expired(l));
 }
 
+// ---- Usage counts for the statistics (supabase/migrations/20261102_2_usage_stats.sql) ----
+// A random number for this phone (no name, email or IP), the area as the app names it, a point rounded to about
+// 1 km, distance and ages. Nothing is sent while replaying a tester's search. Failures are ignored.
+let lastArea = null;
+const r2km = (v) => Math.round(v * 100) / 100;
+function deviceId() {
+  try {
+    let id = localStorage.getItem("aroundnow-device");
+    if (!id) { id = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); localStorage.setItem("aroundnow-device", id); }
+    return id;
+  } catch (e) { return "nostorage-" + Math.random().toString(36).slice(2, 10); }
+}
+function logUsage(kind, extra = {}) {
+  if (!sb) return;
+  try { if (replaying) return; } catch (e) { return; } // not set yet while the app is starting
+  const p = state.place, r2 = (v) => (v == null ? null : Math.round(v * 100) / 100);
+  sb.from("usage_events").insert({
+    device: deviceId(), kind, app: APP_VERSION,
+    area: p.kind === "me" ? "Near me" : String(p.name || "").slice(0, 80),
+    lat: r2(p.lat), lng: r2(p.lng), radius_km: Math.round(state.radius * 10) / 10, ages: state.ages, ...extra,
+  }).then(() => {}, () => {});
+}
+
 async function loadListings() {
+  const areaKey = `${state.place.name}|${r2km(state.place.lat)}|${r2km(state.place.lng)}`;
+  if (lastArea !== null && areaKey !== lastArea) logUsage("search");
+  lastArea = areaKey;
   const at = loadedFor = { lat: state.place.lat, lng: state.place.lng, km: neededKm() + LOAD_MARGIN_KM };
   try {
     const items = await fetchNear(at.lat, at.lng, at.km);
@@ -633,7 +664,9 @@ function isoDate(d) {
 }
 function dayKey(d) { return DAY_ORDER[(d.getDay() + 6) % 7]; }
 
+const DAY_LIST = /^[0-6](,[0-6])*$/; // the day strip: one or more days, e.g. "1,3"
 function datesFor(key) {
+  if (String(key).includes(",")) return String(key).split(",").flatMap((k) => datesFor(k));
   const now = new Date();
   const at = (n) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
   if (/^[0-6]$/.test(String(key))) return [at(Number(key))]; // the day strip: "0" is today, "6" six days ahead
@@ -681,6 +714,11 @@ function onDates(l, dates) { return dates.some((d) => runsOn(l, d)); }
 function hasDays(l) { return l.d.length > 0 || !!l.ed || l.f === "Preschool / nursery" || l.f === "Holiday camp"; }
 
 // `skip` leaves one filter group out, which is how a chip knows whether it would find anything
+// "t:nursery" hides a type, "c:Chess" an activity
+function hidden(l, h) {
+  return h.startsWith("t:") ? !!(TYPES[h.slice(2)] && TYPES[h.slice(2)](l)) : l.c === h.slice(2);
+}
+
 function passes(l, skip) {
   const s = state;
   if (skip !== "ages" && s.ages.length && !s.ages.some((a) => fitsAge(l, a))) return false;
@@ -690,6 +728,7 @@ function passes(l, skip) {
   if (skip !== "types" && s.types.length && !s.types.some((t) => TYPES[t](l))) return false;
   if (skip !== "cats" && s.cats.length && !s.cats.includes(l.c)) return false;
   if (skip !== "prices" && s.prices.length && !s.prices.some((p) => PRICES[p](l))) return false;
+  if (skip !== "hide" && s.hide.length && s.hide.some((h) => hidden(l, h))) return false;
   return true;
 }
 
@@ -856,10 +895,10 @@ function renderFilters(c) {
   }).join("");
 
   // Rarely used filters (and languages) live in the Filters sheet; the button sits next to the count
-  const hidden = s.when.length + s.types.length + s.cats.length + s.prices.length + s.langs.length + (s.showOnline ? 1 : 0);
+  const nOn = s.when.length + s.types.length + s.cats.length + s.prices.length + s.langs.length + s.hide.length + (s.showOnline ? 1 : 0);
   const fb = $("filtersBtn");
-  fb.classList.toggle("active", hidden > 0);
-  fb.innerHTML = `${ICON.sliders}<span>${t.filters}</span>${hidden ? `<span class="badge">${hidden}</span>` : ""}`;
+  fb.classList.toggle("active", nOn > 0);
+  fb.innerHTML = `${ICON.sliders}<span>${t.filters}</span>${nOn ? `<span class="badge">${nOn}</span>` : ""}`;
 
   // Keep the age row's sideways scroll, so tapping "9" doesn't jump the row back to the start
   const keep = [...el.querySelectorAll(".scroller")].map((r) => r.scrollLeft);
@@ -881,7 +920,8 @@ function countText(n) {
   if (k === "0" || k === "today") return t.countOn.today(n);
   if (k === "1" || k === "tomorrow") return t.countOn.tomorrow(n);
   if (k === "weekend") return t.countOn.weekend(n);
-  return t.countOn.day(n, datesFor(k)[0].toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "short" }));
+  const names = datesFor(k).map((d) => d.toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "short" }));
+  return t.countOn.day(n, names.join(", "));
 }
 
 function renderPanel() {
@@ -1081,6 +1121,12 @@ function filtersSheet(c) {
     .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
   const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
   const prices = Object.keys(PRICES).map((k) => chipHtml("price", k, t.pr[k], s.prices.includes(k), !finds(c, "prices", PRICES[k]))).join("");
+  const hideCounts = {};
+  c.pool.forEach((o) => { hideCounts[o.l.c] = (hideCounts[o.l.c] || 0) + 1; });
+  const hideTypes = Object.keys(TYPES).filter((k) => k !== "online")
+    .map((k) => chipHtml("hide", `t:${k}`, t.ty[k], s.hide.includes(`t:${k}`), false)).join("");
+  const hideCats = CATEGORIES.filter((k) => hideCounts[k] || s.hide.includes(`c:${k}`))
+    .map((k) => chipHtml("hide", `c:${k}`, t.cat[k] || k, s.hide.includes(`c:${k}`), false)).join("");
   return {
     title: t.filters,
     body: `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
@@ -1088,6 +1134,8 @@ function filtersSheet(c) {
       <div class="sec"><h3>${t.dPrice}</h3><div class="wrap">${prices}</div></div>
       ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
       ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
+      <div class="sec"><h3>${t.hideTitle}</h3><p class="muted-row" style="margin:0 0 10px">${t.hideHelp}</p><h4 class="sub-head">${t.type}</h4><div class="wrap hide-chips">${hideTypes}</div>
+        <h4 class="sub-head">${t.activity}</h4><div class="wrap hide-chips">${hideCats}</div></div>
       <button type="button" class="link-btn feedback-link" data-act="feedback">${t.fbFilterLink}</button>`,
     foot: `<button type="button" class="text-btn" data-act="resetFilters">${t.reset}</button>
       <button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
@@ -1140,7 +1188,7 @@ function applyReplay() {
     Object.assign(state, {
       ages: list(r.ages).filter((a) => AGES.includes(a)), langs: list(r.langs),
       // Older links say "today" / "tomorrow"; the day strip uses "0"–"6"
-      date: DATES.includes(r.date) || /^[0-6]$/.test(String(r.date)) ? ({ today: "0", tomorrow: "1" }[r.date] || String(r.date)) : null,
+      date: DATES.includes(r.date) || DAY_LIST.test(String(r.date)) ? ({ today: "0", tomorrow: "1" }[r.date] || String(r.date)) : null,
       when: list(r.when), types: list(r.types), cats: list(r.cats), prices: list(r.prices),
       showOnline: !!r.showOnline, onlyNew: !!r.onlyNew, detail: r.detail || null,
     });
@@ -1166,14 +1214,17 @@ function feedbackSheet(c) {
   const shared = [ctx.area.name, ctx.distance, ctx.ages.length ? `${t.age} ${ctx.ages.join(", ")}` : "", ...on,
     `${ctx.shown} ${t.fbShown}`, ctx.screen, ctx.app].filter(Boolean).join(" · ");
   const msg = f.error ? `<p class="form-msg" role="alert">${esc(f.error)}</p>` : "";
-  const about = ctx.listing && ctx.listing.title
+  const about = f.change && ctx.listing && ctx.listing.title
+    ? `<p class="lead"><b>${esc(t.chAbout(ctx.listing.title))}</b></p>
+      ${groupHtml(t.chWhat, wrap(Object.keys(t.chProb).map((k) => chipHtml("fbProblem", k, t.chProb[k], f.problem === k, false)).join("")))}`
+    : ctx.listing && ctx.listing.title
     ? `<p class="lead"><b>${esc(t.fbAbout(ctx.listing.title))}</b></p>
       ${groupHtml(t.fbWhat, wrap(Object.keys(t.prob).map((k) => chipHtml("fbProblem", k, t.prob[k], f.problem === k, false)).join("")))}`
     : `<p class="lead">${t.fbIntro}</p>`;
   return {
-    title: t.fbTitle,
+    title: f.change ? t.chTitle : t.fbTitle,
     body: `${about}
-      ${fieldHtml(t.fbMsg, `<textarea class="input" data-field="fb.msg" rows="4" maxlength="2000" placeholder="${t.fbMsgHint}">${esc(f.msg)}</textarea>`)}
+      ${fieldHtml(f.change ? t.chMsg : t.fbMsg, `<textarea class="input" data-field="fb.msg" rows="4" maxlength="2000" placeholder="${f.change ? t.chMsgHint : t.fbMsgHint}">${esc(f.msg)}</textarea>`)}
       <label class="tick"><input type="checkbox" data-field="fb.share"${f.share ? " checked" : ""}><span>${t.fbShare}<br><span class="help">${esc(shared)}</span></span></label>
       ${fieldHtml(t.fbContact, inputHtml("fb.contact", f.contact, `type="email" maxlength="200" autocomplete="email" placeholder="${t.fbContactHint}"`), "", true)}`,
     // Above the scrolling part, so a problem shows even on a short laptop screen
@@ -1189,7 +1240,8 @@ async function sendFeedback() {
   f.busy = true;
   f.error = "";
   render({ keepScroll: true });
-  const row = { message: f.msg.trim() || t.prob[f.problem], contact: f.contact.trim() || null, context: f.share ? fbContext(compute()) : null };
+  const kind = f.change ? `${t.chPrefix}${f.problem ? ` (${t.chProb[f.problem]})` : ""}: ` : "";
+  const row = { message: kind + (f.msg.trim() || (f.change ? "" : t.prob[f.problem])), contact: f.contact.trim() || null, context: f.share ? fbContext(compute()) : null };
   const { error } = sb ? await sb.from("feedback").insert(row) : { error: { message: "offline" } };
   f.busy = false;
   if (error) {
@@ -1959,6 +2011,7 @@ function renderDetail(c) {
   const scrolled = again && el.querySelector(".sheet-body") ? el.querySelector(".sheet-body").scrollTop : 0;
   const l = o.l;
   if (!l.det) loadDetails(l);
+  if (!again) logUsage("detail", { listing_id: l.i });
   const type = Object.keys(TYPES).find((k) => TYPES[k](l));
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
   if (type) tags.push(`<span class="tag">${esc(t.ty[type])}</span>`);
@@ -1992,6 +2045,7 @@ function renderDetail(c) {
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${shareBoxHtml(l)}
         ${communityHtml(l)}
+        <button type="button" class="link-btn report-link" data-act="suggest" data-v="${esc(l.i)}">${t.chLink}</button>
         <button type="button" class="link-btn report-link" data-act="wrong" data-v="${esc(l.i)}">${t.fbClassLink}</button>
       </div></div>
       <div class="actions">
@@ -2237,19 +2291,26 @@ const ACTIONS = {
   units: (v) => { state.units = v; setRadius(state.ri); savePrefs(); },
   theme: (v) => { state.theme = ["auto", "light", "dark"].includes(v) ? v : "auto"; savePrefs(); applyTheme(); },
   lang: (v) => { toggle("langs", v); savePrefs(); },
-  date: (v) => { state.date = state.date === v ? null : v; },
+  // Days in the strip add up (Tue + Thu); tapping a picked day takes it off again. "This weekend" replaces them.
+  date: (v) => {
+    const cur = state.date && DAY_LIST.test(state.date) ? state.date.split(",") : [];
+    if (!/^[0-6]$/.test(v)) { state.date = state.date === v ? null : v; return; }
+    const next = cur.includes(v) ? cur.filter((x) => x !== v) : cur.concat(v);
+    state.date = next.length ? next.sort().join(",") : null;
+  },
   when: (v) => toggle("when", v),
   type: (v) => toggle("types", v),
   cat: (v) => toggle("cats", v),
   price: (v) => toggle("prices", v),
+  hide: (v) => { toggle("hide", v); savePrefs(); },
   online: () => { state.showOnline = !state.showOnline; },
   clear: () => {
-    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], showOnline: false });
+    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], showOnline: false });
     savePrefs();
   },
   // Everything except age, which is about the child rather than this search
   resetFilters: () => {
-    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], showOnline: false });
+    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], showOnline: false });
     savePrefs();
   },
   sheet: (v) => { state.sheet = v; state.placeStatus = ""; },
@@ -2353,6 +2414,8 @@ const ACTIONS = {
     }
     return ACTIONS.feedback(v);
   },
+  // "Suggest a change": the message form, set up for corrections an admin applies
+  suggest: (v) => { ACTIONS.feedback(v); state.fb.change = true; },
   fbProblem: (v) => { Object.assign(state.fb, { problem: state.fb.problem === v ? "" : v, error: "" }); },
   sendFeedback: () => { sendFeedback(); return "async"; },
   // Opens the class, so the thank-you (or any problem) shows where it happened
@@ -2492,4 +2555,5 @@ const replaying = applyReplay(); // a tester's search from `npm run feedback`; n
 const shared = applyShared(); // a class someone sent
 render();
 loadListings();
+logUsage("open");
 if (!replaying && !shared) useMyLocation({ quiet: true });

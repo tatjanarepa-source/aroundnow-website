@@ -26,17 +26,17 @@ Research (London basic layer rule: one row per age group / session applies):
       postcode or times → re-check from its Facebook page
 
 App ideas (need a decision on how):
-- [ ] Pick several days in the calendar (e.g. Tue + Thu), not just one or the weekend
-- [ ] Filter OUT things, e.g. "don't show schools" (hide a type or category)
+- [x] Pick several days in the calendar (v42): days in the strip add up, e.g. "80 on Tue, Thu"; tap a day again to take it off
+- [x] "Don't show" in Filters (v42): hide types (weekend schools, nursery…) or activities; crossed out, remembered on the phone
 - [ ] Group events by theme: Christmas, Halloween, Easter… (a "theme" field on events + chips in season)
 - [ ] Look up events far ahead by choosing dates (maybe for members)
 - [ ] Classes with several sessions: "more dynamic" view, e.g. show the next session from the current time (maybe for
       members)
 - [ ] Let individuals add their own classes (now organisations only; brief 7.5 hid private individuals; needs rules:
       no home addresses on the map? sign-in, confirmation)
-- [ ] Edit a class (parent feedback 2 Nov on Azbuka R014: "no option to edit this class, e.g. add ages, address") →
+- [x] "Suggest a change" on every class page (v42): ages, day/time, price, address, activity → shows in npm run feedback / stats as "Suggested change"; Tatjana applies it. Still open: let whoever added a class edit it directly. Edit a class (parent feedback 2 Nov on Azbuka R014: "no option to edit this class, e.g. add ages, address") →
       "Suggest a change" form that an admin approves, or edits by whoever added it
-- [ ] Statistics page for Tatjana: users, areas searched, reported issues, classes added (needs simple, privacy-
+- [x] Statistics (v42): `npm run stats` (people per day, app opens, areas searched, ages, classes opened, reports, messages, suggested changes, classes added). Needs supabase/migrations/20261102_2_usage_stats.sql run first. Could become a private dashboard page later. Statistics page for Tatjana: users, areas searched, reported issues, classes added (needs simple, privacy-
       friendly counting: Cloudflare Web Analytics + counts from Supabase; areas only as rough areas)
 - [ ] Ballet filter: parent feedback 2 Nov "i cannot see ballet filter" (Dance styles are inside Sports / Dance)
 

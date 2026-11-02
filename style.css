@@ -885,3 +885,7 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 @media (min-width: 1100px) {
   .app { --side: 420px; }
 }
+
+/* "Don't show" chips: a picked one is crossed out, not lit up */
+.hide-chips .chip[aria-pressed="true"] { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); text-decoration: line-through; box-shadow: none; }
+.sub-head { margin: 12px 0 8px; color: var(--muted); font-size: 13px; font-weight: 800; }
