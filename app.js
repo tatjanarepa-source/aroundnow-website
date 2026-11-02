@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v43";
+const APP_VERSION = "v44";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -189,7 +189,7 @@ const STRINGS = {
     fVenue: "Venue name", fVenueHint: "e.g. St Mary’s Church Hall", fAddress: "Address", fAddressHint: "e.g. 12 The Grove, Ealing",
     fPostcode: "Postcode", fPostcodeHint: "e.g. W5 5JY",
     fPostcodeHelp: "Puts the pin on the map. Parents see the full address and get directions to it.",
-    fDays: "Days", fRuns: "Runs", runs: { term: "Term time", year: "All year", hols: "School holidays" },
+    fDays: "Days", daysUnknown: "Not mentioned", fRuns: "Runs", runs: { term: "Term time", year: "All year", hols: "School holidays" },
     fDate: "Date", fDates: "Dates", firstDay: "First day", lastDay: "Last day",
     fDatesHelp: "Leave empty if it runs in every school holiday.",
     fSched: "All days and times, as parents see them", fSchedHint: "e.g. Tue 10:00 (2–3 years), Sat 9:30 and 10:15",
@@ -341,7 +341,7 @@ const STRINGS = {
     fVenue: "Название места", fVenueHint: "например, St Mary’s Church Hall", fAddress: "Адрес", fAddressHint: "например, 12 The Grove, Ealing",
     fPostcode: "Индекс", fPostcodeHint: "например, W5 5JY",
     fPostcodeHelp: "По индексу ставим метку на карте. Родители видят полный адрес и могут построить маршрут.",
-    fDays: "Дни", fRuns: "Проходит", runs: { term: "В учебное время", year: "Весь год", hols: "На каникулах" },
+    fDays: "Дни", daysUnknown: "Не указано", fRuns: "Проходит", runs: { term: "В учебное время", year: "Весь год", hols: "На каникулах" },
     fDate: "Дата", fDates: "Даты", firstDay: "Первый день", lastDay: "Последний день",
     fDatesHelp: "Оставьте пустым, если лагерь работает на всех каникулах.",
     fTime: "Время", startsAt: "Начало", endsAt: "Конец",
@@ -1342,7 +1342,7 @@ function formFromListing(l) {
     langs: other ? langs.concat(["Other"]) : langs, otherLang: other || "",
     mode: l.on ? "online" : "inperson", address: l.adr || "", postcode: l.pc || "",
     geo: l.y != null && !l.on ? { lat: l.y, lng: l.x, area: l.a, postcode: l.pc || null } : null,
-    days: l.d.slice(), runs: find(ADD_RUNS, l.r, "term"), date: l.ed || "", dateTo: l.ee || "",
+    days: l.d.slice(), daysUnknown: !l.d.length, runs: find(ADD_RUNS, l.r, "term"), date: l.ed || "", dateTo: l.ee || "",
     timeFrom: l.st || "", timeTo: l.et || "",
     price: free ? "free" : l.p ? "paid" : "unsure", priceText: free ? "" : l.p,
     note: l.ds || "", sched: l.s || "", dupesOk: true,
@@ -1554,7 +1554,7 @@ function addMissing(n) {
       if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(pc)) out.push(pc ? need.postcodeFull : need.postcode);
     }
     if (a.kind === "oneoff" && !a.date) out.push(need.date);
-    if ((a.kind === "weekly" || a.kind === "nursery") && !a.days.length) out.push(need.days);
+    if ((a.kind === "weekly" || a.kind === "nursery") && !a.days.length && !a.daysUnknown) out.push(need.days);
   }
   if (n === 4) {
     if (!a.price) out.push(need.price);
@@ -1644,7 +1644,8 @@ function addStep3(a) {
   } else if (a.kind === "camp") {
     html += groupHtml(t.fDates, `<div class="pair">${inputHtml("date", a.date, `type="date" aria-label="${t.firstDay}"`)}${inputHtml("dateTo", a.dateTo, `type="date" aria-label="${t.lastDay}"`)}</div>`, t.fDatesHelp, true);
   } else {
-    html += groupHtml(t.fDays, wrap(DAY_ORDER.map((d) => chipHtml("fDay", d, t.day[d], a.days.includes(d), false)).join("")))
+    html += groupHtml(t.fDays, wrap(DAY_ORDER.map((d) => chipHtml("fDay", d, t.day[d], a.days.includes(d), false)).join("")
+        + chipHtml("fDaysUnknown", "1", t.daysUnknown, !!a.daysUnknown, false)))
       + groupHtml(t.fRuns, wrap(Object.keys(ADD_RUNS).map((r) => chipHtml("fRuns", r, t.runs[r], a.runs === r, false)).join("")));
   }
   if (a.editId) html += fieldHtml(t.fSched, `<textarea class="input" data-field="sched" rows="3" maxlength="600" placeholder="${t.fSchedHint}">${esc(a.sched || "")}</textarea>`, "", true);
@@ -1801,9 +1802,7 @@ function communityHtml(l) {
   if (!sb) return "";
   const err = b && b.error ? `<p class="form-msg" role="alert">${esc(b.error)}</p>` : "";
   if (mineAdded(l)) return `<div class="community"><p>${t.youAdded}</p></div>`;
-  if (s.mine.edited[l.i] && unconfirmed(l)) return `<div class="community"><p>${t.youEdited}</p></div>`;
-  if (s.mine.reported[l.i]) return `<div class="community"><p>${t.youReported}</p></div>`;
-  if (s.mine.confirmed[l.i] && !unconfirmed(l)) return `<div class="community"><p>${t.youConfirmed}</p></div>`;
+  // The report box first: tapping "Something wrong?" must show it even on a class you confirmed or edited
   if (b && b.mode === "report") {
     const reasons = REASONS.map((r) => chipHtml("reason", r, t.reason[r], b.reason === r, false)).join("");
     return `<div class="community"><b>${t.whatsWrong}</b>${wrap(reasons)}
@@ -1811,6 +1810,9 @@ function communityHtml(l) {
       ${err}<div class="foot-row"><button type="button" class="text-btn" data-act="cancelReport">${t.cancel}</button>
       <button type="button" class="primary" data-act="sendReport" data-v="${esc(l.i)}"${b.busy ? " disabled" : ""}>${t.sendReport}</button></div></div>`;
   }
+  if (s.mine.edited[l.i] && unconfirmed(l)) return `<div class="community"><p>${t.youEdited}</p></div>`;
+  if (s.mine.reported[l.i]) return `<div class="community"><p>${t.youReported}</p></div>`;
+  if (s.mine.confirmed[l.i] && !unconfirmed(l)) return `<div class="community"><p>${t.youConfirmed}</p></div>`;
   if (l.rr) {
     // One parent reported it: ask the next ones. Agreeing is a second report (hides it); "it's fine" confirms it.
     const day = new Date(l.ra).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { day: "numeric", month: "short" });
@@ -2441,7 +2443,9 @@ const ACTIONS = {
   fCat: (v) => { state.add.cat = v; },
   fLang: (v) => { state.add.langs = flip(state.add.langs, v); },
   fMode: (v) => { state.add.mode = v; state.add.dupesOk = false; },
-  fDay: (v) => { state.add.days = flip(state.add.days, v); },
+  fDay: (v) => { state.add.days = flip(state.add.days, v); state.add.daysUnknown = false; },
+  // "Not mentioned": the poster or website doesn't say which days
+  fDaysUnknown: () => { const a = state.add; a.daysUnknown = !a.daysUnknown; if (a.daysUnknown) a.days = []; },
   fRuns: (v) => { state.add.runs = v; },
   fPrice: (v) => { state.add.price = v; },
   // "All ages": from birth, no upper age; tap again to clear
