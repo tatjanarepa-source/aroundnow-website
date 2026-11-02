@@ -39,6 +39,10 @@ App ideas (need a decision on how):
       friendly counting: Cloudflare Web Analytics + counts from Supabase; areas only as rough areas)
 - [x] Ballet filter (v46): "Dance style" row in Filters (Ballet, Tap, Jazz, Contemporary, Street & hip hop, Ballroom & Latin) when dance is nearby
 
+- [x] Language list on the add/edit form (v49): English/Russian buttons, "Add a language…" list (~48 London languages + any already on the map), "+ Add a new language" with tidy capitals and "Did you mean Romanian?"
+- [x] "Want AroundNow in your city? Give us a shout" (v49): in the Where sheet and when nothing is found; arrives as "City request: <city>" in npm run feedback, counted in npm run stats
+- [ ] Fix "romamian" → "Romanian" on C261102da572 (blocked: needs Tatjana's OK or her own edit)
+
 ## London basic layer (agreed 2 Nov 2026)
 
 Whole of London, but only the big structured sources for now; deep borough-by-borough research (churches, halls,

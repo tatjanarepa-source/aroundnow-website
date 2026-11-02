@@ -74,6 +74,7 @@ const reports = await getAll(`listing_reports?select=listing_id,reason,resolved,
 const openReports = (await getAll("listing_reports?select=listing_id&resolved=eq.false")).length;
 const feedback = await getAll(`feedback?select=message,created_at&created_at=gte.${since(days)}`);
 const changes = feedback.filter((f) => /^Suggested change/.test(f.message || "")).length;
+const cities = feedback.filter((f) => /^City request/.test(f.message || "")).map((f) => f.message.replace(/^City request: /, "").split(" – ")[0]);
 const added = await getAll(`listings?select=id,title,status,created_at&source=eq.Community&created_at=gte.${since(days)}`);
 const live = (await getAll("listings?select=id&status=in.(Active,Check)")).length;
 let edits = [];
@@ -82,7 +83,8 @@ try { edits = await getAll(`listing_edits?select=id,undone&created_at=gte.${sinc
 console.log(`\nReports and messages (last ${days} days)`);
 console.log(`  class reports              ${reports.length} (open now: ${openReports})`);
 top(reports, (r) => r.reason).forEach(([k, n]) => console.log(`    ${pad(n, 4)} ${k}`));
-console.log(`  messages ("Tell us")       ${feedback.length - changes}`);
+console.log(`  messages ("Tell us")       ${feedback.length - changes - cities.length}`);
+console.log(`  city requests              ${cities.length}${cities.length ? ": " + cities.join(", ") : ""}`);
 console.log(`  suggested changes          ${changes}`);
 console.log(`\nClasses`);
 console.log(`  live on the map            ${live}`);

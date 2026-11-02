@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v48";
+const APP_VERSION = "v49";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -118,6 +118,40 @@ const PRICES = {
 // "Something else" is stored as Mixed, which the database holds back for an admin to check.
 const ADD_CATS = ["Languages", "Sports / Dance", "Performing arts", "Arts / Crafts", "STEM / Thinking", "Chess",
   "Outdoor / Nature", "Soft play", "Museums", "Childcare / Preschool", "Mixed"];
+// Languages to pick from when adding a class (Tatjana, 2 Nov: a list, not free text, so no typos)
+const LANG_LIST = ["Albanian", "Arabic", "Bengali", "Bulgarian", "Cantonese", "Czech", "Dutch", "Farsi", "French",
+  "German", "Greek", "Gujarati", "Hebrew", "Hindi", "Hungarian", "Italian", "Japanese", "Korean", "Kurdish", "Latvian",
+  "Lithuanian", "Malayalam", "Mandarin", "Nepali", "Pashto", "Persian", "Polish", "Portuguese", "Punjabi", "Romanian", "Russian",
+  "Serbian", "Slovak", "Somali", "Spanish", "Swahili", "Swedish", "Tagalog", "Tamil", "Telugu", "Turkish", "Twi",
+  "Ukrainian", "Urdu", "Vietnamese", "Welsh", "Yoruba", "English"];
+function knownLangs() {
+  const seen = new Set(LANG_LIST);
+  state.items.forEach((l) => l.l.forEach((x) => { if (/^[A-Z][a-z]+( [A-Z][a-z]+)?$/.test(x)) seen.add(x); }));
+  return [...seen].sort();
+}
+// "romanian " → "Romanian"; "brazilian portuguese" → "Brazilian Portuguese"
+function tidyLang(x) {
+  return x.trim().replace(/\s+/g, " ").toLowerCase().replace(/(^|[\s-])\p{L}/gu, (m) => m.toUpperCase()).slice(0, 40);
+}
+function editDistance(a, b) {
+  a = a.toLowerCase(); b = b.toLowerCase();
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  }
+  return d[a.length][b.length];
+}
+// The list's closest spelling, if the typed one is probably a typo ("Romamian" → "Romanian")
+function closeLang(x) {
+  let best = null, bestD = 4;
+  for (const k of knownLangs()) {
+    const dist = editDistance(x, k);
+    if (dist < bestD && dist <= (k.length <= 4 ? 1 : k.length >= 9 ? 3 : 2)) { best = k; bestD = dist; }
+  }
+  return best && best !== x ? best : null;
+}
+
 const ADD_KINDS = { weekly: "Group class", oneoff: "Workshop / event", camp: "Holiday camp", nursery: "Preschool / nursery" };
 const ADD_RUNS = { term: "Term time", year: "Year-round", hols: "Holidays" };
 // Add form ages, in months: baby classes start at weeks or months, older ones go by years
@@ -196,6 +230,8 @@ const STRINGS = {
       "Outdoor / Nature": "Outdoors", "Soft play": "Soft play", "Museums": "Museums", "Childcare / Preschool": "Childcare", "Mixed": "Something else" },
     fAges: "Ages", allAges: "All ages", ageFrom: "From…", ageTo: "To…", youngest: "Youngest age", oldest: "Oldest age", birth: "Birth", noUpper: "No upper age",
     fLangs: "Taught in", otherLang: "Other…", otherLangHint: "Which language?",
+    langAdd: "Add a language…", langNewOpt: "+ Add a new language", langNewHint: "Type the language", langAddBtn: "Add",
+    langDidYouMean: (x) => `Did you mean ${x}?`, langKeep: (x) => `No, add “${x}”`,
     fWhere: "Where", inPerson: "In person",
     fVenue: "Venue name", fVenueHint: "e.g. St Mary’s Church Hall", fAddress: "Address", fAddressHint: "e.g. 12 The Grove, Ealing",
     fPostcode: "Postcode", fPostcodeHint: "e.g. W5 5JY",
@@ -268,6 +304,10 @@ const STRINGS = {
     knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
     pickReason: "Pick what’s wrong first.", andList: " and ", here: (n) => `${classes(n)} here`,
     fbLink: "Something not right? Tell us", fbTitle: "Tell us",
+    cityLink: "Want AroundNow in your city? Give us a shout",
+    cityTitle: "AroundNow in your city", cityLead: "AroundNow covers London for now. Tell us where you are and we’ll add your city. Leave your email and we’ll let you know when it’s ready.",
+    cityField: "Your city or town", cityHint: "e.g. Manchester", cityMsg: "Anything else?", cityMsgHint: "e.g. classes you’d love to see",
+    cityContactHint: "So we can tell you when it’s ready", cityEmpty: "Which city or town?", cityPrefix: "City request",
     fbClassLink: "Something wrong with this class? Tell us", fbFilterLink: "A filter not working? Tell us",
     fbAbout: (title) => `About: ${title}`, fbWhat: "What’s wrong?",
     chLink: "Suggest a change (ages, address, times…)", chTitle: "Suggest a change", chAbout: (title) => `Change: ${title}`,
@@ -350,6 +390,8 @@ const STRINGS = {
       "Outdoor / Nature": "На природе", "Soft play": "Игровые комнаты", "Museums": "Музеи", "Childcare / Preschool": "Присмотр за детьми", "Mixed": "Другое" },
     fAges: "Возраст", allAges: "Все возрасты", ageFrom: "От…", ageTo: "До…", youngest: "Младший возраст", oldest: "Старший возраст", birth: "С рождения", noUpper: "Без ограничения",
     fLangs: "Язык занятий", otherLang: "Другой…", otherLangHint: "Какой язык?",
+    langAdd: "Добавить язык…", langNewOpt: "+ Добавить новый язык", langNewHint: "Напишите язык", langAddBtn: "Добавить",
+    langDidYouMean: (x) => `Может быть, ${x}?`, langKeep: (x) => `Нет, добавить «${x}»`,
     fWhere: "Где", inPerson: "Очно",
     fVenue: "Название места", fVenueHint: "например, St Mary’s Church Hall", fAddress: "Адрес", fAddressHint: "например, 12 The Grove, Ealing",
     fPostcode: "Индекс", fPostcodeHint: "например, W5 5JY",
@@ -1057,7 +1099,8 @@ function renderList(c) {
   if (!c.shown.length && !w) {
     const weekend = s.date && s.date !== "weekend"
       ? `<button type="button" class="chip" data-act="date" data-v="weekend">${t.tryWeekend}</button>` : "";
-    html += `<div class="empty"><span>${t.nothing}</span><div class="wrap">${weekend}<button type="button" class="chip" data-act="clear">${t.clearAll}</button></div></div>`;
+    html += `<div class="empty"><span>${t.nothing}</span><div class="wrap">${weekend}<button type="button" class="chip" data-act="clear">${t.clearAll}</button></div>
+      <button type="button" class="link-btn" data-act="city">${t.cityLink}</button></div>`;
   }
   list.innerHTML = html;
 }
@@ -1121,7 +1164,8 @@ function placeSheet(c) {
       <button type="submit">${t.go}</button></form>${status}
       <div class="sec"><h3>${t.quickAreas}</h3><div class="wrap">${areas}</div></div>
       <div class="sec"><h3>${t.distance}</h3><div class="wrap">${radii}</div><div class="wrap units">${units}</div></div>
-      <div class="sec"><h3>${t.lookTitle}</h3><div class="wrap">${looks}</div></div>`,
+      <div class="sec"><h3>${t.lookTitle}</h3><div class="wrap">${looks}</div></div>
+      <button type="button" class="link-btn feedback-link" data-act="city">${t.cityLink}</button>`,
     foot: `<button type="button" class="primary" data-act="closeSheet">${esc(t.show(c.shown.length))}</button>`,
   };
 }
@@ -1240,6 +1284,18 @@ function feedbackSheet(c) {
   const shared = [ctx.area.name, ctx.distance, ctx.ages.length ? `${t.age} ${ctx.ages.join(", ")}` : "", ...on,
     `${ctx.shown} ${t.fbShown}`, ctx.screen, ctx.app].filter(Boolean).join(" · ");
   const msg = f.error ? `<p class="form-msg" role="alert">${esc(f.error)}</p>` : "";
+  if (f.city) {
+    return {
+      title: t.cityTitle,
+      body: `<p class="lead">${t.cityLead}</p>
+        ${fieldHtml(t.cityField, inputHtml("fb.cityName", f.cityName || "", `type="text" maxlength="80" autocomplete="address-level2" placeholder="${t.cityHint}"`))}
+        ${fieldHtml(t.cityMsg, `<textarea class="input" data-field="fb.msg" rows="3" maxlength="1000" placeholder="${t.cityMsgHint}">${esc(f.msg)}</textarea>`, "", true)}
+        ${fieldHtml(t.fbContact, inputHtml("fb.contact", f.contact, `type="email" maxlength="200" autocomplete="email" placeholder="${t.cityContactHint}"`), "", true)}`,
+      top: msg,
+      foot: `<button type="button" class="text-btn" data-act="closeSheet">${t.cancel}</button>
+        <button type="button" class="primary" data-act="sendFeedback"${f.busy ? " disabled" : ""}>${f.busy ? t.sending : t.fbSend}</button>`,
+    };
+  }
   const about = f.change && ctx.listing && ctx.listing.title
     ? `<p class="lead"><b>${esc(t.chAbout(ctx.listing.title))}</b></p>
       ${groupHtml(t.chWhat, wrap(Object.keys(t.chProb).map((k) => chipHtml("fbProblem", k, t.chProb[k], f.problem === k, false)).join("")))}`
@@ -1262,11 +1318,12 @@ function feedbackSheet(c) {
 
 async function sendFeedback() {
   const f = state.fb, t = T();
-  if (!f.msg.trim() && !f.problem) { f.error = t.fbEmpty; render({ keepScroll: true }); return; }
+  if (f.city && !(f.cityName || "").trim()) { f.error = t.cityEmpty; render({ keepScroll: true }); return; }
+  if (!f.city && !f.msg.trim() && !f.problem) { f.error = t.fbEmpty; render({ keepScroll: true }); return; }
   f.busy = true;
   f.error = "";
   render({ keepScroll: true });
-  const kind = f.change ? `${t.chPrefix}${f.problem ? ` (${t.chProb[f.problem]})` : ""}: ` : "";
+  const kind = f.city ? `${t.cityPrefix}: ${f.cityName.trim()}${f.msg.trim() ? " – " : ""}` : f.change ? `${t.chPrefix}${f.problem ? ` (${t.chProb[f.problem]})` : ""}: ` : "";
   const row = { message: kind + (f.msg.trim() || (f.change ? "" : t.prob[f.problem])), contact: f.contact.trim() || null, context: f.share ? fbContext(compute()) : null };
   const { error } = sb ? await sb.from("feedback").insert(row) : { error: { message: "offline" } };
   f.busy = false;
@@ -1341,7 +1398,7 @@ const wrap = (chips) => `<div class="wrap">${chips}</div>`;
 function blankAdd() {
   return {
     step: 1, tried: 0, busy: false, error: "", name: "", org: "", link: "", kind: "", cat: "",
-    ageMin: "", ageMax: "", langs: ["English"], otherLang: "", mode: "inperson", venue: "", address: "",
+    ageMin: "", ageMax: "", langs: ["English"], langNew: null, langSuggest: "", mode: "inperson", venue: "", address: "",
     postcode: "", geo: null, days: [], runs: "term", date: "", dateTo: "", timeFrom: "", timeTo: "",
     price: "", priceText: "", note: "", orgOk: false, trueOk: false,
     dupes: null, dupesOk: false, // classes already on the map that look like this one; dupesOk once the parent said "mine is different"
@@ -1353,13 +1410,11 @@ function blankAdd() {
 function formFromListing(l) {
   const a = blankAdd();
   const find = (map, v, dflt) => Object.keys(map).find((k) => map[k] === v) || dflt;
-  const langs = l.l.filter((x) => x === "English" || x === "Russian");
-  const other = l.l.find((x) => x !== "English" && x !== "Russian");
   const free = /^free\b/i.test(l.p);
   Object.assign(a, {
     editId: l.i, name: l.t, org: l.pv, link: l.w, kind: find(ADD_KINDS, l.f, ""), cat: l.cr,
     ageMin: l.mn == null ? "" : String(l.mn), ageMax: l.mx == null ? (l.mn == null ? "" : "999") : String(l.mx),
-    langs: other ? langs.concat(["Other"]) : langs, otherLang: other || "",
+    langs: l.l.slice(),
     mode: l.on ? "online" : "inperson", address: l.adr || "", postcode: l.pc || "",
     geo: l.y != null && !l.on ? { lat: l.y, lng: l.x, area: l.a, postcode: l.pc || null } : null,
     days: l.d.slice(), daysUnknown: !l.d.length, runs: find(ADD_RUNS, l.r, "term"), date: l.ed || "", dateTo: l.ee || "",
@@ -1418,12 +1473,7 @@ function applyPoster(a, f) {
   if (ADD_CATS.includes(f.category)) a.cat = f.category;
   set("ageMin", ageOption(AGE_FROM, f.age_min_months, false));
   set("ageMax", ageOption(AGE_TO, f.age_max_months, true));
-  if (f.languages.length) {
-    const known = f.languages.filter((x) => x === "English" || x === "Russian");
-    const other = f.languages.find((x) => x !== "English" && x !== "Russian");
-    a.langs = other ? known.concat(["Other"]) : known;
-    if (other) a.otherLang = other.slice(0, 40);
-  }
+  if (f.languages.length) a.langs = [...new Set(f.languages.map((x) => closeLang(tidyLang(x)) || tidyLang(x)))];
   a.mode = f.online ? "online" : "inperson";
   set("venue", f.venue.slice(0, 80));
   set("address", f.address.slice(0, 120));
@@ -1545,7 +1595,6 @@ function addMissing(n) {
     if (n === 2) {
       if ((a.ageMin === "") !== (a.ageMax === "")) out.push(need.ages);
       else if (a.ageMin !== "" && Number(a.ageMax) < Number(a.ageMin)) out.push(need.agesOrder);
-      if (a.langs.includes("Other") && !a.otherLang.trim()) out.push(need.otherLang);
     }
     if (n === 3 && a.mode !== "online" && a.postcode.trim()
       && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(a.postcode.trim())) out.push(need.postcodeFull);
@@ -1565,7 +1614,6 @@ function addMissing(n) {
     if (a.ageMin === "" || a.ageMax === "") out.push(need.ages);
     else if (Number(a.ageMax) < Number(a.ageMin)) out.push(need.agesOrder);
     if (!a.langs.length) out.push(need.lang);
-    else if (a.langs.includes("Other") && !a.otherLang.trim()) out.push(need.otherLang);
   }
   if (n === 3) {
     if (a.mode !== "online") {
@@ -1640,9 +1688,18 @@ function addStep2(a) {
   const withValue = (list, v) => (v !== "" && !list.includes(Number(v)) ? list.concat(Number(v)).sort((x, y) => x - y) : list);
   const from = withValue(AGE_FROM, a.ageMin).map((v) => [v, v === 0 ? t.birth : t.ageOpt(v)]);
   const to = withValue(AGE_TO, a.ageMax).map((v) => [v, v === 999 ? t.noUpper : t.ageOpt(v)]);
-  const langs = ["English", "Russian", "Other"].map((x) => chipHtml("fLang", x, x === "Other" ? t.otherLang : t.lang[x], a.langs.includes(x), false)).join("");
-  const otherLang = a.langs.includes("Other")
-    ? inputHtml("otherLang", a.otherLang, `type="text" maxlength="40" placeholder="${t.otherLangHint}" aria-label="${t.otherLangHint}"`) : "";
+  const langs = ["English", "Russian"].concat(a.langs.filter((x) => x !== "English" && x !== "Russian"))
+    .map((x) => chipHtml("fLang", x, t.lang[x] || x, a.langs.includes(x), false)).join("");
+  const pick = knownLangs().filter((x) => !a.langs.includes(x)).map((x) => [x, t.lang[x] || x]).concat([["__new", t.langNewOpt]]);
+  let otherLang = selectHtml("langPick", t.langAdd, t.langAdd, pick, "");
+  if (a.langNew != null) {
+    otherLang += `<div class="pair">${inputHtml("langNew", a.langNew, `type="text" maxlength="40" placeholder="${t.langNewHint}" aria-label="${t.langNewHint}"`)}
+      <button type="button" class="chip" data-act="langAdd">${t.langAddBtn}</button></div>`;
+    if (a.langSuggest) {
+      otherLang += `<p class="help">${esc(t.langDidYouMean(a.langSuggest))}</p>${wrap(chipHtml("langUse", a.langSuggest, a.langSuggest, false, false)
+        + chipHtml("langKeep", "1", t.langKeep(tidyLang(a.langNew)), false, false))}`;
+    }
+  }
   return groupHtml(t.fCat, wrap(ADD_CATS.map((k) => chipHtml("fCat", k, t.addCat[k], a.cat === k, false)).join("")),
     a.cat === "Mixed" ? t.fOtherCat : "")
     + groupHtml(t.fAges, `<div class="pair">${selectHtml("ageMin", t.youngest, t.ageFrom, from, a.ageMin)}${selectHtml("ageMax", t.oldest, t.ageTo, to, a.ageMax)}</div>`
@@ -1688,7 +1745,7 @@ function formDays(a) {
   if (a.kind === "camp") return [];
   return DAY_ORDER.filter((d) => a.days.includes(d));
 }
-function formLangs(a) { return a.langs.map((x) => (x === "Other" ? a.otherLang.trim() : x)).filter(Boolean); }
+function formLangs(a) { return a.langs.filter(Boolean); }
 function longDate(iso) {
   return new Date(`${iso}T12:00`).toLocaleDateString(isRu() ? "ru-RU" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 }
@@ -2463,6 +2520,21 @@ const ACTIONS = {
   fKind: (v) => { state.add.kind = v; },
   fCat: (v) => { state.add.cat = v; },
   fLang: (v) => { state.add.langs = flip(state.add.langs, v); },
+  // A new language: tidied, and checked against the list for typos first
+  langAdd: () => {
+    const a = state.add, x = tidyLang(a.langNew || "");
+    if (!x) return;
+    const near = closeLang(x);
+    if (near && !a.langSuggest) { a.langSuggest = near; return; }
+    if (!a.langs.includes(x)) a.langs = a.langs.concat(x);
+    Object.assign(a, { langNew: null, langSuggest: "" });
+  },
+  langUse: (v) => { const a = state.add; if (!a.langs.includes(v)) a.langs = a.langs.concat(v); Object.assign(a, { langNew: null, langSuggest: "" }); },
+  langKeep: () => {
+    const a = state.add, x = tidyLang(a.langNew || "");
+    if (x && !a.langs.includes(x)) a.langs = a.langs.concat(x);
+    Object.assign(a, { langNew: null, langSuggest: "" });
+  },
   fMode: (v) => { state.add.mode = v; state.add.dupesOk = false; },
   fDay: (v) => { state.add.days = flip(state.add.days, v); state.add.daysUnknown = false; },
   // "Not mentioned": the poster or website doesn't say which days
@@ -2529,6 +2601,7 @@ const ACTIONS = {
   },
   // "Suggest a change": the message form, set up for corrections an admin applies
   suggest: (v) => { ACTIONS.feedback(v); state.fb.change = true; },
+  city: () => { ACTIONS.feedback(); Object.assign(state.fb, { city: true, cityName: "", share: true }); },
   // Anyone signed in can edit a class; it goes back to "Not yet confirmed" until another parent confirms it
   edit: (v) => {
     if (needSignIn(v)) return;
@@ -2581,6 +2654,15 @@ function onField(e) {
   if (f.startsWith("box.")) { if (state.box) state.box[f.slice(4)] = value; return; }
   if (f.startsWith("fb.")) { if (state.fb) state.fb[f.slice(3)] = value; return; }
   if (!state.add) return;
+  if (f === "langPick") {
+    if (e.type !== "change" || !value) return;
+    const a = state.add;
+    if (value === "__new") a.langNew = "";
+    else if (!a.langs.includes(value)) a.langs = a.langs.concat(value);
+    render({ keepScroll: true });
+    return;
+  }
+  if (f === "langNew" && state.add.langSuggest) state.add.langSuggest = "";
   state.add[f] = value;
   if (f === "postcode") state.add.geo = null;
   if (["name", "org", "link", "postcode"].includes(f)) state.add.dupesOk = false; // look again with the new details
