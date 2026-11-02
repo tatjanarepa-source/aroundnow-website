@@ -181,7 +181,8 @@ and the venue's site doesn't list them. To find them in an area:
 1. Google in Chrome: `ballet <area>`, `preschool ballet <area>`, `baby ballet <postcode district>`,
    `tap dance children <area>`, and the Places map for "dance school".
 2. RAD and ISTD teacher finders (royalacademyofdance.org "Find a teacher", istd.org "Find a teacher"): list the
-   registered teachers and schools near the area's postcode.
+   registered teachers and schools near the area's postcode. The RAD map needs functional cookies: accepting
+   functional-only cookies there is OK (Tatjana, 2 Nov); still decline advertising and tracking ones.
 3. For every school found, open its timetable or "classes / venues" page and add **one row per venue** (a school
    with three halls is three rows). Note term dates; fees are often not published (say so in `NeedsInfo`).
 4. Then do the same sweep for other activities that hire halls: music (e.g. Monkey Music is a franchise, but

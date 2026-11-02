@@ -33,10 +33,9 @@ Test after deploy (close and reopen the app first):
 - [ ] Filters → This weekend → Saturday and Sunday light up, and the list is split by day
 - [ ] Say if the map should be bigger still
 
-- [ ] **Light look shows dark grey on Tatjana's phone** (1 Nov): live CSS has the right light colours and the laptop
-      shows them; v37 added `color-scheme: only light` in case the phone's browser darkens sites. Still dark after v37
-      on 1 Nov; she checks again on 2 Nov. Next: a screenshot, plus which phone/browser and whether it's installed on
-      the home screen
+- [x] **Light look shows dark grey on Tatjana's phone** (1 Nov): live CSS has the right light colours and the laptop
+      shows them; v37 added `color-scheme: only light` in case the phone's browser darkens sites. Fine on her phone
+      on 2 Nov
 
 - [x] **New free map** (v38, 1 Nov): OpenFreeMap through MapLibre inside Leaflet: "Liberty" in the light look,
       "Fiord" in the dark one (picked on the canvas). Old OpenStreetMap tiles if a phone has no WebGL. Tested in the

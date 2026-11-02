@@ -5,14 +5,19 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
-- (2026-11-01) Mockingbird Music (St Paul's W13): times are from its own Instagram post, seen only through Google (the post needs a login). Keep, or leave out until the times are on a page we can open?
-- (2026-11-01) The RAD 'find a teacher' map only works after accepting functional cookies. OK for research agents to accept functional-only cookies on that site?
-- (2026-11-01) Petite Performers says 'from walking'; the agent used 14 months from Happity. OK?
-
-- (2026-11-01) Wildcats Combat: times are from its own Instagram, but the ages come from the British Taekwondo Council club listing (not the club's own site). OK to keep, or leave ages empty?
-- (2026-11-01) De Silva Taekwon-Do Wembley (HA0 4JB) is just over the border in Brent. Kept, like other Brent rows; say if AroundNow should stay Ealing-only.
+(none)
 
 ## Answered
+
+- **Mockingbird Music (St Paul's W13), times only via a Google view of its Instagram post:** **Answer (2 Nov): keep it.**
+
+- **RAD "find a teacher" map needs functional cookies:** **Answer (2 Nov): yes, research agents may accept functional-only cookies on that site** (still decline advertising/tracking). Noted in research/sources.md.
+
+- **Petite Performers "from walking" = 14 months (from Happity):** **Answer (2 Nov): OK.**
+
+- **Wildcats Combat ages from the British Taekwondo Council listing:** **Answer (2 Nov): take the ages.**
+
+- **De Silva Taekwon-Do Wembley is in Brent; stay Ealing-only?** **Answer (2 Nov): no, AroundNow covers the whole of London.** Kept.
 
 - **Monkey Music Ealing (E03, on the map at OPEN Ealing W5 2TD):** Monkey Music's own class finder (30 Oct) shows no
   Ealing venue at all; the nearest are Chiswick and Hammersmith (now added). Our Ealing row came from Happity and may be
