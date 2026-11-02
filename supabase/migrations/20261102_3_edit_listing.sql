@@ -43,7 +43,8 @@
     if (select count(*) from listing_edits e where e.user_id = me and e.created_at > now() - interval '1 day') >= 20 then
       raise exception 'That''s 20 edits today. Please try again tomorrow';
     end if;
-    if coalesce(trim(p_fields->>'title'), '') = '' then raise exception 'The class needs a name'; end if;
+    -- Only a name that was sent can be empty: the app sends just the fields that changed
+    if p_fields ? 'title' and coalesce(trim(p_fields->>'title'), '') = '' then raise exception 'The class needs a name'; end if;
 
     -- Only these columns, and only the ones sent
     select coalesce(jsonb_object_agg(k, old_row->k), '{}'::jsonb), coalesce(jsonb_object_agg(k, p_fields->k), '{}'::jsonb)
