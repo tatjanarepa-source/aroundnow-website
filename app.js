@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v40";
+const APP_VERSION = "v41";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -183,7 +183,7 @@ const STRINGS = {
     addCat: { "Languages": "Languages", "Sports / Dance": "Sport & dance", "Performing arts": "Music & theatre",
       "Arts / Crafts": "Arts & crafts", "STEM / Thinking": "Science & thinking", "Chess": "Chess",
       "Outdoor / Nature": "Outdoors", "Soft play": "Soft play", "Museums": "Museums", "Childcare / Preschool": "Childcare", "Mixed": "Something else" },
-    fAges: "Ages", ageFrom: "From…", ageTo: "To…", youngest: "Youngest age", oldest: "Oldest age", birth: "Birth", noUpper: "No upper age",
+    fAges: "Ages", allAges: "All ages", ageFrom: "From…", ageTo: "To…", youngest: "Youngest age", oldest: "Oldest age", birth: "Birth", noUpper: "No upper age",
     fLangs: "Taught in", otherLang: "Other…", otherLangHint: "Which language?",
     fWhere: "Where", inPerson: "In person",
     fVenue: "Venue name", fVenueHint: "e.g. St Mary’s Church Hall", fAddress: "Address", fAddressHint: "e.g. 12 The Grove, Ealing",
@@ -325,7 +325,7 @@ const STRINGS = {
     addCat: { "Languages": "Языки", "Sports / Dance": "Спорт и танцы", "Performing arts": "Музыка и театр",
       "Arts / Crafts": "Творчество", "STEM / Thinking": "Наука и мышление", "Chess": "Шахматы",
       "Outdoor / Nature": "На природе", "Soft play": "Игровые комнаты", "Museums": "Музеи", "Childcare / Preschool": "Присмотр за детьми", "Mixed": "Другое" },
-    fAges: "Возраст", ageFrom: "От…", ageTo: "До…", youngest: "Младший возраст", oldest: "Старший возраст", birth: "С рождения", noUpper: "Без ограничения",
+    fAges: "Возраст", allAges: "Все возрасты", ageFrom: "От…", ageTo: "До…", youngest: "Младший возраст", oldest: "Старший возраст", birth: "С рождения", noUpper: "Без ограничения",
     fLangs: "Язык занятий", otherLang: "Другой…", otherLangHint: "Какой язык?",
     fWhere: "Где", inPerson: "Очно",
     fVenue: "Название места", fVenueHint: "например, St Mary’s Church Hall", fAddress: "Адрес", fAddressHint: "например, 12 The Grove, Ealing",
@@ -895,9 +895,6 @@ function cardHtml(o, dates, multi) {
   const club = dates && !dates.some((d) => runsOn(l, d) === "regular");
   const meta = [club ? "" : whenText(l), langText(l), shortPrice(l.p)].filter(Boolean).join(" · ");
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
-  if (multi && (l.mn != null || l.mx != null) && s.ages.every((a) => fitsAge(l, a))) {
-    tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
-  }
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
   if (l.rr) tags.push(`<span class="tag warn">${esc(T().reported[l.rr] || T().reported.other)}</span>`);
   else if (unconfirmed(l)) tags.push(statusTag(l));
@@ -944,9 +941,6 @@ function slotHtml(o, d) {
   const st = slotTime(l, d), et = st ? l.et : "";
   const time = st ? `<b>${esc(st)}</b>${et ? `<small>${esc(t.toTime(et))}</small>` : ""}` : "<small>–</small>";
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
-  if (s.ages.length >= 2 && (l.mn != null || l.mx != null) && s.ages.every((a) => fitsAge(l, a))) {
-    tags.push(`<span class="tag">${s.ages.length === 2 ? t.suitsBoth : t.suitsAll}</span>`);
-  }
   if (runsOn(l, d) === "club") tags.push(`<span class="tag">${t.holidayClub}</span>`);
   if (l.rr) tags.push(`<span class="tag warn">${esc(t.reported[l.rr] || t.reported.other)}</span>`);
   else if (unconfirmed(l)) tags.push(statusTag(l));
@@ -1515,7 +1509,8 @@ function addStep2(a) {
     ? inputHtml("otherLang", a.otherLang, `type="text" maxlength="40" placeholder="${t.otherLangHint}" aria-label="${t.otherLangHint}"`) : "";
   return groupHtml(t.fCat, wrap(ADD_CATS.map((k) => chipHtml("fCat", k, t.addCat[k], a.cat === k, false)).join("")),
     a.cat === "Mixed" ? t.fOtherCat : "")
-    + groupHtml(t.fAges, `<div class="pair">${selectHtml("ageMin", t.youngest, t.ageFrom, from, a.ageMin)}${selectHtml("ageMax", t.oldest, t.ageTo, to, a.ageMax)}</div>`)
+    + groupHtml(t.fAges, `<div class="pair">${selectHtml("ageMin", t.youngest, t.ageFrom, from, a.ageMin)}${selectHtml("ageMax", t.oldest, t.ageTo, to, a.ageMax)}</div>`
+      + wrap(chipHtml("fAllAges", "1", t.allAges, String(a.ageMin) === "0" && String(a.ageMax) === "999", false)))
     + groupHtml(t.fLangs, wrap(langs) + otherLang);
 }
 
@@ -1992,7 +1987,7 @@ function renderDetail(c) {
         <dl class="facts">
           <div><dt>${t.dWhen}</dt><dd>${esc([l.ed ? whenText(l) : "", l.s || (l.ed ? "" : daysText(l.d))].filter(Boolean).join(". ") || "—")}</dd></div>
           <div><dt>${t.dPrice}</dt><dd>${esc(l.p || t.priceUnknown)}</dd></div>
-          <div><dt>${t.dWhere}</dt><dd>${esc(where)}</dd></div>
+          <div><dt>${t.dWhere}</dt><dd>${dir ? `<a class="addr-link" href="${dir}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}">${esc(where)}</a>` : esc(where)}</dd></div>
         </dl>
         ${l.ds ? `<p>${esc(l.ds)}</p>` : ""}
         ${shareBoxHtml(l)}
@@ -2300,6 +2295,12 @@ const ACTIONS = {
   fDay: (v) => { state.add.days = flip(state.add.days, v); },
   fRuns: (v) => { state.add.runs = v; },
   fPrice: (v) => { state.add.price = v; },
+  // "All ages": from birth, no upper age; tap again to clear
+  fAllAges: () => {
+    const a = state.add, on = String(a.ageMin) === "0" && String(a.ageMax) === "999";
+    a.ageMin = on ? "" : "0";
+    a.ageMax = on ? "" : "999";
+  },
   addNext: () => { addNext(); return "async"; },
   addBack: () => { Object.assign(state.add, { step: state.add.step - 1, tried: 0, error: "" }); },
   addAgain: () => { state.add = blankAdd(); },

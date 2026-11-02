@@ -10,6 +10,36 @@ Ideas and problems to come back to. Newest first. Tick when done.
 3. Pick the next thing from the lists below. The nightly run works down `research/log.md` → Queue by itself;
    jobs marked "run locally" need Claude in Chrome on this computer.
 
+## Tatjana's ideas (1–2 Nov 2026)
+
+Done in v41 (2 Nov, not deployed yet):
+- [x] Tap the address on a class page → Google directions (the Directions button was already there)
+- [x] "All ages" button on the add-a-class form (from birth, no upper age; tap again to clear)
+- [x] "Suits both" / "Suits all" tag removed
+
+Research (London basic layer rule: one row per age group / session applies):
+- [ ] Children's centres: one row per session (her screenshot of Grange: Tiny Sports Stars, bumps to babies, stay and
+      play all in one "When" text) → redo as a `...-update.csv` with the next monthly timetable
+- [ ] New searches: crazy golf, bowling, paintball (age limits!), sport competitions, football, rugby, cricket, tennis
+      clubs and tennis classes, ballet competitions
+- [ ] Liut Swim (Russian swimming school, R016–R018): live but only area pins (Chiswick, Brent Cross, Brentford), no
+      postcode or times → re-check from its Facebook page
+
+App ideas (need a decision on how):
+- [ ] Pick several days in the calendar (e.g. Tue + Thu), not just one or the weekend
+- [ ] Filter OUT things, e.g. "don't show schools" (hide a type or category)
+- [ ] Group events by theme: Christmas, Halloween, Easter… (a "theme" field on events + chips in season)
+- [ ] Look up events far ahead by choosing dates (maybe for members)
+- [ ] Classes with several sessions: "more dynamic" view, e.g. show the next session from the current time (maybe for
+      members)
+- [ ] Let individuals add their own classes (now organisations only; brief 7.5 hid private individuals; needs rules:
+      no home addresses on the map? sign-in, confirmation)
+- [ ] Edit a class (parent feedback 2 Nov on Azbuka R014: "no option to edit this class, e.g. add ages, address") →
+      "Suggest a change" form that an admin approves, or edits by whoever added it
+- [ ] Statistics page for Tatjana: users, areas searched, reported issues, classes added (needs simple, privacy-
+      friendly counting: Cloudflare Web Analytics + counts from Supabase; areas only as rough areas)
+- [ ] Ballet filter: parent feedback 2 Nov "i cannot see ballet filter" (Dance styles are inside Sports / Dance)
+
 ## London basic layer (agreed 2 Nov 2026)
 
 Whole of London, but only the big structured sources for now; deep borough-by-borough research (churches, halls,

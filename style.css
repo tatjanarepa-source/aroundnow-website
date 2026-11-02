@@ -786,6 +786,7 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 }
 .done-mark .i { stroke-width: 2.6; }
 
+.facts a.addr-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--faint); }
 .tag.warn { background: var(--warn-soft); color: var(--warn); }
 
 .community {
