@@ -43,6 +43,11 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
   in `NeedsInfo` and use the page URL as `Website`. Not allowed: bulk or automated scraping, private or
   members-only groups, WhatsApp, and personal profiles of private individuals. The cloud run can't read these
   pages, so such jobs are "run locally".
+- **A timetable page's own data is fine** (Tatjana, 2 Nov 2026): when a provider's timetable or class finder loads
+  its classes from the provider's own public data feed (e.g. Baby Sensory's loadTimeTable) or carries them in the page's
+  HTML, research may read that same data directly instead of opening every page, after checking at least two venues
+  against the page in Chrome. Same information a parent sees; politely (one provider's pages, no hammering), never
+  behind a login, and never someone else's directory or a site that forbids it.
 - **Church services for children count** (e.g. toddler services followed by stay & play). Say it's a
   service in `Description`/`NeedsInfo` so parents know.
 - **Organisations only.** No private individuals (a tutor working from home, a childminder).
