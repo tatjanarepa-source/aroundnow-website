@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v47";
+const APP_VERSION = "v48";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -1830,7 +1830,7 @@ function communityHtml(l) {
       ${err}<div class="foot-row"><button type="button" class="text-btn" data-act="cancelReport">${t.cancel}</button>
       <button type="button" class="primary" data-act="sendReport" data-v="${esc(l.i)}"${b.busy ? " disabled" : ""}>${t.sendReport}</button></div></div>`;
   }
-  if (s.mine.edited[l.i] && unconfirmed(l)) return `<div class="community"><p>${t.youEdited}</p></div>`;
+  if (s.mine.edited && s.mine.edited[l.i] && unconfirmed(l)) return `<div class="community"><p>${t.youEdited}</p></div>`;
   if (s.mine.reported[l.i]) return `<div class="community"><p>${t.youReported}</p></div>`;
   if (s.mine.confirmed[l.i] && !unconfirmed(l)) return `<div class="community"><p>${t.youConfirmed}</p></div>`;
   if (l.rr) {
@@ -2058,7 +2058,7 @@ async function signOut() {
 
 // What this person has already confirmed or reported, so we don't ask twice
 async function loadMine() {
-  state.mine = { confirmed: {}, reported: {} };
+  state.mine = { confirmed: {}, reported: {}, edited: (state.mine && state.mine.edited) || {} };
   if (!sb || !state.user) return;
   const [c, r] = await Promise.all([
     sb.from("listing_confirmations").select("listing_id"),
