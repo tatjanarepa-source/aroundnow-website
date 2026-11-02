@@ -5,6 +5,7 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- (2026-11-02) Hartbeeps: some franchises give ages only in words ("newborn to sitting", "toddlers and siblings"). Rows use months only where hartbeeps.com gives them; Happy House rows mostly have no ages, so they show "Ages not listed" and may drop out when an age is picked. Keep it that way (never guess), or use Hartbeeps' general bands (Baby Bells 0–7 months, Baby Beeps 7 months–walking, Happy House about 18 months–4 years)?
 - (2026-11-02) Baby Sensory's free "Hello Baby" massage course (birth–3 months, Woolwich and Greenwich): own row, or keep it mentioned inside the Baby Sensory rows?
 
 ## Answered
