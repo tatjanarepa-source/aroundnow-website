@@ -59,6 +59,7 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
 - **A parent's first-hand report** ("I go every Thursday") counts as fresh evidence. Still look
   for the organiser's own page to get the exact times; parents' times can be off.
 - Never guess a day, time, age or price. Leave it empty and say what's missing in `NeedsInfo`.
+- **Price per class, not term totals** (Tatjana, 3 Nov 2026): `PriceText` gives the price of one class/session, e.g. "£12.05 a session (booked by the term)", plus one-off fees (joining, registration). No "£x for the rest of term" totals: they go out of date every term. Monthly memberships stay as the monthly price.
 - Every row gets `Status = Check`, so it shows as "Not yet confirmed" until a parent confirms it.
 - Note how current the timetable is ("2026/27 timetable", "page updated Sep 2026") in `NeedsInfo`.
 - No private contact details (personal phone numbers or emails) in batch files.

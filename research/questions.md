@@ -5,9 +5,10 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
-- 2026-11-03 Rugbytots: keep term totals in the price (e.g. "£x a session, £y for the rest of term"), or only the price per session? Totals go out of date each term.
 
 ## Answered
+
+- 2026-11-03 Rugbytots: keep term totals in the price (e.g. "£x a session, £y for the rest of term"), or only the price per session? Totals go out of date each term. **Answer (3 Nov): price per class.** Rugbytots batch changed; rule added to sources.md.
 
 - **Hartbeeps ages only in words:** **Answer (2 Nov): use Hartbeeps' general bands** (Baby Bells 0–7 m, Baby Beeps 7–14 m, Happy House 18–48 m; exact months where given). 98 of 99 rows now have ages (one Christmas special says none). Re-import the Hartbeeps batch to fix the live rows.
 
