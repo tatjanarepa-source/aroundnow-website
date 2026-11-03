@@ -52,6 +52,12 @@
   --shadow-sel: 0 4px 14px rgba(200, 245, 96, 0.28);
   --shadow-sel-sm: 0 2px 6px rgba(200, 245, 96, 0.3);
   --shadow-add: 0 4px 14px rgba(200, 245, 96, 0.32);
+  /* Fine diagonal lines behind the cards (picked 3 Nov): the surface colour, a shade or two darker, 1px every 5px.
+     Things that sit on the lines get solid colours, so the lines don't show through them. */
+  --pattern-line: #090c14;
+  --pattern-muted: #a3adc2;
+  --tag-solid: #252b3c;
+  --age-solid: #2d3a34;
   --cluster-border: 3px solid #0d1322;
   --cluster-ring: 0 0 0 4px rgba(200, 245, 96, 0.25);
   --tiles: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.5);
@@ -113,6 +119,10 @@
   --shadow-sel: 0 2px 6px rgba(31, 111, 111, 0.3);
   --shadow-sel-sm: 0 2px 6px rgba(31, 111, 111, 0.3);
   --shadow-add: 0 2px 6px rgba(236, 106, 150, 0.4);
+  --pattern-line: #e8e2d7;
+  --pattern-muted: #56605e;
+  --tag-solid: #eae9e5;
+  --age-solid: #e1ebdd;
   --cluster-border: 2px solid #4e7a50;
   --cluster-ring: 0 0 0 3px #ffffff, 0 3px 10px rgba(29, 43, 43, 0.3);
   --tiles: saturate(0.45) contrast(0.94) brightness(1.04);
@@ -158,6 +168,18 @@ svg.i {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* The lined background: on the results panel and every sheet, not on the cards. Grey text on it is a touch darker
+   in the light look so it stays easy to read over the lines. */
+.panel, .sheet {
+  --muted: var(--pattern-muted);
+  background-color: var(--surface);
+  background-image: repeating-linear-gradient(135deg, var(--pattern-line) 0, var(--pattern-line) 1px,
+    var(--surface) 1.6px, var(--surface) 4.4px, var(--pattern-line) 5px);
+}
+.sheet .tag { background: var(--tag-solid); }
+.sheet .tag.warn { background: var(--warn-soft); }
+.sheet .agetag { background: var(--age-solid); }
 
 /* --- Map (OpenStreetMap tiles: darkened, or softened in the light look) --- */
 
@@ -350,7 +372,6 @@ svg.i {
   flex-direction: column;
   border-top: 1px solid var(--line-soft);
   border-radius: 28px 28px 0 0;
-  background: var(--surface);
   box-shadow: 0 -14px 40px var(--shadow-panel);
   transition: top 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -563,7 +584,6 @@ svg.i {
   max-height: 88%;
   border-top: 1px solid var(--line-soft);
   border-radius: 28px 28px 0 0;
-  background: var(--surface);
   box-shadow: 0 -10px 30px var(--shadow-sheet);
   padding-bottom: env(safe-area-inset-bottom);
 }
