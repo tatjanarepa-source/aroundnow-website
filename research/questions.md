@@ -5,6 +5,9 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- 2026-11-03 Stagecoach Ealing: replace live E06 (Hobbayne W7 1HA, no times) with the detailed Main Stages row (Sat 09:30/10:00/14:00, about £31 a class)?
+- 2026-11-03 Stagecoach: put Further Stages (16–18) on the map? (left out)
+- 2026-11-03 Stagecoach: rows use the Spring 2027 timetable (only one shown) while autumn runs: OK? (noted on every row)
 - 2026-11-03 babyballet Shine (SEND) classes give no ages: put them on the map without ages? (kept, 3 rows)
 - 2026-11-03 Diddi Dance / Musical Bumps Christmas specials and parties: add as separate dated events?
 - 2026-11-03 Libraries: all-ages/family sessions (Paddington and Marylebone chess clubs, Islington family games clubs): keep, or children-only sessions only? (kept for now)
