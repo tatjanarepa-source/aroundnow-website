@@ -5,6 +5,8 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- 2026-11-03 babyballet Shine (SEND) classes give no ages: put them on the map without ages? (kept, 3 rows)
+- 2026-11-03 Diddi Dance / Musical Bumps Christmas specials and parties: add as separate dated events?
 - 2026-11-03 Libraries: all-ages/family sessions (Paddington and Marylebone chess clubs, Islington family games clubs): keep, or children-only sessions only? (kept for now)
 - 2026-11-03 Libraries: monthly sessions (e.g. Islington last-Saturday Lego): is the week in the schedule text enough? (the app shows them every week on that day)
 
