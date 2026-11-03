@@ -5,6 +5,7 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- 2026-11-03 Rugbytots: keep term totals in the price (e.g. "£x a session, £y for the rest of term"), or only the price per session? Totals go out of date each term.
 
 ## Answered
 
