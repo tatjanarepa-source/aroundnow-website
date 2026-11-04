@@ -5,6 +5,9 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- 2026-11-04 Libraries: keep board games clubs (5+) and Hackney comic clubs? (kept)
+- 2026-11-04 Libraries: add Enfield Town 'Children's Sensory Space' (for children with learning difficulties, Mon–Wed 10–12)? (left out)
+- 2026-11-04 Libraries: many library pages give no price (almost always free). Show them as 'Free', or leave the price empty ('Not listed yet') as now?
 - 2026-11-03 Stagecoach Ealing: replace live E06 (Hobbayne W7 1HA, no times) with the detailed Main Stages row (Sat 09:30/10:00/14:00, about £31 a class)?
 - 2026-11-03 Stagecoach: put Further Stages (16–18) on the map? (left out)
 - 2026-11-03 Stagecoach: rows use the Spring 2027 timetable (only one shown) while autumn runs: OK? (noted on every row)
