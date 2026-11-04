@@ -59,6 +59,7 @@ Use this for every new borough or council (Hounslow, Hammersmith & Fulham, then 
 - **A parent's first-hand report** ("I go every Thursday") counts as fresh evidence. Still look
   for the organiser's own page to get the exact times; parents' times can be off.
 - Never guess a day, time, age or price. Leave it empty and say what's missing in `NeedsInfo`.
+- **Price not stated → leave it empty** (Tatjana, 4 Nov 2026), even for libraries where sessions are usually free: write "Free" only when the page says free.
 - **No ages unless the provider states them** (Tatjana, 4 Nov 2026): don't fill ages from national schemes (e.g. swim stages), other centres or guesses; leave them empty. Words the provider uses ("babies", "toddlers", "under 5s") may still map to the agreed bands.
 - **Price per class, not term totals** (Tatjana, 3 Nov 2026): `PriceText` gives the price of one class/session, e.g. "£12.05 a session (booked by the term)", plus one-off fees (joining, registration). No "£x for the rest of term" totals: they go out of date every term. Monthly memberships stay as the monthly price.
 - Every row gets `Status = Check`, so it shows as "Not yet confirmed" until a parent confirms it.

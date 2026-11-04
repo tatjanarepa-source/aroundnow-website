@@ -5,18 +5,19 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
-- 2026-11-04 Libraries: keep board games clubs (5+) and Hackney comic clubs? (kept)
-- 2026-11-04 Libraries: add Enfield Town 'Children's Sensory Space' (for children with learning difficulties, Mon–Wed 10–12)? (left out)
-- 2026-11-04 Libraries: many library pages give no price (almost always free). Show them as 'Free', or leave the price empty ('Not listed yet') as now?
-- 2026-11-03 Stagecoach Ealing: replace live E06 (Hobbayne W7 1HA, no times) with the detailed Main Stages row (Sat 09:30/10:00/14:00, about £31 a class)?
-- 2026-11-03 Stagecoach: put Further Stages (16–18) on the map? (left out)
-- 2026-11-03 Stagecoach: rows use the Spring 2027 timetable (only one shown) while autumn runs: OK? (noted on every row)
-- 2026-11-03 babyballet Shine (SEND) classes give no ages: put them on the map without ages? (kept, 3 rows)
-- 2026-11-03 Diddi Dance / Musical Bumps Christmas specials and parties: add as separate dated events?
-- 2026-11-03 Libraries: all-ages/family sessions (Paddington and Marylebone chess clubs, Islington family games clubs): keep, or children-only sessions only? (kept for now)
-- 2026-11-03 Libraries: monthly sessions (e.g. Islington last-Saturday Lego): is the week in the schedule text enough? (the app shows them every week on that day)
 
 ## Answered
+
+- 2026-11-04 Libraries: many library pages give no price (almost always free). Show them as 'Free', or leave the price empty ('Not listed yet') as now? **Answer (4 Nov): price not stated → leave empty ('Not listed yet').**
+- 2026-11-04 Libraries: keep board games clubs (5+) and Hackney comic clubs? (kept) **Answer (4 Nov): keep.**
+- 2026-11-04 Libraries: add Enfield Town 'Children's Sensory Space' (for children with learning difficulties, Mon–Wed 10–12)? (left out) **Answer (4 Nov): add it (W261104-01, imported).**
+- 2026-11-03 babyballet Shine (SEND) classes give no ages: put them on the map without ages? (kept, 3 rows) **Answer (4 Nov): keep; idea: a filter for children with special needs (docs/tasks.md).**
+- 2026-11-03 Diddi Dance / Musical Bumps Christmas specials and parties: add as separate dated events? **Answer (4 Nov): yes, add as dated events (queue line).**
+- 2026-11-03 Stagecoach Ealing: replace live E06 (Hobbayne W7 1HA, no times) with the detailed Main Stages row (Sat 09:30/10:00/14:00, about £31 a class)? **Answer (4 Nov): yes (E06 updated with Main Stages times and price, imported).**
+- 2026-11-03 Stagecoach: put Further Stages (16–18) on the map? (left out) **Answer (4 Nov): yes (queue line).**
+- 2026-11-03 Stagecoach: rows use the Spring 2027 timetable (only one shown) while autumn runs: OK? (noted on every row) **Answer (4 Nov): yes, OK.**
+- 2026-11-03 Libraries: all-ages/family sessions (Paddington and Marylebone chess clubs, Islington family games clubs): keep, or children-only sessions only? (kept for now) **Answer (4 Nov): keep.**
+- 2026-11-03 Libraries: monthly sessions (e.g. Islington last-Saturday Lego): is the week in the schedule text enough? (the app shows them every week on that day) **Answer (4 Nov): keep; week in the schedule text is enough.**
 
 - 2026-11-04 Leisure: Everyone Active swim Stages 1–9 give no ages: leave without ages (as now), or use the national stage ages? **Answer (4 Nov): no, leave ages out when the provider doesn't state them.**
 
