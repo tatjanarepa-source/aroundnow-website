@@ -206,6 +206,8 @@ Pages the browser couldn't read in a local run (froze, didn't load). Try again a
 
 ## Removed
 
+- 2026-11-03 C26110309d7c Little Flamingos (added by Tatjana as a test, Pending): status Removed at her request. Undo: set status back to Pending.
+- 2026-11-03 C261102da572 Ballet Class: languages 'romamian' fixed to 'Romanian' (Tatjana's OK).
 - 2026-11-02 R014 Azbuka – After-School Clubs (Hammersmith): status Removed. Azbuka's own site says the school closed from September 2026 (notice 25 Jul 2026); the clubs were the school's. Parent feedback had asked for ages/address. Undo: set status back to Active.
 
 ## Leads not checked

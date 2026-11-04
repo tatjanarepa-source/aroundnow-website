@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v50";
+const APP_VERSION = "v51";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -304,9 +304,9 @@ const STRINGS = {
     knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
     pickReason: "Pick what’s wrong first.", andList: " and ", here: (n) => `${classes(n)} here`,
     fbLink: "Something not right? Tell us", fbTitle: "Tell us",
-    cityLink: "Want AroundNow in your city? Give us a shout",
-    cityTitle: "AroundNow in your city", cityLead: "AroundNow covers London for now. Tell us where you are and we’ll add your city. Leave your email and we’ll let you know when it’s ready.",
-    cityField: "Your city or town", cityHint: "e.g. Manchester", cityMsg: "Anything else?", cityMsgHint: "e.g. classes you’d love to see",
+    cityLink: "Want to see AroundNow in your city or country? Send us a request",
+    cityTitle: "AroundNow in your city", cityLead: "AroundNow covers London for now. Tell us your city or country and we’ll see what can be done. Leave your email and we’ll let you know.",
+    cityField: "Your city, town or country", cityHint: "e.g. Manchester, or Spain", cityMsg: "Anything else?", cityMsgHint: "e.g. classes you’d love to see",
     cityContactHint: "So we can tell you when it’s ready", cityEmpty: "Which city or town?", cityPrefix: "City request",
     fbClassLink: "Something wrong with this class? Tell us", fbFilterLink: "A filter not working? Tell us",
     fbAbout: (title) => `About: ${title}`, fbWhat: "What’s wrong?",
@@ -1096,6 +1096,8 @@ function renderList(c) {
   }
   if (c.nearby.some((o) => o.l.ap)) html += `<p class="muted-row">${t.lighter}</p>`;
   html += `<button type="button" class="link-btn feedback-link" data-act="feedback">${t.fbLink}</button>`;
+  // Easy to find at the end of every list, not only in the Where sheet (Tatjana couldn't see it, 3 Nov)
+  if (c.shown.length) html += `<button type="button" class="link-btn feedback-link" data-act="city">${t.cityLink}</button>`;
   if (!c.shown.length && !w) {
     const weekend = s.date && s.date !== "weekend"
       ? `<button type="button" class="chip" data-act="date" data-v="weekend">${t.tryWeekend}</button>` : "";

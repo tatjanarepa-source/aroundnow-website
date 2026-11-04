@@ -34,6 +34,8 @@ Research (London basic layer rule: one row per age group / session applies):
       postcode or times → re-check from its Facebook page
 
 App ideas (need a decision on how):
+- [ ] **"Plan my day" for members** (Tatjana, 3 Nov): the parent picks how far they're happy to travel and the kids' ages, and gets a day plan (classes, then a playground, café or museum nearby, in time order). Name ideas: Day Scanner, Fun Scanner
+- [ ] **Private tutors and phone numbers** (3 Nov): don't show tutors' phone numbers; instead a "Message" button (in-app messages between signed-in parents and the tutor, or a contact form that emails the tutor without showing either address). See the 3 Nov chat for options
 - [x] Pick several days in the calendar (v42): days in the strip add up, e.g. "80 on Tue, Thu"; tap a day again to take it off
 - [x] "Don't show" in Filters (v42): hide types (weekend schools, nursery…) or activities; crossed out, remembered on the phone
 - [ ] Group events by theme: Christmas, Halloween, Easter… (a "theme" field on events + chips in season)
@@ -49,7 +51,7 @@ App ideas (need a decision on how):
 
 - [x] Language list on the add/edit form (v49): English/Russian buttons, "Add a language…" list (~48 London languages + any already on the map), "+ Add a new language" with tidy capitals and "Did you mean Romanian?"
 - [x] "Want AroundNow in your city? Give us a shout" (v49): in the Where sheet and when nothing is found; arrives as "City request: <city>" in npm run feedback, counted in npm run stats
-- [ ] Fix "romamian" → "Romanian" on C261102da572 (blocked: needs Tatjana's OK or her own edit)
+- [x] Fix "romamian" → "Romanian" on C261102da572 (done 3 Nov)
 
 ## London basic layer (agreed 2 Nov 2026)
 
