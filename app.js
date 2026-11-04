@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v52";
+const APP_VERSION = "v53";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -322,6 +322,7 @@ const STRINGS = {
     fbShare: "Include my search, so you can see what I saw:", fbShown: "shown",
     fbSend: "Send", fbEmpty: "Write a few words first.",
     fbThanks: "Thank you!", fbThanksText: "We’ve got your message and will look at it.",
+    sendTitle: "Special needs", sendChip: "Special needs friendly",
     msgBtn: "Message", msgTitle: "Message the tutor", msgAbout: (title) => `To: ${title}`,
     msgLead: "Your message goes to the tutor through AroundNow. We never show tutors’ phone numbers, and they only see your email when they reply.",
     msgField: "Your message", msgHint: "e.g. Hello, do you have space for my 5-year-old on Saturdays?",
@@ -486,7 +487,7 @@ const ICON = {
 };
 
 const state = {
-  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], styles: [],
+  ui: "en", theme: "auto", ages: [], units: "mi", ri: 1, radius: 2 * MILE, langs: [], date: null, when: [], types: [], cats: [], prices: [], needs: [], hide: [], styles: [],
   showOnline: false, expanded: false, sheet: null, detail: null,
   place: { ...DEFAULT_PLACE }, placeStatus: "", placeWarn: false,
   items: [], loaded: false, error: false,
@@ -591,6 +592,7 @@ function normalize(r) {
     c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", cr: r.category || "", sj: r.subjects || [], r: r.runs_when || "",
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
     w: r.website || "", k: r.status === "Check" ? 1 : 0,
+    sn: r.send ? 1 : 0, // made for children with special needs, or has SEND sessions (4 Nov)
     pi: r.provider_type === "individual" ? 1 : 0, // a private tutor: no phone or website, parents message them instead
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
     ca: r.created_at || "", lc: r.last_confirmed_at || "", cb: r.created_by || "", src: r.source || "",
@@ -800,6 +802,7 @@ function passes(l, skip) {
   if (skip !== "prices" && s.prices.length && !s.prices.some((p) => PRICES[p](l))) return false;
   if (skip !== "hide" && s.hide.length && s.hide.some((h) => hidden(l, h))) return false;
   if (skip !== "styles" && s.styles.length && !s.styles.some((k) => danceStyle(l, k))) return false;
+  if (skip !== "needs" && s.needs.length && !l.sn) return false;
   return true;
 }
 
@@ -966,7 +969,7 @@ function renderFilters(c) {
   }).join("");
 
   // Rarely used filters (and languages) live in the Filters sheet; the button sits next to the count
-  const nOn = s.when.length + s.types.length + s.cats.length + s.prices.length + s.langs.length + s.hide.length + s.styles.length + (s.showOnline ? 1 : 0);
+  const nOn = s.when.length + s.types.length + s.cats.length + s.prices.length + s.needs.length + s.langs.length + s.hide.length + s.styles.length + (s.showOnline ? 1 : 0);
   const fb = $("filtersBtn");
   fb.classList.toggle("active", nOn > 0);
   fb.innerHTML = `${ICON.sliders}<span>${t.filters}</span>${nOn ? `<span class="badge">${nOn}</span>` : ""}`;
@@ -1007,6 +1010,7 @@ function cardHtml(o, dates, multi) {
   const meta = [club ? "" : whenText(l), langText(l), shortPrice(l.p)].filter(Boolean).join(" · ");
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
   if ((club || s.when.includes("holidays")) && l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
+  if (l.sn) tags.push(`<span class="tag">${t.sendChip}</span>`);
   if (l.rr) tags.push(`<span class="tag warn">${esc(T().reported[l.rr] || T().reported.other)}</span>`);
   else if (unconfirmed(l)) tags.push(statusTag(l));
   const where = [catLabel(l), l.on ? "" : l.a].filter(Boolean).join(" · ");
@@ -1053,6 +1057,7 @@ function slotHtml(o, d) {
   const time = st ? `<b>${esc(st)}</b>${et ? `<small>${esc(t.toTime(et))}</small>` : ""}` : "<small>–</small>";
   const tags = [`<span class="agetag">${esc(ageText(l))}</span>`];
   if (runsOn(l, d) === "club") tags.push(`<span class="tag">${t.holidayClub}</span>`);
+  if (l.sn) tags.push(`<span class="tag">${t.sendChip}</span>`);
   if (l.rr) tags.push(`<span class="tag warn">${esc(t.reported[l.rr] || t.reported.other)}</span>`);
   else if (unconfirmed(l)) tags.push(statusTag(l));
   const far = l.on ? t.online : `${l.ap ? t.about : ""}${dist(o.d)}`;
@@ -1196,6 +1201,9 @@ function filtersSheet(c) {
     .map((k) => chipHtml("cat", k, t.cat[k] || k, s.cats.includes(k), !counts[k])).join("");
   const langs = nearbyLangs(c).map(({ x, n }) => chipHtml("lang", x, t.lang[x] || x, s.langs.includes(x), n === 0)).join("");
   const prices = Object.keys(PRICES).map((k) => chipHtml("price", k, t.pr[k], s.prices.includes(k), !finds(c, "prices", PRICES[k]))).join("");
+  // "Special needs friendly": only shown when such classes are nearby (or the chip is on)
+  const sendOn = s.needs.includes("send"), sendNear = finds(c, "needs", (l) => l.sn);
+  const needs = sendOn || sendNear ? chipHtml("need", "send", t.sendChip, sendOn, !sendNear) : "";
   const styles = Object.keys(DANCE_STYLES).map((k) => {
     const n = c.pool.filter((o) => passes(o.l, "styles") && danceStyle(o.l, k)).length;
     return n || s.styles.includes(k) ? chipHtml("style", k, t.dStyle[k], s.styles.includes(k), n === 0) : "";
@@ -1211,6 +1219,7 @@ function filtersSheet(c) {
     body: `<div class="sec"><h3>${t.dWhen}</h3><div class="wrap">${dates}${when}</div></div>
       <div class="sec"><h3>${t.type}</h3><div class="wrap">${types}</div></div>
       <div class="sec"><h3>${t.dPrice}</h3><div class="wrap">${prices}</div></div>
+      ${needs ? `<div class="sec"><h3>${t.sendTitle}</h3><div class="wrap">${needs}</div></div>` : ""}
       ${cats ? `<div class="sec"><h3>${t.activity}</h3><div class="wrap">${cats}</div></div>` : ""}
       ${styles ? `<div class="sec"><h3>${t.danceStyle}</h3><div class="wrap">${styles}</div></div>` : ""}
       ${langs ? `<div class="sec"><h3>${t.language}</h3><div class="wrap">${langs}</div></div>` : ""}
@@ -1237,7 +1246,7 @@ function fbContext(c) {
     area: { name: placeName(), lat: me ? round(s.place.lat) : s.place.lat, lng: me ? round(s.place.lng) : s.place.lng },
     distance: rLabel(s.ri),
     ages: s.ages.map((a) => (a === 6 ? "<1" : ageWord(a))),
-    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, prices: s.prices,
+    filters: { langs: s.langs, date: s.date, when: s.when, types: s.types, activities: s.cats, prices: s.prices, needs: s.needs,
       online: s.showOnline, onlyNew: s.onlyNew },
     shown: c.shown.length,
     shownIds: c.shown.slice(0, 50).map((o) => o.l.i),
@@ -1246,7 +1255,7 @@ function fbContext(c) {
     replay: {
       place: { lat: me ? round(s.place.lat) : s.place.lat, lng: me ? round(s.place.lng) : s.place.lng, name: placeName(), kind: s.place.kind },
       ri: s.ri, units: s.units, ui: s.ui, ages: s.ages, langs: s.langs, date: s.date, when: s.when, types: s.types,
-      cats: s.cats, prices: s.prices, showOnline: s.showOnline, onlyNew: s.onlyNew, detail: f.listing || null,
+      cats: s.cats, prices: s.prices, needs: s.needs, showOnline: s.showOnline, onlyNew: s.onlyNew, detail: f.listing || null,
     },
   };
 }
@@ -1269,7 +1278,7 @@ function applyReplay() {
       ages: list(r.ages).filter((a) => AGES.includes(a)), langs: list(r.langs),
       // Older links say "today" / "tomorrow"; the day strip uses "0"–"6"
       date: DATES.includes(r.date) || DAY_LIST.test(String(r.date)) ? ({ today: "0", tomorrow: "1" }[r.date] || String(r.date)) : null,
-      when: list(r.when), types: list(r.types), cats: list(r.cats), prices: list(r.prices),
+      when: list(r.when), types: list(r.types), cats: list(r.cats), prices: list(r.prices), needs: list(r.needs),
       showOnline: !!r.showOnline, onlyNew: !!r.onlyNew, detail: r.detail || null,
     });
     return true;
@@ -2233,6 +2242,7 @@ function renderDetail(c) {
   if (type) tags.push(`<span class="tag">${esc(t.ty[type])}</span>`);
   if (l.l.length) tags.push(`<span class="tag">${esc(langText(l))}</span>`);
   if (l.h && l.f !== "Holiday camp") tags.push(`<span class="tag">${t.holidayClub}</span>`);
+  if (l.sn) tags.push(`<span class="tag">${t.sendChip}</span>`);
   const where = l.on ? t.online : l.ad || (l.det ? `${l.a} (${t.areaOnly})` : l.a); // "area only" once we know
   const dir = l.y != null && !l.on ? `https://www.google.com/maps/search/?api=1&query=${l.y},${l.x}` : "";
   const status = (unconfirmed(l) ? statusTag(l) : "")
@@ -2519,16 +2529,17 @@ const ACTIONS = {
   type: (v) => toggle("types", v),
   cat: (v) => toggle("cats", v),
   price: (v) => toggle("prices", v),
+  need: (v) => toggle("needs", v),
   hide: (v) => { toggle("hide", v); savePrefs(); },
   style: (v) => toggle("styles", v),
   online: () => { state.showOnline = !state.showOnline; },
   clear: () => {
-    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], styles: [], showOnline: false });
+    Object.assign(state, { ages: [], langs: [], date: null, when: [], types: [], cats: [], prices: [], needs: [], hide: [], styles: [], showOnline: false });
     savePrefs();
   },
   // Everything except age, which is about the child rather than this search
   resetFilters: () => {
-    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], hide: [], styles: [], showOnline: false });
+    Object.assign(state, { langs: [], date: null, when: [], types: [], cats: [], prices: [], needs: [], hide: [], styles: [], showOnline: false });
     savePrefs();
   },
   sheet: (v) => { state.sheet = v; state.placeStatus = ""; },
