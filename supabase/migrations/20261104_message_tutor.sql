@@ -1,5 +1,7 @@
 -- "Message the tutor" (Tatjana, 3 Nov 2026): private tutors (provider_type = 'individual') show on the map, but never
--- with a phone number, email, home address or personal page. Parents who are signed in send a message through the
+-- with a phone number, email, home address or personal page. Only tutors with an email on file in listing_contacts
+-- show (Tatjana, 4 Nov: otherwise there's no way to pass a message on).
+-- Also (4 Nov): the list limit goes from 2,000 to 6,000 classes, since a 25 km circle already reached 2,000. Parents who are signed in send a message through the
 -- app instead; it's stored here and passed on to the tutor (npm run messages), who replies to the parent's email.
 -- Paste into Supabase → SQL Editor → New query → Run. Safe to re-run. Then deploy the app (v51).
 
@@ -23,6 +25,8 @@ create policy "Signed-in parents can message tutors" on public.contact_messages
     user_id = auth.uid()
     and exists (select 1 from public.listings l
                 where l.id = listing_id and l.provider_type = 'individual' and l.status in ('Active', 'Check'))
+    and exists (select 1 from public.listing_contacts lc
+                where lc.listing_id = contact_messages.listing_id and lc.contact_details like '%@%')
   );
 
 grant insert on public.contact_messages to authenticated;
@@ -72,12 +76,15 @@ as $$
       order by r.created_at desc limit 1
     ) rep on true
     where l.status in ('Active', 'Check')
-      and (l.provider_type in ('organisation', 'individual') or (l.created_by is not null and l.created_by = auth.uid()))
+      and (l.provider_type = 'organisation'
+           or (l.provider_type = 'individual' and exists (select 1 from public.listing_contacts lc
+                                                         where lc.listing_id = l.id and lc.contact_details like '%@%'))
+           or (l.created_by is not null and l.created_by = auth.uid()))
       and (l.delivery_mode = 'Online'
           or (l.location is not null
               and st_dwithin(l.location, here.pt, least(greatest(coalesce(p_km, 5), 0.5), 25) * 1000)))
     order by st_distance(l.location, here.pt) nulls first
-    limit 2000
+    limit 6000
   ) x;
 $$;
 
@@ -92,7 +99,10 @@ as $$
   from public.listings l
   where l.id = p_id
     and l.status in ('Active', 'Check')
-    and (l.provider_type in ('organisation', 'individual') or (l.created_by is not null and l.created_by = auth.uid()));
+    and (l.provider_type = 'organisation'
+           or (l.provider_type = 'individual' and exists (select 1 from public.listing_contacts lc
+                                                         where lc.listing_id = l.id and lc.contact_details like '%@%'))
+           or (l.created_by is not null and l.created_by = auth.uid()));
 $$;
 
 revoke execute on function public.listings_within(double precision, double precision, double precision) from public;
