@@ -5,6 +5,7 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
+- 2026-11-04 Leisure: Everyone Active swim Stages 1–9 give no ages: leave without ages (as now), or use the national stage ages?
 - 2026-11-04 Libraries: keep board games clubs (5+) and Hackney comic clubs? (kept)
 - 2026-11-04 Libraries: add Enfield Town 'Children's Sensory Space' (for children with learning difficulties, Mon–Wed 10–12)? (left out)
 - 2026-11-04 Libraries: many library pages give no price (almost always free). Show them as 'Free', or leave the price empty ('Not listed yet') as now?
