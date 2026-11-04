@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v51";
+const APP_VERSION = "v52";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -322,7 +322,7 @@ const STRINGS = {
     fbShare: "Include my search, so you can see what I saw:", fbShown: "shown",
     fbSend: "Send", fbEmpty: "Write a few words first.",
     fbThanks: "Thank you!", fbThanksText: "We’ve got your message and will look at it.",
-    msgBtn: "Message the tutor", msgTitle: "Message the tutor", msgAbout: (title) => `To: ${title}`,
+    msgBtn: "Message", msgTitle: "Message the tutor", msgAbout: (title) => `To: ${title}`,
     msgLead: "Your message goes to the tutor through AroundNow. We never show tutors’ phone numbers, and they only see your email when they reply.",
     msgField: "Your message", msgHint: "e.g. Hello, do you have space for my 5-year-old on Saturdays?",
     msgEmail: "Your email, for the reply", msgEmpty: "Write a few words first.", msgBadEmail: "Please check your email address.",

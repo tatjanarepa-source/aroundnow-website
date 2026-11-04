@@ -781,6 +781,8 @@ select.input { appearance: none; -webkit-appearance: none; padding-right: 40px; 
 .tick input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
 
 .form-msg { margin: 0; color: var(--warn); font-size: 14px; font-weight: 700; line-height: 1.4; }
+/* A message shown above a sheet's form ("Write a few words first") lines up with the form */
+.sheet > .form-msg { padding: 0 20px 8px; }
 .sheet-foot.stack { flex-direction: column; align-items: stretch; gap: 10px; }
 /* Stacked in a column, buttons keep their height instead of being squeezed to fit */
 .sheet-body .primary, .sheet-body .secondary { flex: none; }
