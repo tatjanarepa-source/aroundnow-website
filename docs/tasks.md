@@ -35,7 +35,7 @@ Research (London basic layer rule: one row per age group / session applies):
 
 App ideas (need a decision on how):
 - [ ] **"Plan my day" for members** (Tatjana, 3 Nov): the parent picks how far they're happy to travel and the kids' ages, and gets a day plan (classes, then a playground, café or museum nearby, in time order). Name ideas: Day Scanner, Fun Scanner
-- [ ] **Private tutors and phone numbers** (3 Nov): don't show tutors' phone numbers; instead a "Message" button (in-app messages between signed-in parents and the tutor, or a contact form that emails the tutor without showing either address). See the 3 Nov chat for options
+- [x] **"Message the tutor"** (built 4 Nov, v51; Tatjana picked the contact form over in-app chat): private tutors (provider_type individual) show on the map without website, address or phone; signed-in parents send a message (max 10 a day), stored in contact_messages; `npm run messages` shows them with the tutor's private contact to forward, `npm run messages -- sent <n>` marks one done. To go live: run supabase/migrations/20261104_message_tutor.sql, then deploy. Only R046 (chess) has a private contact on file; R015, R020, R021 need one. Later: send automatically by email (needs an email service, e.g. Resend)
 - [x] Pick several days in the calendar (v42): days in the strip add up, e.g. "80 on Tue, Thu"; tap a day again to take it off
 - [x] "Don't show" in Filters (v42): hide types (weekend schools, nursery…) or activities; crossed out, remembered on the phone
 - [ ] Group events by theme: Christmas, Halloween, Easter… (a "theme" field on events + chips in season)

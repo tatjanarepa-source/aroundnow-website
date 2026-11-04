@@ -322,6 +322,12 @@ const STRINGS = {
     fbShare: "Include my search, so you can see what I saw:", fbShown: "shown",
     fbSend: "Send", fbEmpty: "Write a few words first.",
     fbThanks: "Thank you!", fbThanksText: "We’ve got your message and will look at it.",
+    msgBtn: "Message the tutor", msgTitle: "Message the tutor", msgAbout: (title) => `To: ${title}`,
+    msgLead: "Your message goes to the tutor through AroundNow. We never show tutors’ phone numbers, and they only see your email when they reply.",
+    msgField: "Your message", msgHint: "e.g. Hello, do you have space for my 5-year-old on Saturdays?",
+    msgEmail: "Your email, for the reply", msgEmpty: "Write a few words first.", msgBadEmail: "Please check your email address.",
+    msgSent: "Sent!", msgSentText: "We’ll pass your message on to the tutor, who will reply to your email.",
+    msgLimit: "You’ve sent a lot of messages today. Please try again tomorrow.",
   },
   ru: {
     age: "Возраст", under1: "До 1", ageGroup: "Возраст ребёнка. Двое детей? Выберите оба",
@@ -505,6 +511,7 @@ const sb = window.supabase
   : null;
 
 function $(id) { return document.getElementById(id); }
+Object.setPrototypeOf(STRINGS.ru, STRINGS.en); // untranslated text shows in English
 function T() { return STRINGS[state.ui]; }
 function isRu() { return state.ui === "ru"; }
 
@@ -584,6 +591,7 @@ function normalize(r) {
     c: r.category === "Sports / Dance" ? sportOf(r) : r.category || "", cr: r.category || "", sj: r.subjects || [], r: r.runs_when || "",
     h: r.holiday_club ? 1 : 0, s: r.schedule_text || "", p: r.price_text || "", ds: r.description || "",
     w: r.website || "", k: r.status === "Check" ? 1 : 0,
+    pi: r.provider_type === "individual" ? 1 : 0, // a private tutor: no phone or website, parents message them instead
     ad: [r.address, r.postcode].filter(Boolean).join(", "),
     ca: r.created_at || "", lc: r.last_confirmed_at || "", cb: r.created_by || "", src: r.source || "",
     ed: r.event_date || "", ee: r.event_end_date || "",
@@ -1129,7 +1137,7 @@ function renderSheet(c) {
   const typed = again && $("areaInput") ? $("areaInput").value : "";
   const p = s.sheet === "place" ? placeSheet(c) : s.sheet === "filters" ? filtersSheet(c)
     : s.sheet === "signin" ? signInSheet() : s.sheet === "group" ? groupSheet(c)
-    : s.sheet === "feedback" ? feedbackSheet(c) : addSheet();
+    : s.sheet === "feedback" ? feedbackSheet(c) : s.sheet === "message" ? messageSheet() : addSheet();
 
   el.innerHTML = `<button type="button" class="backdrop"${p.tall ? ' style="flex:none;height:64px"' : ""} data-act="closeSheet" aria-label="${t.close}"></button>
     <div class="sheet${p.tall ? " tall" : ""}${again ? "" : " enter"}" role="dialog" aria-label="${esc(p.title)}">
@@ -1334,6 +1342,45 @@ async function sendFeedback() {
     f.error = t.failed(error.message);
   } else {
     f.sent = true;
+  }
+  render({ keepScroll: true });
+}
+
+function messageSheet() {
+  const t = T(), m = state.msg || {};
+  const l = state.items.find((x) => x.i === m.id) || {};
+  if (m.sent) {
+    return { title: t.msgSent, body: `<p class="lead">${t.msgSentText}</p>`,
+      foot: `<button type="button" class="primary" data-act="closeSheet">${t.done}</button>` };
+  }
+  return {
+    title: t.msgTitle,
+    body: `<p class="lead"><b>${esc(t.msgAbout(l.t || ""))}</b></p>
+      <p class="help">${t.msgLead}</p>
+      ${fieldHtml(t.msgField, `<textarea class="input" data-field="msg.text" rows="5" maxlength="2000" placeholder="${t.msgHint}">${esc(m.text || "")}</textarea>`)}
+      ${fieldHtml(t.msgEmail, inputHtml("msg.email", m.email || "", 'type="email" maxlength="200" autocomplete="email"'))}`,
+    top: m.error ? `<p class="form-msg" role="alert">${esc(m.error)}</p>` : "",
+    foot: `<button type="button" class="text-btn" data-act="closeSheet">${t.cancel}</button>
+      <button type="button" class="primary" data-act="sendMessage"${m.busy ? " disabled" : ""}>${m.busy ? t.sending : t.fbSend}</button>`,
+  };
+}
+
+async function sendMessage() {
+  const t = T(), m = state.msg;
+  if (!m) return;
+  if (!(m.text || "").trim()) { m.error = t.msgEmpty; render({ keepScroll: true }); return; }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((m.email || "").trim())) { m.error = t.msgBadEmail; render({ keepScroll: true }); return; }
+  m.busy = true;
+  m.error = "";
+  render({ keepScroll: true });
+  const { error } = sb ? await sb.from("contact_messages").insert({ listing_id: m.id, message: m.text.trim(), reply_email: m.email.trim() })
+    : { error: { message: "offline" } };
+  m.busy = false;
+  if (error) {
+    console.warn("Message failed", error);
+    m.error = /daily message limit/.test(error.message || "") ? t.msgLimit : t.failed(error.message);
+  } else {
+    m.sent = true;
   }
   render({ keepScroll: true });
 }
@@ -2218,7 +2265,8 @@ function renderDetail(c) {
         <button type="button" class="link-btn report-link" data-act="wrong" data-v="${esc(l.i)}">${t.fbClassLink}</button>
       </div></div>
       <div class="actions">
-        ${l.w ? `<a class="primary" href="${esc(l.w)}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}"><span>${t.website}</span>${ICON.external}</a>` : ""}
+        ${l.pi ? `<button type="button" class="primary" data-act="message" data-v="${esc(l.i)}">${ICON.mail}<span>${t.msgBtn}</span></button>` : ""}
+        ${!l.pi && l.w ? `<a class="primary" href="${esc(l.w)}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}"><span>${t.website}</span>${ICON.external}</a>` : ""}
         ${dir ? `<a class="secondary" href="${dir}" target="_blank" rel="noreferrer" data-track="${esc(l.i)}">${ICON.directions}<span>${t.directions}</span></a>` : ""}
       </div>
     </div>`;
@@ -2615,6 +2663,14 @@ const ACTIONS = {
   },
   fbProblem: (v) => { Object.assign(state.fb, { problem: state.fb.problem === v ? "" : v, error: "" }); },
   sendFeedback: () => { sendFeedback(); return "async"; },
+  // "Message the tutor": signed-in parents only; the message is passed on by AroundNow (npm run messages)
+  message: (v) => {
+    if (needSignIn(v)) return;
+    state.msg = { id: v, text: "", email: (state.user && state.user.email) || "", busy: false, error: "", sent: false };
+    state.detail = null;
+    state.sheet = "message";
+  },
+  sendMessage: () => { sendMessage(); return "async"; },
   // Opens the class, so the thank-you (or any problem) shows where it happened
   askYes: (v) => {
     markAsked(v);
@@ -2655,6 +2711,7 @@ function onField(e) {
   if (f.startsWith("auth.")) { if (state.auth) state.auth[f.slice(5)] = value; return; }
   if (f.startsWith("box.")) { if (state.box) state.box[f.slice(4)] = value; return; }
   if (f.startsWith("fb.")) { if (state.fb) state.fb[f.slice(3)] = value; return; }
+  if (f.startsWith("msg.")) { if (state.msg) state.msg[f.slice(4)] = value; return; }
   if (!state.add) return;
   if (f === "langPick") {
     if (e.type !== "change" || !value) return;
