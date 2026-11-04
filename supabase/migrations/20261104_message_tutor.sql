@@ -1,7 +1,7 @@
 -- "Message the tutor" (Tatjana, 3 Nov 2026): private tutors (provider_type = 'individual') show on the map, but never
 -- with a phone number, email, home address or personal page. Only tutors with an email on file in listing_contacts
 -- show (Tatjana, 4 Nov: otherwise there's no way to pass a message on).
--- Also (4 Nov): the list limit goes from 2,000 to 6,000 classes, since a 25 km circle already reached 2,000. Parents who are signed in send a message through the
+-- Parents who are signed in send a message through the
 -- app instead; it's stored here and passed on to the tutor (npm run messages), who replies to the parent's email.
 -- Paste into Supabase → SQL Editor → New query → Run. Safe to re-run. Then deploy the app (v51).
 
@@ -84,7 +84,8 @@ as $$
           or (l.location is not null
               and st_dwithin(l.location, here.pt, least(greatest(coalesce(p_km, 5), 0.5), 25) * 1000)))
     order by st_distance(l.location, here.pt) nulls first
-    limit 6000
+    -- Only a safety net: the app asks for at most ~11 km (about 1,200 classes on 4 Nov)
+    limit 2000
   ) x;
 $$;
 

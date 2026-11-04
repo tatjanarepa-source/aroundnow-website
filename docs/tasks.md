@@ -35,7 +35,7 @@ Research (London basic layer rule: one row per age group / session applies):
 
 App ideas (need a decision on how):
 - [ ] **"Plan my day" for members** (Tatjana, 3 Nov): the parent picks how far they're happy to travel and the kids' ages, and gets a day plan (classes, then a playground, café or museum nearby, in time order). Name ideas: Day Scanner, Fun Scanner
-- [x] **"Message the tutor"** (built 4 Nov, v51; Tatjana picked the contact form over in-app chat): private tutors (provider_type individual) show on the map without website, address or phone; signed-in parents send a message (max 10 a day), stored in contact_messages; `npm run messages` shows them with the tutor's private contact to forward, `npm run messages -- sent <n>` marks one done. To go live: run supabase/migrations/20261104_message_tutor.sql, then deploy. Only tutors with an email in listing_contacts show (Tatjana, 4 Nov: no email, no way to pass it on); none of the 4 has one yet (R046 has a contact but no email). The same SQL raises the list limit from 2,000 to 6,000 (a 25 km circle from Ealing already hit 2,000 on 4 Nov). Later: send automatically by email (needs an email service, e.g. Resend)
+- [x] **"Message the tutor"** (built 4 Nov, v51; Tatjana picked the contact form over in-app chat): private tutors (provider_type individual) show on the map without website, address or phone; signed-in parents send a message (max 10 a day), stored in contact_messages; `npm run messages` shows them with the tutor's private contact to forward, `npm run messages -- sent <n>` marks one done. To go live: run supabase/migrations/20261104_message_tutor.sql, then deploy. Only tutors with an email in listing_contacts show (Tatjana, 4 Nov: no email, no way to pass it on); none of the 4 has one yet (R046 has a contact but no email). Later: send automatically by email (needs an email service, e.g. Resend)
 - [x] Pick several days in the calendar (v42): days in the strip add up, e.g. "80 on Tue, Thu"; tap a day again to take it off
 - [x] "Don't show" in Filters (v42): hide types (weekend schools, nursery…) or activities; crossed out, remembered on the phone
 - [ ] Group events by theme: Christmas, Halloween, Easter… (a "theme" field on events + chips in season)
@@ -104,7 +104,7 @@ Test after deploy (close and reopen the app first):
 - [ ] **Small shadows on cards and buttons** (v39, 2 Nov): picked on the canvas, "subtle" in the light look and
       "a bit more" in the dark one (dark also gets a faint light top edge). Day buttons, age circles, class cards,
       the + and the big buttons; the selected day and filled buttons glow in the accent colour. Deployed 2 Nov
-- [ ] **Load only what's needed** (v40, 2 Nov; was: the app loads at most 500 classes, which from Ealing Broadway
+- [ ] **Load only what's needed** (v40, 2 Nov; 4 Nov check: at the largest circle the app asks for, ~11 km, about 1,000–1,200 classes (1 MB), under the 2,000 safety limit; the deploy check's 25 km is only a test; watch it as London fills up; was: the app loads at most 500 classes, which from Ealing Broadway
       reached only 11.8 km). New `listings_within` sends the classes inside the chosen circle and the next bigger
       one (+1 km), without the description, schedule note and street address; `listing_details` sends those when a
       class is opened. Default 2 mi: about 44 KB instead of 98 KB. To go live: 1) run
