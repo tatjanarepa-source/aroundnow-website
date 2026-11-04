@@ -5,7 +5,6 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 
 ## Open
 
-- 2026-11-04 Leisure: Everyone Active swim Stages 1–9 give no ages: leave without ages (as now), or use the national stage ages?
 - 2026-11-04 Libraries: keep board games clubs (5+) and Hackney comic clubs? (kept)
 - 2026-11-04 Libraries: add Enfield Town 'Children's Sensory Space' (for children with learning difficulties, Mon–Wed 10–12)? (left out)
 - 2026-11-04 Libraries: many library pages give no price (almost always free). Show them as 'Free', or leave the price empty ('Not listed yet') as now?
@@ -18,6 +17,8 @@ Answer under the question (or just tell Claude) and Claude acts on it, then move
 - 2026-11-03 Libraries: monthly sessions (e.g. Islington last-Saturday Lego): is the week in the schedule text enough? (the app shows them every week on that day)
 
 ## Answered
+
+- 2026-11-04 Leisure: Everyone Active swim Stages 1–9 give no ages: leave without ages (as now), or use the national stage ages? **Answer (4 Nov): no, leave ages out when the provider doesn't state them.**
 
 - 2026-11-03 Rugbytots: keep term totals in the price (e.g. "£x a session, £y for the rest of term"), or only the price per session? Totals go out of date each term. **Answer (3 Nov): price per class.** Rugbytots batch changed; rule added to sources.md.
 
