@@ -11,22 +11,26 @@ Tatjana (needs her accounts):
 - [ ] wigglebi.co.uk: same, then Claude sets up the forward to .com
 - [ ] Email service: sign up at resend.com (free), verify wigglebi.com, send Claude the API key → real sign-in emails
 - [ ] Contact address, e.g. hello@wigglebi.com (Cloudflare Email Routing can forward it to Gmail for free)
-- [ ] Answer the [bracketed] questions in `docs/about-draft.md` (About page + privacy note)
-- [ ] Run `supabase/migrations/20261102_3_edit_listing.sql` in Supabase → "Edit this class" goes live
+- [ ] Answer the [bracketed] questions in `docs/about-draft.md`, `docs/privacy-draft.md` and `docs/tester-welcome.md`
+- [ ] Read `docs/seo-plan.md` and answer its 3 questions
+- [ ] Backup: the 23:30 task failed on 5 Nov (laptop off or asleep?). Leave the laptop on and plugged in overnight, or ask Claude to move it to a server
+- [ ] Restore practice: create a spare free Supabase project and give Claude its URL and secret key
+- [x] Run `supabase/migrations/20261102_3_edit_listing.sql` in Supabase (done 6 Nov) → "Edit this class" is live
 - [ ] Trademark check "Wigglebi" on the UK IPO database (against The Wiggles); maybe buy wigglebee.com
 - [ ] Phone checks still open (dark mode, tap a day, This weekend, Special needs filter, Ballet Class edit)
 - [ ] Ballet Class (YMCA South Ealing): still running? 020 8832 1501
 - [ ] Logo/icon for Wigglebi (or say "Claude, make one")
 
 Claude (without Tatjana):
-- [ ] Rename AroundNow → Wigglebi in the app (title, home-screen name, texts, emails, scripts), deploy
-- [ ] Draft the privacy note (UK GDPR: emails, rough location, feedback) for Tatjana to check
-- [ ] Draft a welcome message for testers (what it is, what to try, the "Something not right?" button)
-- [ ] Plan the SEO pages (Worker renders /london/<area>/<activity>; noindex under 5 listings; sitemap; event markup)
+- [x] Rename AroundNow → Wigglebi in the app (v54, live 6 Nov). Kept on purpose: the workers.dev address, the saved-settings names on phones, and the backup and research folder names
+- [x] Privacy note drafted: `docs/privacy-draft.md` (and the About draft had a wrong "we don't store where you are")
+- [x] Welcome message for testers drafted: `docs/tester-welcome.md`
+- [x] SEO pages planned: `docs/seo-plan.md`
+- [x] Backup now copies all 9 tables (4 newer ones were missing); a fresh backup was made 6 Nov
 - [ ] Once the domain is in Cloudflare: connect it to the Worker, forward .co.uk
 - [ ] Once Resend is set up: connect it to Supabase sign-in
 - [ ] Build the About page (English + Russian) once the wording is approved
-- [ ] Practise a database restore into a spare Supabase project
+- [ ] Practise a database restore (waits for the spare Supabase project)
 - [ ] Later: staging copy of the site
 
 ## Every morning

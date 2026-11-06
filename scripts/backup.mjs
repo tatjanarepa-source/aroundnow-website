@@ -12,7 +12,8 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 
 // Each table with a unique column to page through it in a fixed order
-const TABLES = { listings: "id", listing_contacts: "listing_id", listing_confirmations: "id", listing_reports: "id", feedback: "id" };
+const TABLES = { listings: "id", listing_contacts: "listing_id", listing_confirmations: "id", listing_reports: "id", feedback: "id",
+  listing_edits: "id", contact_messages: "id", poster_reads: "id", usage_events: "id" };
 const KEEP_DAYS = 14;
 
 const { SUPABASE_URL, SUPABASE_SECRET_KEY } = process.env;
