@@ -29,9 +29,10 @@ Claude (without Tatjana):
 - [x] Backup now copies all 9 tables (4 newer ones were missing); a fresh backup was made 6 Nov
 - [ ] Once the domain is in Cloudflare: connect it to the Worker, forward .co.uk
 - [ ] Once Resend is set up: connect it to Supabase sign-in
-- [ ] Build the About page (English + Russian) once the wording is approved
+- [ ] Build the About page once the wording is approved
 - [ ] Practise a database restore (waits for the spare Supabase project)
 - [ ] Later: staging copy of the site
+- [ ] Tatjana 6 Nov: "leave only eng version". New pages and texts are English only. Ask whether the app's Russian switch should go too
 
 ## Every morning
 

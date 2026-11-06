@@ -1,7 +1,7 @@
 # About page – draft for Tatjana to check (31 Oct 2026)
 
 Wording first; once it's right, Claude builds it into the app as an "About" sheet (link in the menu and at the bottom
-of the list), in English and Russian. Things in [square brackets] need your answer.
+of the list). Things in [square brackets] need your answer.
 
 ---
 
@@ -65,5 +65,4 @@ AroundNow is free and has no ads. If it saved you a rainy Saturday, you can
 ### Notes for Claude when building it
 - Check every privacy claim against app.js, worker/ and Supabase before publishing (location, what feedback stores,
   any third-party requests such as map tiles from OpenStreetMap: mention that the map comes from OpenStreetMap).
-- Russian version: translate after Tatjana approves the English.
 - Re-check the "Needs re-checking" / disappear timings against the app (90 days / 120 days in the find-classes skill).

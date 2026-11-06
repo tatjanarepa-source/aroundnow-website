@@ -27,4 +27,3 @@ Thank you! 💛
 
 ---
 
-Russian version: Claude translates once the English is final.
