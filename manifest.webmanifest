@@ -1,6 +1,6 @@
 {
-  "name": "AroundNow",
-  "short_name": "AroundNow",
+  "name": "Wigglebi",
+  "short_name": "Wigglebi",
   "description": "Find what's happening near you right now.",
   "start_url": "./index.html",
   "scope": "./",

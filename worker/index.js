@@ -1,4 +1,4 @@
-// The small server part of AroundNow (Cloudflare Worker). Everything else is the static site in dist/,
+// The small server part of Wigglebi (was AroundNow) (Cloudflare Worker). Everything else is the static site in dist/,
 // served as it is; only /api/* comes here (wrangler.jsonc → run_worker_first).
 //
 // POST /api/read-poster  { image: <base64>, type: "image/jpeg" }  with the parent's sign-in token

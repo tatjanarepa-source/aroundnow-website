@@ -1,4 +1,4 @@
-// AroundNow statistics for Tatjana: people using the app, areas searched, classes opened, reports, classes added.
+// Wigglebi statistics for Tatjana: people using the app, areas searched, classes opened, reports, classes added.
 // Usage: npm run stats [-- 30]   (days to look back, default 30; reads SUPABASE_URL and SUPABASE_SECRET_KEY from .env)
 // Usage rows come from the app (supabase/migrations/20261102_2_usage_stats.sql): a random number per phone, no
 // names, emails or IPs, so "people" means phones/browsers.
@@ -39,7 +39,7 @@ try {
 
 const people = (d) => new Set(usage.filter((r) => r.created_at >= since(d)).map((r) => r.device)).size;
 const opens = (d) => usage.filter((r) => r.kind === "open" && r.created_at >= since(d)).length;
-console.log(`\nAroundNow statistics (last ${days} days, ${new Date().toLocaleString("en-GB")})\n`);
+console.log(`\nWigglebi statistics (last ${days} days, ${new Date().toLocaleString("en-GB")})\n`);
 console.log("People (phones/browsers)      today  7 days  " + `${days} days`);
 console.log(`  using the app              ${pad(people(1), 7)}${pad(people(7), 8)}${people(days)}`);
 console.log(`  app opens                  ${pad(opens(1), 7)}${pad(opens(7), 8)}${opens(days)}`);

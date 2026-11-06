@@ -1,7 +1,7 @@
 // Listings live in Supabase (see supabase/schema.sql). The publishable key is
 // meant to be public: the database only allows reading visible listings.
 // Sent with feedback so we know which version a tester had; keep in step with CACHE_NAME in sw.js
-const APP_VERSION = "v53";
+const APP_VERSION = "v54";
 const SUPABASE_URL = "https://dftaitxrrbihsmkinezq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bNlpFrdOhFmab51drVpBCQ_PO7564tA";
 
@@ -274,7 +274,7 @@ const STRINGS = {
     dupSame: "Yes, that’s it", dupDifferent: "No, mine is different",
     pendingDupText: "It looks a lot like a class that’s already on the map, so we’ll check it isn’t listed twice before it appears.",
     share: "Share", shareTitle: "Share this class", whatsapp: "WhatsApp", copyLink: "Copy link", copied: "Copied",
-    foundOn: "Found on AroundNow", sharedPlace: "Shared class",
+    foundOn: "Found on Wigglebi", sharedPlace: "Shared class",
     photoBtn: "Fill in from a photo", photoReading: "Reading the photo…",
     photoHelp: "Take or choose a photo of a poster, flyer or screenshot. We fill in what we can; you check every step.",
     photoDone: "Filled in from the photo. Please check each step before adding.",
@@ -304,8 +304,8 @@ const STRINGS = {
     knowThem: "Know them?", showAll: "Show all", caughtUp: "All caught up. Thank you!",
     pickReason: "Pick what’s wrong first.", andList: " and ", here: (n) => `${classes(n)} here`,
     fbLink: "Something not right? Tell us", fbTitle: "Tell us",
-    cityLink: "Want to see AroundNow in your city or country? Send us a request",
-    cityTitle: "AroundNow in your city", cityLead: "AroundNow covers London for now. Tell us your city or country and we’ll see what can be done. Leave your email and we’ll let you know.",
+    cityLink: "Want to see Wigglebi in your city or country? Send us a request",
+    cityTitle: "Wigglebi in your city", cityLead: "Wigglebi covers London for now. Tell us your city or country and we’ll see what can be done. Leave your email and we’ll let you know.",
     cityField: "Your city, town or country", cityHint: "e.g. Manchester, or Spain", cityMsg: "Anything else?", cityMsgHint: "e.g. classes you’d love to see",
     cityContactHint: "So we can tell you when it’s ready", cityEmpty: "Which city or town?", cityPrefix: "City request",
     fbClassLink: "Something wrong with this class? Tell us", fbFilterLink: "A filter not working? Tell us",
@@ -316,7 +316,7 @@ const STRINGS = {
     chPrefix: "Suggested change", chThanks: "Thanks! We’ll check it and update the class.",
     prob: { category: "Wrong activity", age: "Wrong age", when: "Wrong day or time", price: "Wrong price",
       place: "Wrong place", gone: "Doesn’t run any more", other: "Something else" },
-    fbIntro: "Something missing, wrong or confusing? Your message goes straight to the people building AroundNow.",
+    fbIntro: "Something missing, wrong or confusing? Your message goes straight to the people building Wigglebi.",
     fbMsg: "What happened?", fbMsgHint: "e.g. I picked age 3 but saw a class for 8–12s",
     fbContact: "Your email", fbContactHint: "If you’d like a reply",
     fbShare: "Include my search, so you can see what I saw:", fbShown: "shown",
@@ -324,7 +324,7 @@ const STRINGS = {
     fbThanks: "Thank you!", fbThanksText: "We’ve got your message and will look at it.",
     sendTitle: "Special needs", sendChip: "Special needs friendly",
     msgBtn: "Message", msgTitle: "Message the tutor", msgAbout: (title) => `To: ${title}`,
-    msgLead: "Your message goes to the tutor through AroundNow. We never show tutors’ phone numbers, and they only see your email when they reply.",
+    msgLead: "Your message goes to the tutor through Wigglebi. We never show tutors’ phone numbers, and they only see your email when they reply.",
     msgField: "Your message", msgHint: "e.g. Hello, do you have space for my 5-year-old on Saturdays?",
     msgEmail: "Your email, for the reply", msgEmpty: "Write a few words first.", msgBadEmail: "Please check your email address.",
     msgSent: "Sent!", msgSentText: "We’ll pass your message on to the tutor, who will reply to your email.",
@@ -441,7 +441,7 @@ const STRINGS = {
     dupSame: "Да, это оно", dupDifferent: "Нет, моё другое",
     pendingDupText: "Оно очень похоже на занятие, которое уже есть на карте, поэтому мы проверим, что это не повтор, прежде чем его показать.",
     share: "Поделиться", shareTitle: "Поделиться занятием", whatsapp: "WhatsApp", copyLink: "Скопировать ссылку", copied: "Скопировано",
-    foundOn: "Нашли на AroundNow", sharedPlace: "Занятие по ссылке",
+    foundOn: "Нашли на Wigglebi", sharedPlace: "Занятие по ссылке",
     photoBtn: "Заполнить по фото", photoReading: "Читаем фото…",
     photoHelp: "Сфотографируйте или выберите фото афиши, листовки или скриншот. Мы заполним что сможем, а вы проверите каждый шаг.",
     photoDone: "Заполнено по фото. Проверьте каждый шаг, прежде чем добавить.",
@@ -2674,7 +2674,7 @@ const ACTIONS = {
   },
   fbProblem: (v) => { Object.assign(state.fb, { problem: state.fb.problem === v ? "" : v, error: "" }); },
   sendFeedback: () => { sendFeedback(); return "async"; },
-  // "Message the tutor": signed-in parents only; the message is passed on by AroundNow (npm run messages)
+  // "Message the tutor": signed-in parents only; the message is passed on by Wigglebi (npm run messages)
   message: (v) => {
     if (needSignIn(v)) return;
     state.msg = { id: v, text: "", email: (state.user && state.user.email) || "", busy: false, error: "", sent: false };

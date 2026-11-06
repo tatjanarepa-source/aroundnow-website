@@ -1,4 +1,4 @@
-# AroundNow
+# Wigglebi (was AroundNow)
 
 Kids' classes and activities near you, on a map. Launch area: Ealing, London.
 Pick your child's age, a place and a distance, then narrow down by day
