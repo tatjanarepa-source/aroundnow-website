@@ -1,4 +1,4 @@
-# Project Brief: AroundNow — Local Kids & Family Activities Platform
+# Project Brief: Wigglebi (was AroundNow) — Local Kids & Family Activities Platform
 
 Draft v1. Copied from the claude.ai "AroundNow" project (kids-events-platform-brief.md) on 2026-10-25.
 
@@ -147,6 +147,31 @@ Decided stack:
 - **Hosting:** Cloudflare — reused as-is, same infrastructure (CDN, DNS, edge functions) regardless of which app sits behind it.
 - **Listings database:** Supabase (Postgres + PostGIS), kept separate from Firebase Auth, specifically for listings data. Reasoning: AroundNow's core feature — "everything within 1 mile, filtered by age range, category, and date, live" — is a compound, multi-dimensional query. Firebase's Firestore can do radius search (via geohashing), but combining radius + age range + category + date/time in a single live query is awkward there. Postgres with PostGIS is purpose-built for exactly this kind of layered geospatial-plus-attribute filtering, so it's worth using even though it means two backend services instead of one. Auth and listings data don't need to live in the same database — Firebase confirms who someone is, Supabase handles what's near them.
 - **Who writes it:** Claude (via Claude Code for the ongoing, file-by-file build), working from this brief as the spec.
+
+
+### 8.2 Name, domain and SEO (decided 6 Nov 2026)
+
+From Tatjana's "Wigglebi — Naming & SEO Decisions" (6 Nov 2026).
+
+- **Name:** Wigglebi. It replaces the working name AroundNow (aroundnow.com and wiggleby.com were taken).
+  Spare names from the shortlist: NowPin, HappenAround, OnRoundHere, Nowabout, Justround, MoochAbout.
+- **Domains:** wigglebi.com is the main site. wigglebi.co.uk is bought too and should forward to .com.
+  Maybe also buy wigglebee.com (for the misspelling) and forward it the same way.
+- **One .com for every country**, with the place in the web address: London first (/london/ealing),
+  then UK cities (/manchester/...), then a country level (/us/new-york/...).
+- **Programmatic SEO:** the map stays the main experience. Pages generated from the database sit alongside it, one
+  per city, area, activity and age, and one per listing, e.g.
+  /london/ealing/swimming/toddlers, each with its own title ("Toddler swimming classes in Ealing | Wigglebi").
+  The pages update by themselves as listings are added.
+- **Indexing rules:** an area or activity page with fewer than about 5 active listings gets "noindex" (visitors can
+  still see it). Every listing page has Google's event markup (schema.org Event: dates, place, price, ages).
+  An automatic sitemap lists only the indexed pages.
+- **How we'll build it:** the PDF says Next.js, but the app is plain JavaScript served by a Cloudflare Worker.
+  The Worker can render these pages as full HTML on the server from Supabase, which gives Google the same result
+  without a rewrite.
+- **Expect a slow start:** new sites take months to rank. Early users will come from local parent Facebook groups,
+  Mumsnet, school WhatsApp chats and noticeboards.
+- **To check:** search "Wigglebi" on the UK IPO trademark database, especially against The Wiggles.
 
 ## 9. Cold Start — Seeding the First Listings
 

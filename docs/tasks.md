@@ -2,6 +2,33 @@
 
 Ideas and problems to come back to. Newest first. Tick when done.
 
+## Before the first testers (written 6 Nov 2026)
+
+The name is now **Wigglebi** (wigglebi.com and wigglebi.co.uk bought 6 Nov). Decisions are in `docs/brief.md` 8.2.
+
+Tatjana (needs her accounts):
+- [ ] Domain: add wigglebi.com to Cloudflare (or point its nameservers there); tell Claude when done
+- [ ] wigglebi.co.uk: same, then Claude sets up the forward to .com
+- [ ] Email service: sign up at resend.com (free), verify wigglebi.com, send Claude the API key → real sign-in emails
+- [ ] Contact address, e.g. hello@wigglebi.com (Cloudflare Email Routing can forward it to Gmail for free)
+- [ ] Answer the [bracketed] questions in `docs/about-draft.md` (About page + privacy note)
+- [ ] Run `supabase/migrations/20261102_3_edit_listing.sql` in Supabase → "Edit this class" goes live
+- [ ] Trademark check "Wigglebi" on the UK IPO database (against The Wiggles); maybe buy wigglebee.com
+- [ ] Phone checks still open (dark mode, tap a day, This weekend, Special needs filter, Ballet Class edit)
+- [ ] Ballet Class (YMCA South Ealing): still running? 020 8832 1501
+- [ ] Logo/icon for Wigglebi (or say "Claude, make one")
+
+Claude (without Tatjana):
+- [ ] Rename AroundNow → Wigglebi in the app (title, home-screen name, texts, emails, scripts), deploy
+- [ ] Draft the privacy note (UK GDPR: emails, rough location, feedback) for Tatjana to check
+- [ ] Draft a welcome message for testers (what it is, what to try, the "Something not right?" button)
+- [ ] Plan the SEO pages (Worker renders /london/<area>/<activity>; noindex under 5 listings; sitemap; event markup)
+- [ ] Once the domain is in Cloudflare: connect it to the Worker, forward .co.uk
+- [ ] Once Resend is set up: connect it to Supabase sign-in
+- [ ] Build the About page (English + Russian) once the wording is approved
+- [ ] Practise a database restore into a spare Supabase project
+- [ ] Later: staging copy of the site
+
 ## Every morning
 
 1. Ask Claude "what did the night run find?" → review the new batch files, then import the good ones
