@@ -182,7 +182,7 @@ Test after deploy (close and reopen the app first):
 - [ ] **Sign-in**: see Phase 3 (email service such as Resend so sign-in emails reach real users; password and/or Google
       sign-in). Needs Tatjana to create the email service account
 - [ ] **About page**: draft written 31 Oct in `docs/about-draft.md` (questions in [brackets]); once Tatjana approves the
-      wording Claude builds it into the app in English and Russian. Was: what AroundNow is, who runs it, how classes get on the map, how to report or add one, privacy.
+      wording Claude builds it into the app (English only). Was: what AroundNow is, who runs it, how classes get on the map, how to report or add one, privacy.
       Claude can draft the text and page; Tatjana checks the wording
 - [ ] **Earn money**: affiliate links checked 28 Oct (Ticketmaster via Impact ~0.6–1%, needs approval; Eventbrite none):
       not worth it until we list ticketed shows. Simplest start: a "Buy me a coffee" (or Ko-fi) link on the About page;
